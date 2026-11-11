@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="col_num_values">
+        <item>2 elementi</item>
+        <item>3 elementi</item>
+        <item>4 elementi</item>
+        <item>5 elementi</item>
+        <item>6 elementi</item>
+        <item>7 elementi</item>
+        <item>8 elementi</item>
+        <item>9 elementi</item>
+        <item>10 elementi</item>
+    </string-array>
+    <string-array name="item_title_line">
+        <item>nascosto</item>
+        <item>1 riga</item>
+        <item>2 righe</item>
+        <item>illimitato</item>
+    </string-array>
+    <string-array name="sort_method">
+        <item>Alfabetico+</item>
+        <item>Alfabetico-</item>
+        <item>Installazione+</item>
+        <item>Installazione-</item>
+        <item>Pers.&amp;Data+</item>
+        <item>Pers.&amp;Data-</item>
+        <item>Pers.&amp;Alfa+</item>
+        <item>Pers.&amp;Alfa-</item>
+    </string-array>
+</resources>

@@ -1,0 +1,137 @@
+<resources>
+    <string name="file_manager">Gestione file</string>
+
+    <string name="empty_directory_hint">Cartella vuota</string>
+    <string name="start_path_name">Dispositivo</string>
+    <string name="type_archive">Archivio</string>
+    <string name="type_certificate">Certificato</string>
+    <string name="type_directory">Cartella</string>
+    <string name="type_document">File</string>
+    <string name="type_drawing">Disegno</string>
+    <string name="type_excel">Foglio di calcolo</string>
+    <string name="type_image">Immagine</string>
+    <string name="type_music">Musica</string>
+    <string name="type_video">Video</string>
+    <string name="type_pdf">Documento PDF</string>
+    <string name="type_power_point">Presentazione</string>
+    <string name="type_word">Documento</string>
+    <string name="type_apk">APK</string>
+    <string name="type_other">Altro</string>
+
+    <string name="setting_cloud_manager_on">Server FTP - ON</string>
+    <string name="setting_cloud_manager_off">Server FTP - OFF</string>
+    <string name="setting_cloud_manager_wifi_off">Server FTP\n -- Wi-Fi non connesso</string>
+    <string name="battery_status_low_battery">Batteria scarica</string>
+    <string name="setting_show_divider">Mostra divisori</string>
+    <string name="setting_hide_divider">Nascondi divisori</string>
+    <string name="setting_set_font_size">Dimensione testo</string>
+    <string name="setting_apps_manager">Gestisci app</string>
+    <string name="setting_column_icons">Colonne</string>
+    <string name="setting_row_icons">" Righe "</string>
+    <string name="setting_help_and_about">Aiuto e info</string>
+
+    <string name="toast_need_wifi_connnect">Connettiti a una rete Wi-Fi!</string>
+
+    <string name="app_manager_finish">Fatto</string>
+    <string name="battery_heat">Batteria surriscaldata</string>
+    <string name="battery_unknown">Sconosciuto</string>
+    <string name="battery_charging">In carica</string>
+    <string name="battery_low">Batteria scarica</string>
+    <string name="battery_full">Carica</string>
+    <string name="battery_wtf">WTF?</string>
+
+    <string name="dialog_cancel">Annulla</string>
+    <string name="dialog_hide">Nascondi</string>
+    <string name="dialog_uninstall">Disinstalla</string>
+    <string name="dialog_pkg_name">Nome pacchetto: %s\n(puoi selezionarlo e copiarlo)</string>
+    <string name="dialog_shortcut_id">Nome:\n  %1$s\nId:\n  %2$s\n(puoi selezionare e copiare l\'ID)</string>
+    <string name="dialog_close">Chiudi</string>
+    <string name="dialog_confim">Conferma</string>
+
+    <string name="wifi_status_off">Wi-Fi spento</string>
+    <string name="wifi_status_closing">Spegnimento Wi-Fi…</string>
+    <string name="wifi_status_opening">Accensione Wi-Fi…</string>
+    <string name="wifi_status_on">Wi-Fi acceso</string>
+    <string name="wifi_status_connected">Wi-Fi connesso: %s</string>
+    <string name="wifi_status_connecting">Connessione Wi-Fi…</string>
+    <string name="wifi_status_disconnected">Wi-Fi disconnesso</string>
+    <string name="wifi_status_disconnecting">Disconnessione Wi-Fi…</string>
+
+    <string name="item_lockscreen">Blocca schermo</string>
+    <string name="restart_launcher">Riavvia launcher</string>
+
+    <string-array name="power_menu">
+        <item>Spegni</item>
+        <item>Riavvia</item>
+        <item>Richiedi amministratore dispositivo</item>
+    </string-array>
+
+    <string name="power_title">Ora puoi gestire l\'alimentazione</string>
+
+    <string name="path">Percorso</string>
+    <string name="default_path_setting">Percorso predefinito</string>
+
+    <string name="parent_folder">Cartella superiore</string>
+    <string name="exit">Esci</string>
+    <string name="delete">Elimina</string>
+    <string name="show_statusbar">Mostra barra di stato</string>
+    <string name="show_wifi_name">Mostra nome Wi-Fi</string>
+    <string name="show_custom_icon">Mostra icone personalizzate</string>
+    <string name="notification_click_back_launcher">Tocca qui per tornare al launcher</string>
+    <string name="item_title_display">Nome app</string>
+
+    <string name="dev_admin_desc">E-Ink Launcher richiede il permesso di bloccare lo schermo</string>
+
+    <string name="choose_app_title">Apri con</string>
+    <string name="no_apps_to_open">Nessuna app trovata per aprire questo file</string>
+
+    <string name="launcher_info">
+E-Ink Launcher è nato come progetto nel tempo libero: il lettore non aveva
+un launcher e non ne trovavo uno soddisfacente, così l\'ho scritto io.
+Funzioni principali:
+1. Mostrare le app, ovviamente
+2. Regolare la densità della griglia
+3. Regolare la dimensione del testo dei nomi
+4. Disinstallare/nascondere app
+5. Blocco schermo con un tocco
+6. Accensione/spegnimento Wi-Fi con un tocco
+7. Icone personalizzate: tieni premuta un\'icona per vedere il nome del pacchetto,
+rinomina l\'immagine come nome-pacchetto + estensione e copiala nella cartella
+E-Ink Launcher/icon dal computer
+PS: tieni premute le icone per qualche sorpresa
+</string>
+
+    <string name="report_error_title">Oh! Si è bloccato.</string>
+    <string name="sort_title">Ordinamento personalizzato</string>
+    <string name="sort_description">Assegna a ogni app un numero intero come priorità (ordine decrescente nella modalità Personalizzato+). Le nuove app ricevono automaticamente 0.</string>
+    <string name="sort_input_priority_hint">priorità</string>
+    <string name="sort_method">Ordina</string>
+    <string name="setting_sort">Ordinamento personalizzato</string>
+    <string name="title_activity_sort">Ordina</string>
+    <string name="create_shortcut_title">Crea scorciatoia</string>
+    <string name="create_shortcut_message">Inserisci un titolo per la scorciatoia</string>
+    <string name="shortcut_need_o">Serve almeno Android 8.0 per aprire questa scorciatoia.</string>
+    <string name="shortcut_data_loss">I dati di questa scorciatoia sono danneggiati.</string>
+    <string name="shortcut_not_found">Scorciatoia non trovata nel sistema. Forse non è più disponibile.</string>
+    <string name="dialog_remove">Rimuovi</string>
+    <string name="delete_shortcut_title">Rimuovi %s</string>
+    <string name="delete_shortcut_message">Vuoi davvero rimuovere \"%s\"?</string>
+    <string name="additional_settings">Impostazioni aggiuntive</string>
+    <string name="auto_refresh_title">Refresh completo ogni</string>
+    <string name="dpi_setting">Impostazione DPI (Moann)</string>
+    <string name="app_info">Info app</string>
+    <string name="item_brightness">Luminosità</string>
+    <string name="item_contrast">Contrasto</string>
+    <string name="item_clean">Pulisci</string>
+    <string-array name="additional_settings">
+        <item>Accessibilità</item>
+        <item>Lingua</item>
+        <item>Refresh automatico (Moann)</item>
+    </string-array>
+    <string-array name="auto_refresh_options">
+        <item>Mai</item>
+        <item>Cinque pagine</item>
+        <item>Dieci pagine</item>
+        <item>Venti pagine</item>
+    </string-array>
+</resources>

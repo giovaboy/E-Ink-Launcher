@@ -137,4 +137,22 @@ Thanks.
     <string name="dialog_remove">Remove</string>
     <string name="delete_shortcut_title">Remove %s</string>
     <string name="delete_shortcut_message">Are you sure to remove \"%s\"?</string>
+    <string name="additional_settings">Additional Settings</string>
+    <string name="auto_refresh_title">Force refresh after</string>
+    <string name="dpi_setting">DPI Setting (Moann)</string>
+    <string name="app_info">App Info</string>
+    <string name="item_brightness">Brightness</string>
+    <string name="item_contrast">Contrast</string>
+    <string name="item_clean">Clean</string>
+    <string-array name="additional_settings">
+        <item>Accessibility</item>
+        <item>Locale</item>
+        <item>Automatic Refresh (Moann)</item>
+    </string-array>
+    <string-array name="auto_refresh_options">
+        <item>Never</item>
+        <item>Five pages</item>
+        <item>Ten pages</item>
+        <item>Twenty pages</item>
+    </string-array>
 </resources>

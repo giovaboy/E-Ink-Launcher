@@ -163,10 +163,10 @@ public class ItemCenter {
   }
 
   private void showHiddenSettings() {
-    final String items[] = {"Accessibility", "Locale", "Automatic Refresh (Moann)"};
+    final String items[] = mContext.getResources().getStringArray(R.array.additional_settings);
     final String activityAction[] = {android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS, android.provider.Settings.ACTION_LOCALE_SETTINGS};
     new AlertDialog.Builder(mContext)
-            .setTitle("Additional Settings")
+            .setTitle(R.string.additional_settings)
             .setItems(items, new DialogInterface.OnClickListener() {
               @Override
               public void onClick(DialogInterface dialog, int which) {
@@ -186,7 +186,7 @@ public class ItemCenter {
 
   private void showAutomaticRefreshDialog() {
     final String prop = "persist.display.gu16_max_limit";
-    final String[] items = {"Never", "Five pages", "Ten pages", "Twenty pages"};
+    final String[] items = mContext.getResources().getStringArray(R.array.auto_refresh_options);
 
     if (!Utils.isMoann)
       return;
@@ -213,7 +213,7 @@ public class ItemCenter {
       current = -1;
 
     new AlertDialog.Builder(mContext)
-            .setTitle("Force refresh after")
+            .setTitle(R.string.auto_refresh_title)
             .setSingleChoiceItems(items, current, new DialogInterface.OnClickListener() {
               @Override
               public void onClick(DialogInterface dialog, int which) {
@@ -327,10 +327,10 @@ public class ItemCenter {
 
       final boolean isAndroidSettings = itemInfo.packageName.equals("com.android.settings");
 
-      String items[] = {/*context.getString(R.string.dialog_cancel),*/ "Hide", "DPI Setting (Moann)", "App Info", context.getString(R.string.dialog_uninstall)};
+      String items[] = {context.getString(R.string.dialog_hide), context.getString(R.string.dpi_setting), context.getString(R.string.app_info), context.getString(R.string.dialog_uninstall)};
       try {
         if (isAndroidSettings) {
-          items[items.length - 1] = "Additional Settings";
+          items[items.length - 1] = context.getString(R.string.additional_settings);
         } else if (!Launcher.isUserApp(context.getPackageManager().getPackageInfo(itemInfo.packageName, 0))) {
           items = Arrays.copyOf(items, items.length - 1);
         }
@@ -632,7 +632,7 @@ public class ItemCenter {
   private LauncherItemInfo createBrightnessItem() {
     LauncherItemInfo itemInfo = new LauncherItemInfo(LauncherItemInfo.TYPE_SPECIAL, 0);
     itemInfo.id = BRIGHTNESS_ITEM_ID;
-    itemInfo.title = "Brightness";
+    itemInfo.title = mContext.getString(R.string.item_brightness);
     itemInfo.drawable = mContext.getResources().getDrawable(R.drawable.bad_brightness_icon);
 
     return itemInfo;
@@ -641,7 +641,7 @@ public class ItemCenter {
   private LauncherItemInfo createContrastItem() {
     LauncherItemInfo itemInfo = new LauncherItemInfo(LauncherItemInfo.TYPE_SPECIAL, 0);
     itemInfo.id = CONTRAST_ITEM_ID;
-    itemInfo.title = "Contrast";
+    itemInfo.title = mContext.getString(R.string.item_contrast);
     itemInfo.drawable = mContext.getResources().getDrawable(R.drawable.bad_contrast_icon);
 
     return itemInfo;
@@ -650,7 +650,7 @@ public class ItemCenter {
   private LauncherItemInfo createRefreshItem() {
     LauncherItemInfo itemInfo = new LauncherItemInfo(LauncherItemInfo.TYPE_SPECIAL, 0);
     itemInfo.id = REFRESH_ITEM_ID;
-    itemInfo.title = "Clean";
+    itemInfo.title = mContext.getString(R.string.item_clean);
     itemInfo.drawable = mContext.getResources().getDrawable(R.drawable.bad_clean_icon);
 
     return itemInfo;
