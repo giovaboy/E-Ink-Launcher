@@ -327,7 +327,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="@string/setting_row_icons"
+                android:text="@string/setting_column_icons"
                 android:textSize="@dimen/menu_item_text_size" />
 
             <Spinner
@@ -365,7 +365,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="@string/setting_column_icons"
+                android:text="@string/setting_row_icons"
                 android:textSize="@dimen/menu_item_text_size" />
 
             <Spinner
@@ -559,6 +559,20 @@
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
             android:text="@string/setting_sort"
+            android:textSize="@dimen/menu_item_text_size" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#000000" />
+
+        <TextView
+            android:id="@+id/language"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/menu_item_height"
+            android:gravity="center_vertical"
+            android:paddingLeft="20dp"
+            android:text="@string/setting_language"
             android:textSize="@dimen/menu_item_text_size" />
 
         <View

@@ -44,6 +44,11 @@ import cn.modificator.launcher.widgets.EInkLauncherView;
  * Created by mod on 16-4-22.
  */
 public class Launcher extends FragmentActivity {
+  @Override
+  protected void attachBaseContext(Context newBase) {
+    super.attachBaseContext(LocaleHelper.wrap(newBase));
+  }
+
 
   public static final String SHORTCUT_ITEMS_KEY = "shortcutItemsKey";
   public static final String SHORTCUT_ITEM_KEY = "shortcutItemKey";
@@ -124,7 +129,7 @@ public class Launcher extends FragmentActivity {
     launcherView.setShouldHideDivider(config.getDividerHideStatus());
     launcherView.setFontSize(config.getFontSize());
 
-    //加载之前保存的桌面数据
+    // Load the previously saved grid size
     config.getColNum();
     config.getRowNum();
 
@@ -233,14 +238,14 @@ public class Launcher extends FragmentActivity {
   }
 
   /**
-   * 刷新时间显示
+   * Refreshes the clock and date shown in the status bar
    */
   private void updateTimeShow() {
     if (textClock != null && mCalendar != null) {
       boolean is24Hour = DateFormat.is24HourFormat(this);
       mCalendar.setTimeInMillis(System.currentTimeMillis());
 
-      StringBuilder timeFormatTextBuilder = new StringBuilder("EE, d MMM yyyy ");
+      StringBuilder timeFormatTextBuilder = new StringBuilder(getString(R.string.clock_date_pattern));
       if (!is24Hour && isChina) {
         timeFormatTextBuilder.append(Utils.getAMPMCNString(mCalendar.get(Calendar.HOUR), mCalendar.get(Calendar.AM_PM)));
       }
@@ -252,7 +257,8 @@ public class Launcher extends FragmentActivity {
       if (!is24Hour && !isChina) {
         timeFormatTextBuilder.append(" a");
       }
-      textClock.setText(new SimpleDateFormat(timeFormatTextBuilder.toString(), Locale.getDefault()).format(mCalendar.getTime()));
+      Locale locale = getResources().getConfiguration().locale;
+      textClock.setText(new SimpleDateFormat(timeFormatTextBuilder.toString(), locale).format(mCalendar.getTime()));
     }
   }
 
@@ -426,9 +432,9 @@ public class Launcher extends FragmentActivity {
       String action = intent.getAction();
       if (action.equals(Intent.ACTION_MEDIA_REMOVED)
           || action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
-        //设备卸载成功;
+        // Storage removed or unmounted: nothing to do
       } else if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
-        //设备挂载成功
+        // Storage mounted: reload custom icons
         itemCenter.refresh(ItemCenter.REFRESH_LEVEL_1_REPLACED_ICONS);
       }
     }
@@ -440,6 +446,19 @@ public class Launcher extends FragmentActivity {
       super.onBackPressed();
       config.saveFontSize();
     }
+  }
+
+  /**
+   * Closes the settings and recreates the launcher so the new language is applied.
+   * The settings fragment gets its dependencies injected on creation and must not be
+   * restored by the system, so the back stack is cleared before recreating.
+   */
+  public void applyLanguageChange() {
+    if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+      getSupportFragmentManager().popBackStackImmediate();
+      config.saveFontSize();
+    }
+    recreate();
   }
 
   @Override

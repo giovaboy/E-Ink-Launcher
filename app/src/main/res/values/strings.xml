@@ -155,4 +155,8 @@ Thanks.
         <item>Ten pages</item>
         <item>Twenty pages</item>
     </string-array>
+    <string name="setting_language">Language</string>
+    <string name="language_system">System</string>
+    <!-- SimpleDateFormat pattern for the clock date; the time is appended right after it -->
+    <string name="clock_date_pattern">"EE, d MMM yyyy "</string>
 </resources>

@@ -28,6 +28,11 @@ import java.util.UUID;
 import cn.modificator.launcher.modelController.LauncherItemInfo;
 
 public class AddShortcutActivity extends Activity {
+  @Override
+  protected void attachBaseContext(Context newBase) {
+    super.attachBaseContext(LocaleHelper.wrap(newBase));
+  }
+
 
   interface IAccept {
     void accept();

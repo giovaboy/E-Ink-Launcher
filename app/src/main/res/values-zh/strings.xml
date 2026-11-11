@@ -23,9 +23,9 @@
     <string name="setting_hide_divider">隐藏分隔线</string>
     <string name="setting_set_font_size">设置字体大小</string>
     <string name="setting_apps_manager">管理应用</string>
-    <string name="setting_column_icons">每列图标</string>
+    <string name="setting_column_icons">列数</string>
     <string name="toast_need_wifi_connnect">大哥诶，麻烦先把Wi-Fi连上吧</string>
-    <string name="setting_row_icons">每行图标</string>
+    <string name="setting_row_icons">行数</string>
     <string name="battery_heat">电池过热</string>
     <string name="battery_unknown">电池呢？</string>
     <string name="battery_charging">充电中</string>
@@ -94,4 +94,6 @@
     <string name="delete_shortcut_title">移除 %s</string>
     <string name="delete_shortcut_message">你确定要移除 \"%s\" 吗？</string>
     <string name="restart_launcher">重设桌面</string>
+    <string name="setting_language">语言</string>
+    <string name="language_system">跟随系统</string>
 </resources>

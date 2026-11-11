@@ -28,6 +28,11 @@ import java.io.InputStreamReader;
 import androidx.annotation.Nullable;
 
 public class CrashDetailPage extends Activity {
+  @Override
+  protected void attachBaseContext(Context newBase) {
+    super.attachBaseContext(LocaleHelper.wrap(newBase));
+  }
+
 
   private TextView btnReLaunch, tvContent;
   private Context mContext;

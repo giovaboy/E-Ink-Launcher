@@ -68,4 +68,6 @@
     <string name="parent_folder">Wyżej</string>
     <string name="exit">Zakończ</string>
     <string name="delete">Usuń</string>
+    <string name="setting_language">Język</string>
+    <string name="language_system">Systemowy</string>
 </resources>

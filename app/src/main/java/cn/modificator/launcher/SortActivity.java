@@ -1,5 +1,6 @@
 package cn.modificator.launcher;
 
+import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,6 +30,11 @@ import cn.modificator.launcher.modelController.LauncherItemInfo;
 import cn.modificator.launcher.modelController.LauncherItemInfoComparator;
 
 public class SortActivity extends Activity {
+  @Override
+  protected void attachBaseContext(Context newBase) {
+    super.attachBaseContext(LocaleHelper.wrap(newBase));
+  }
+
   public static final String ALL_ITEMS_WITH_PRIORITY_KEY = "allItemsWithPriorityKey";
   private ArrayList<LauncherItemInfo> mAllItems;
 

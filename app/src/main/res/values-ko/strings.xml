@@ -68,4 +68,6 @@
         <item>재시작</item>
         <item>장치 관리자 요청</item>
     </string-array>
+    <string name="setting_language">언어</string>
+    <string name="language_system">시스템</string>
 </resources>

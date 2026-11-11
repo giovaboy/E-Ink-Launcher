@@ -75,6 +75,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     rootView.findViewById(R.id.rootView).setOnClickListener(this);
     rootView.findViewById(R.id.manageApps).setOnClickListener(this);
     rootView.findViewById(R.id.toSort).setOnClickListener(this);
+    rootView.findViewById(R.id.language).setOnClickListener(this);
     rootView.findViewById(R.id.showWifiName).setOnClickListener(this);
 
     showStatusBar = rootView.findViewById(R.id.showStatusBar);
@@ -272,7 +273,25 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
       intent = new Intent(v.getContext(), SortActivity.class);
       intent.putExtra(SortActivity.ALL_ITEMS_WITH_PRIORITY_KEY, config.gson.toJson(itemCenter.getAllItems()));
       startActivityForResult(intent, 10000);
+    } else if (id == R.id.language) {
+      showLanguageDialog();
     }
+  }
+
+  private void showLanguageDialog() {
+    final Launcher launcher = (Launcher) getActivity();
+    final int current = LocaleHelper.getLanguageIndex(launcher);
+    new android.app.AlertDialog.Builder(launcher)
+            .setTitle(R.string.setting_language)
+            .setSingleChoiceItems(LocaleHelper.getLanguageNames(launcher), current, (dialog, which) -> {
+              dialog.dismiss();
+              if (which != current) {
+                LocaleHelper.setLanguage(launcher, LocaleHelper.LANGUAGE_TAGS[which]);
+                launcher.applyLanguageChange();
+              }
+            })
+            .setNegativeButton(R.string.dialog_cancel, null)
+            .show();
   }
 
   @Override
@@ -338,17 +357,14 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
   private void updateStatus() {
     if (FTPService.isConnectedToWifi(getActivity())) {
       if (FTPService.isRunning()) {
-//                ftpAddr.setText("网络传书 （开）");
         ftpStatus.setText(R.string.setting_cloud_manager_on);
         ftpAddr.setVisibility(View.VISIBLE);
         ftpAddr.setText(getFTPAddressString());
       } else {
-//                ftpAddr.setText("网络传书 （关）");
         ftpStatus.setText(R.string.setting_cloud_manager_off);
         ftpAddr.setVisibility(View.GONE);
       }
     } else {
-//            ftpAddr.setText("网络传书 （请连接WIFI）");
       ftpStatus.setText(R.string.setting_cloud_manager_wifi_off);
       ftpAddr.setVisibility(View.GONE);
     }
@@ -379,23 +395,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
   private BroadcastReceiver ftpReceiver = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {
-      String action = intent.getAction();
+      // Started, stopped or failed to start: the status line reflects all of them.
       updateStatus();
-      if (action == FTPService.ACTION_STARTED) {
-//                statusText.setText(getResources().getString(R.string.ftp_status_running));
-//                warningText.setText("");
-//                ftpAddrText.setText(getFTPAddressString());
-//                ftpBtn.setText(getResources().getString(R.string.stop_ftp));
-      } else if (action == FTPService.ACTION_FAILEDTOSTART) {
-//                statusText.setText(getResources().getString(R.string.ftp_status_not_running));
-//                warningText.setText("Oops! Something went wrong");
-//                ftpAddrText.setText("");
-//                ftpBtn.setText(getResources().getString(R.string.start_ftp));
-      } else if (action == FTPService.ACTION_STOPPED) {
-//                statusText.setText(getResources().getString(R.string.ftp_status_not_running));
-//                ftpAddrText.setText("");
-//                ftpBtn.setText(getResources().getString(R.string.start_ftp));
-      }
     }
   };
 }
