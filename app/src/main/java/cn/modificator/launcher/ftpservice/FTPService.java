@@ -4,6 +4,8 @@ package cn.modificator.launcher.ftpservice;
  * Created by yashwanthreddyg on 09-06-2016.
  */
 
+import cn.modificator.launcher.BuildConfig;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -47,13 +49,13 @@ public class FTPService extends Service implements Runnable {
   public static final String PORT_PREFERENCE_KEY = "ftpPort";
 
   // Service will (global) broadcast when server start/stop
-  public static final String ACTION_STARTED = "cn.modificator.launcher.ftpservice.FTPReceiver.FTPSERVER_STARTED";
-  public static final String ACTION_STOPPED = "cn.modificator.launcher.ftpservice.FTPReceiver.FTPSERVER_STOPPED";
-  public static final String ACTION_FAILEDTOSTART = "cn.modificator.launcher.ftpservice.FTPReceiver.FTPSERVER_FAILEDTOSTART";
+  public static final String ACTION_STARTED = BuildConfig.APPLICATION_ID + ".ftpservice.FTPSERVER_STARTED";
+  public static final String ACTION_STOPPED = BuildConfig.APPLICATION_ID + ".ftpservice.FTPSERVER_STOPPED";
+  public static final String ACTION_FAILEDTOSTART = BuildConfig.APPLICATION_ID + ".ftpservice.FTPSERVER_FAILEDTOSTART";
 
   // RequestStartStopReceiver listens for these actions to start/stop this server
-  public static final String ACTION_START_FTPSERVER = "cn.modificator.launcher.ftpservice.FTPReceiver.ACTION_START_FTPSERVER";
-  public static final String ACTION_STOP_FTPSERVER = "cn.modificator.launcher.ftpservice.FTPReceiver.ACTION_STOP_FTPSERVER";
+  public static final String ACTION_START_FTPSERVER = BuildConfig.APPLICATION_ID + ".ftpservice.ACTION_START_FTPSERVER";
+  public static final String ACTION_STOP_FTPSERVER = BuildConfig.APPLICATION_ID + ".ftpservice.ACTION_STOP_FTPSERVER";
 
   public static int getDefaultPortFromPreferences(SharedPreferences preferences) {
     try {

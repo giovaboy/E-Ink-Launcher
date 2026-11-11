@@ -51,6 +51,8 @@ android {
             }
         }
         debug {
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
             debuggable true
             minifyEnabled false
             shrinkResources false

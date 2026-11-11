@@ -61,7 +61,7 @@ public class Launcher extends FragmentActivity {
   public static final String DO_MANAGE_APP_KEY = "doManageAppKey";
   public static final String DO_DELETE_SHORTCUT_KEY = "doDeleteShortcutKey";
 
-  public static final String LAUNCHER_ACTION = "cn.modificator.launcher.launcherAction";
+  public static final String LAUNCHER_ACTION = BuildConfig.APPLICATION_ID + ".launcherAction";
 
   // TODO initialize isFirstRun
 
