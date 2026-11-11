@@ -1,57 +1,67 @@
-//noinspection GradleDynamicVersion
-apply plugin: 'com.android.application'
-//apply plugin: 'com.jakewharton.hugo'
+plugins {
+    id 'com.android.application'
+}
 
+// Release signing is optional: without keystore.properties the release APK is left unsigned.
 def keystorePropertiesFile = rootProject.file("keystore.properties")
-// Initialize a new Properties() object called keystoreProperties.
 def keystoreProperties = new Properties()
-// Load your keystore.properties file into the keystoreProperties object.
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+def hasReleaseKeystore = keystorePropertiesFile.exists()
+if (hasReleaseKeystore) {
+    keystorePropertiesFile.withInputStream { keystoreProperties.load(it) }
+}
 
 android {
+    namespace 'cn.modificator.launcher'
+    compileSdk 34
+
     signingConfigs {
-        release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
-            v1SigningEnabled false
-            v2SigningEnabled true
+        if (hasReleaseKeystore) {
+            release {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                v1SigningEnabled false
+                v2SigningEnabled true
+            }
         }
     }
-    compileSdkVersion 29
-    buildToolsVersion '29.0.3'
     defaultConfig {
         applicationId "com.moan.moanwm"
         minSdkVersion 17
         targetSdkVersion 29
         versionCode 31
         versionName "0.1.9.2.6"
-        // signingConfig signingConfigs.config
+    }
+    buildFeatures {
+        buildConfig true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     buildTypes {
         release {
             debuggable false
-            zipAlignEnabled true
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            if (hasReleaseKeystore) {
+                signingConfig signingConfigs.release
+            }
         }
         debug {
             debuggable true
-            zipAlignEnabled true
             minifyEnabled false
             shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    lintOptions {
+    lint {
         checkReleaseBuilds false
         abortOnError false
     }
 
-    flavorDimensions "screen"
+    flavorDimensions = ["screen"]
     productFlavors {
         home {
             dimension "screen"
@@ -60,24 +70,24 @@ android {
             dimension "screen"
         }*/
     }
-    packagingOptions {
-        exclude 'proguard-project.txt'
-        exclude 'project.properties'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/DEPENDENCIES.txt'
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/androidx*'
-        exclude 'META-INF/spring*'
-        exclude 'META-INF/proguard/*'
-//        exclude '/org/**'
+    packaging {
+        resources.excludes += [
+            'proguard-project.txt',
+            'project.properties',
+            'META-INF/LICENSE.txt',
+            'META-INF/LICENSE',
+            'META-INF/NOTICE.txt',
+            'META-INF/NOTICE',
+            'META-INF/DEPENDENCIES.txt',
+            'META-INF/DEPENDENCIES',
+            'META-INF/androidx*',
+            'META-INF/spring*',
+            'META-INF/proguard/*',
+        ]
     }
 }
 
 dependencies {
-    //    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.core:core:1.1.0'
     implementation 'org.apache.ftpserver:ftplet-api:1.1.0'
     implementation 'org.apache.ftpserver:ftpserver-core:1.1.0'
@@ -88,9 +98,3 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.google.code.gson:gson:2.8.6'
 }
-/*
-android.applicationVariants.all { variant ->
-    variant.outputs.all {
-        outputFileName = "E-Ink Launcher_${variant.versionName}.apk"
-    }
-}*/

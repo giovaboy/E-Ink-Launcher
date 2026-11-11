@@ -31,3 +31,5 @@
 -repackageclasses ''
 
 -optimizationpasses 10
+# slf4j (pulled in by Apache FtpServer) looks up optional bindings at runtime
+-dontwarn org.slf4j.impl.**

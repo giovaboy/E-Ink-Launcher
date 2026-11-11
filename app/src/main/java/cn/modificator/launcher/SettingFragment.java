@@ -204,83 +204,74 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
 
   @Override
   public void onClick(View v) {
-    switch (v.getId()) {
-      case R.id.toBack:
-      case R.id.rootView:
-        getActivity().onBackPressed();
-        break;
-      case R.id.manageApps:
-        Intent intent = new Intent();
-        intent.putExtra(Launcher.DO_MANAGE_APP_KEY, true);
-        intent.setAction(Launcher.LAUNCHER_ACTION);
-        getActivity().sendBroadcast(intent);
-        getActivity().onBackPressed();
-        break;
-      case R.id.showStatusBar:
-        config.showStatusBar = !config.showStatusBar;
+    // Resource IDs are not compile-time constants since AGP 8, so this can't be a switch.
+    int id = v.getId();
+    Intent intent;
+    if (id == R.id.toBack || id == R.id.rootView) {
+      getActivity().onBackPressed();
+    } else if (id == R.id.manageApps) {
+      intent = new Intent();
+      intent.putExtra(Launcher.DO_MANAGE_APP_KEY, true);
+      intent.setAction(Launcher.LAUNCHER_ACTION);
+      getActivity().sendBroadcast(intent);
+      getActivity().onBackPressed();
+    } else if (id == R.id.showStatusBar) {
+      config.showStatusBar = !config.showStatusBar;
 
-        intent = new Intent(Launcher.LAUNCHER_ACTION);
-        intent.putExtra(Launcher.SHOW_STATUS_BAR_KEY, config.showStatusBar);
-        getActivity().sendBroadcast(intent);
-        getActivity().onBackPressed();
-        break;
-      case R.id.helpAbout:
-        AboutDialog.getInstance(getActivity()).show();
-        break;
-      case R.id.btnHideFontControl:
-        rootView.findViewById(R.id.menuList).setVisibility(View.VISIBLE);
-        rootView.findViewById(R.id.font_control_p).setVisibility(View.GONE);
-        break;
-      case R.id.changeFontSize:
-        rootView.findViewById(R.id.menuList).setVisibility(View.GONE);
-        rootView.findViewById(R.id.font_control_p).setVisibility(View.VISIBLE);
-        break;
-      case R.id.hideDivider:
-        config.hideDivider = !config.hideDivider;
-        hideDivider.setText(config.hideDivider ? R.string.setting_show_divider : R.string.setting_hide_divider);
+      intent = new Intent(Launcher.LAUNCHER_ACTION);
+      intent.putExtra(Launcher.SHOW_STATUS_BAR_KEY, config.showStatusBar);
+      getActivity().sendBroadcast(intent);
+      getActivity().onBackPressed();
+    } else if (id == R.id.helpAbout) {
+      AboutDialog.getInstance(getActivity()).show();
+    } else if (id == R.id.btnHideFontControl) {
+      rootView.findViewById(R.id.menuList).setVisibility(View.VISIBLE);
+      rootView.findViewById(R.id.font_control_p).setVisibility(View.GONE);
+    } else if (id == R.id.changeFontSize) {
+      rootView.findViewById(R.id.menuList).setVisibility(View.GONE);
+      rootView.findViewById(R.id.font_control_p).setVisibility(View.VISIBLE);
+    } else if (id == R.id.hideDivider) {
+      config.hideDivider = !config.hideDivider;
+      hideDivider.setText(config.hideDivider ? R.string.setting_show_divider : R.string.setting_hide_divider);
 
-        intent = new Intent();
-        intent.putExtra(Launcher.HIDE_DIVIDER_KEY, config.hideDivider);
-        intent.setAction(Launcher.LAUNCHER_ACTION);
-        getActivity().sendBroadcast(intent);
-        getActivity().onBackPressed();
-        break;
-      case R.id.menu_ftp:
-        Utils.checkStroagePermission(getActivity(), new Runnable() {
-          @Override
-          public void run() {
-            if (!FTPService.isRunning()) {
-              if (FTPService.isConnectedToWifi(getActivity()))
-                startServer();
-              else
-                Toast.makeText(getActivity(), R.string.toast_need_wifi_connnect, Toast.LENGTH_SHORT).show();
-            } else {
-              stopServer();
-            }
+      intent = new Intent();
+      intent.putExtra(Launcher.HIDE_DIVIDER_KEY, config.hideDivider);
+      intent.setAction(Launcher.LAUNCHER_ACTION);
+      getActivity().sendBroadcast(intent);
+      getActivity().onBackPressed();
+    } else if (id == R.id.menu_ftp) {
+      Utils.checkStroagePermission(getActivity(), new Runnable() {
+        @Override
+        public void run() {
+          if (!FTPService.isRunning()) {
+            if (FTPService.isConnectedToWifi(getActivity()))
+              startServer();
+            else
+              Toast.makeText(getActivity(), R.string.toast_need_wifi_connnect, Toast.LENGTH_SHORT).show();
+          } else {
+            stopServer();
           }
-        });
-        break;
-      case R.id.showWifiName:
-        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.O){
-          requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},10002);
         }
-        break;
-      case R.id.showCustomIcon:
-        Utils.checkStroagePermission(getActivity(), new Runnable() {
-          @Override
-          public void run() {
-            config.showCustomIcon = !config.showCustomIcon;
-            Intent intent = new Intent(Launcher.LAUNCHER_ACTION);
-            intent.putExtra(Launcher.SHOW_CUSTOM_ICON_KEY, config.showCustomIcon);
-            getActivity().sendBroadcast(intent);
-            getActivity().onBackPressed();
-          }
-        });
-        break;
-      case R.id.toSort:
-        intent = new Intent(v.getContext(), SortActivity.class);
-        intent.putExtra(SortActivity.ALL_ITEMS_WITH_PRIORITY_KEY, config.gson.toJson(itemCenter.getAllItems()));
-        startActivityForResult(intent, 10000);
+      });
+    } else if (id == R.id.showWifiName) {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 10002);
+      }
+    } else if (id == R.id.showCustomIcon) {
+      Utils.checkStroagePermission(getActivity(), new Runnable() {
+        @Override
+        public void run() {
+          config.showCustomIcon = !config.showCustomIcon;
+          Intent intent = new Intent(Launcher.LAUNCHER_ACTION);
+          intent.putExtra(Launcher.SHOW_CUSTOM_ICON_KEY, config.showCustomIcon);
+          getActivity().sendBroadcast(intent);
+          getActivity().onBackPressed();
+        }
+      });
+    } else if (id == R.id.toSort) {
+      intent = new Intent(v.getContext(), SortActivity.class);
+      intent.putExtra(SortActivity.ALL_ITEMS_WITH_PRIORITY_KEY, config.gson.toJson(itemCenter.getAllItems()));
+      startActivityForResult(intent, 10000);
     }
   }
 
