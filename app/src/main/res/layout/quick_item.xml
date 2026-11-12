@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- One item of the quick bar (Wi-Fi, light, contrast, refresh, lock). The ids match
-     launcher_item.xml so WifiControl.bind() works on it too. Fixed width: the bar centers them. -->
+     launcher_item.xml so WifiControl.bind() works on it too. One-line label: two lines made
+     that item taller and pushed its icon out of line with the others. The item is as wide as
+     its label (64dp at least), and the bar centers them. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="72dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="?android:selectableItemBackground"
     android:gravity="center_horizontal"
+    android:minWidth="64dp"
     android:orientation="vertical"
+    android:paddingLeft="6dp"
+    android:paddingRight="6dp"
     android:paddingTop="6dp"
     android:paddingBottom="4dp">
 
@@ -18,15 +23,14 @@
 
     <TextView
         android:id="@+id/itemTitle"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
+        android:maxWidth="92dp"
         android:ellipsize="end"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
-        android:maxLines="2"
+        android:singleLine="true"
         android:textColor="#000000"
         android:textSize="12sp" />
 </LinearLayout>
