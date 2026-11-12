@@ -40,3 +40,14 @@
 -keepattributes *Annotation*
 -keep,allowobfuscation,allowoptimization class com.google.gson.reflect.TypeToken
 -keep,allowobfuscation,allowoptimization class * extends com.google.gson.reflect.TypeToken
+
+# Apache FtpServer and Mina instantiate classes by reflection (e.g. SimpleIoProcessorPool
+# creates NioProcessor through getConstructor()). R8 stripped those constructors and the FTP
+# server failed to start in release builds, so keep both libraries whole.
+-keep class org.apache.mina.** { *; }
+-keep class org.apache.ftpserver.** { *; }
+# Optional parts of those libraries never used here (Spring XML configuration, SOCKS proxy
+# GSSAPI/SASL authentication) reference classes that don't exist on Android.
+-dontwarn org.springframework.**
+-dontwarn org.ietf.jgss.**
+-dontwarn javax.security.sasl.**
