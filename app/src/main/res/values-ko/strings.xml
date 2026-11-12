@@ -23,7 +23,6 @@
     <string name="item_lockscreen">화면 잠금</string>
     <string name="parent_folder">상위 폴더</string>
     <string name="path">경로</string>
-    <string name="power_title">기기 종료</string>
     <string name="setting_apps_manager">앱 관리자</string>
     <string name="setting_cloud_manager_off">클라우드 관리자 - 꺼짐</string>
     <string name="setting_cloud_manager_on">클라우드 관리자 - 켜짐</string>

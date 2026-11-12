@@ -2,26 +2,22 @@ package cn.modificator.launcher;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
 
 /**
- * Created by Modificator
- * time: 2017-01-07 2:40 PM
- * des:create file and achieve model
+ * Help & About: version and memory use, what the launcher does, the project page, credits and
+ * license. A long press on the version line writes the device report (see DeviceProbe).
  */
-
 public class AboutDialog {
 
-  Context context;
+  private final Context context;
 
   private AboutDialog(Context context) {
     this.context = context;
@@ -32,66 +28,17 @@ public class AboutDialog {
   }
 
   private View initLayout() {
-    LinearLayout root = new LinearLayout(context);
-    int padding = Utils.dp2Px(context, 15);
-    root.setPadding(padding, padding, padding, padding);
-    root.setOrientation(LinearLayout.VERTICAL);
-    root.setBackgroundColor(0xffffffff);
-    TextView appName = new TextView(context);
-    appName.setText(R.string.app_name);
-    appName.setTextSize(30);
-    root.addView(appName);
-
-    TextView memoryInfo = new TextView(context);
-    memoryInfo.setText(MemoryStats.describe(context));
-    memoryInfo.setTextSize(14);
-    memoryInfo.setTextColor(0xff000000);
+    View root = LayoutInflater.from(context).inflate(R.layout.about_dialog, null);
+    TextView version = root.findViewById(R.id.aboutVersion);
+    version.setText(MemoryStats.describe(context));
     // Hidden diagnostic: a long press writes a device probe report (see DeviceProbe).
-    memoryInfo.setOnLongClickListener(new View.OnLongClickListener() {
+    version.setOnLongClickListener(new View.OnLongClickListener() {
       @Override
       public boolean onLongClick(View v) {
         runDeviceProbe();
         return true;
       }
     });
-    root.addView(memoryInfo);
-    View line = new View(context);
-    line.setBackgroundColor(0xff000000);
-    root.addView(line, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dp2Px(context, 1)));
-
-    TextView authorInfo = new TextView(context);
-
-    authorInfo.setText(R.string.author_info);
-    authorInfo.setTextSize(18);
-    authorInfo.setTextColor(0xff000000);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-      authorInfo.setLineSpacing(authorInfo.getLineSpacingExtra(), 1.2f);
-    }
-    LinearLayout.LayoutParams authorInfoLP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-    authorInfoLP.topMargin = Utils.dp2Px(context, 10);
-    authorInfoLP.bottomMargin = Utils.dp2Px(context, 10);
-    root.addView(authorInfo, authorInfoLP);
-
-    line = new View(context);
-    line.setBackgroundColor(0xff000000);
-    root.addView(line, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dp2Px(context, 1)));
-
-    TextView thanksView = new TextView(context);
-    thanksView.setText(R.string.thanks);
-    thanksView.setTextSize(15);
-    thanksView.setPadding(0, Utils.dp2Px(context, 10), 0, Utils.dp2Px(context, 10));
-    root.addView(thanksView);
-
-    line = new View(context);
-    line.setBackgroundColor(0xff000000);
-    root.addView(line, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dp2Px(context, 1)));
-
-    TextView launcherInfo = new TextView(context);
-    launcherInfo.setText(R.string.launcher_info);
-    launcherInfo.setTextColor(0xff000000);
-    launcherInfo.setTextSize(14);
-    root.addView(launcherInfo);
-
     return root;
   }
 

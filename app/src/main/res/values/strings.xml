@@ -67,10 +67,7 @@
         <item>Request device admin</item>
     </string-array>
 
-    <string name="power_title">现在可以操作电源了哦~</string>
 
-    <string name="oh_no">混淆有毛用啊，文件这么少,代码渣貌似也能增加难度,不想加固，加固有问题，大哥我这就署名有价值，反编译别把我名字去了- -</string>
-    <string name="come_on">给点赏钱吧，支付鸨就行，账号是邮箱</string>
 
     <string name="path">Path</string>
     <string name="default_path_setting">Default Path</string>
@@ -92,37 +89,8 @@
     <string name="no_apps_to_open">Unable to find an app that can open this file</string>
     <!--无法找到可以打开此文件的应用-->
 
-    <string name="author_info"> Author:Modificator
- Email:yunshangcn@gmail.com
- Weibo: weibo.com/yunshangcn</string>
-    <string name="thanks"><![CDATA[Thanks:
-Maciej Haudek <kontakt@haudek.com>]]></string>
-    <string name="launcher_info">
-E-Ink Launcher 是作者君闲暇之作，JDR没桌面，又找不到
-自己满意的，果断自己动手写了一个。
-主要功能：
-1.当然是显示App了
-2.App展示密度调整
-3.App名称字体大小调整
-4.卸载/隐藏App
-5.一键锁屏
-6.一键开关WIFI
-7.可以换图标了，长按图标会出现包名，把图标重命名成包名+文件后缀，然后连接电脑放到E-Ink Launcher/icon 下就可以了
-PS：图标长按有惊喜
-</string>
 
     <string name="report_error_title">Oh! It\u0027s Crashed.</string>
-    <string name="report_error_description">
-ーーーーーーーーーーーーーーーーーーーー
-Please screenshot and give me a feedback.
-email    : yunshangcn@gmail.com
-telegram : https://t.me/EInkLauncher
-github issues : https://github.com/Modificator/E-Ink-Launcher
-well it\u0027s already open source
-当然也可以在酷安应用页反馈
-Thanks.
-ーーーーーーーーーーーーーーーーーーーー
-</string>
     <string name="sort_title">Custom Sort</string>
     <string name="sort_description">Specify an integer as priority(sorted in descending order when mode is Custom+) for each app. New item will be automatically specified 0.</string>
     <string name="sort_input_priority_hint">priority</string>
@@ -200,4 +168,11 @@ Thanks.
     <string name="settings_bottom_inset">Bottom margin</string>
     <string name="settings_section_quick_bar">Quick bar</string>
     <string name="quick_item_wifi">Wi-Fi</string>
+    <string name="about_description">A home screen for e-readers, in pure black and white for e-ink. It shows the book you are reading in KOReader, keeps Wi-Fi, front light, contrast and lock at hand, and uses as little memory as possible while you read.</string>
+    <string name="about_project">Project, updates and bug reports</string>
+    <string name="about_project_url" translatable="false">github.com/giovaboy/E-Ink-Launcher</string>
+    <string name="about_credits_title">Credits</string>
+    <string name="about_credits">Based on E-Ink Launcher by Modificator, with contributions by shunf4 and qwerty12. Translations: Maciej Haudek (Polish), Limerainne (Korean).</string>
+    <string name="about_license">Apache License 2.0</string>
+    <string name="report_error_description">\nPlease take a screenshot of this page and report the problem at\nhttps://github.com/giovaboy/E-Ink-Launcher/issues\n\n</string>
 </resources>

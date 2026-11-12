@@ -154,6 +154,15 @@ public class ScreenshotTest {
   }
 
   @Test
+  public void about() throws Exception {
+    Assume.assumeTrue(Boolean.getBoolean("screenshots"));
+    Activity activity = Robolectric.buildActivity(Activity.class).setup().get();
+    View about = LayoutInflater.from(activity).inflate(R.layout.about_dialog, null);
+    ((android.widget.TextView) about.findViewById(R.id.aboutVersion)).setText(activity.getString(R.string.about_memory, "0.7.1", "19,8", "9,4"));
+    save(about, 620, 1280, "about");
+  }
+
+  @Test
   public void panels() throws Exception {
     Assume.assumeTrue(Boolean.getBoolean("screenshots"));
     Activity activity = Robolectric.buildActivity(Activity.class).setup().get();

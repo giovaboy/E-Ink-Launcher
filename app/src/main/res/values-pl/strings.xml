@@ -60,7 +60,6 @@
         <item>Uruchom ponownie</item>
         <item>Administrator urządzenie żądanie</item>
     </string-array>
-    <string name="power_title">现在可以操作电源了哦~</string>
     <string name="setting_help_and_about">Pomoc i informacje</string>
     <string name="path">Ścieżka</string>
     <string name="default_path_setting">Domyślna ścieżka</string>

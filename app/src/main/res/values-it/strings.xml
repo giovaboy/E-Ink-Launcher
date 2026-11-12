@@ -66,7 +66,6 @@
         <item>Richiedi amministratore dispositivo</item>
     </string-array>
 
-    <string name="power_title">Ora puoi gestire l\'alimentazione</string>
 
     <string name="path">Percorso</string>
     <string name="default_path_setting">Percorso predefinito</string>
@@ -85,21 +84,6 @@
     <string name="choose_app_title">Apri con</string>
     <string name="no_apps_to_open">Nessuna app trovata per aprire questo file</string>
 
-    <string name="launcher_info">
-E-Ink Launcher è nato come progetto nel tempo libero: il lettore non aveva
-un launcher e non ne trovavo uno soddisfacente, così l\'ho scritto io.
-Funzioni principali:
-1. Mostrare le app, ovviamente
-2. Regolare la densità della griglia
-3. Regolare la dimensione del testo dei nomi
-4. Disinstallare/nascondere app
-5. Blocco schermo con un tocco
-6. Accensione/spegnimento Wi-Fi con un tocco
-7. Icone personalizzate: tieni premuta un\'icona per vedere il nome del pacchetto,
-rinomina l\'immagine come nome-pacchetto + estensione e copiala nella cartella
-E-Ink Launcher/icon dal computer
-PS: tieni premute le icone per qualche sorpresa
-</string>
 
     <string name="report_error_title">Oh! Si è bloccato.</string>
     <string name="sort_title">Ordinamento personalizzato</string>
@@ -177,4 +161,10 @@ PS: tieni premute le icone per qualche sorpresa
     <string name="settings_bottom_inset">Margine in basso</string>
     <string name="settings_section_quick_bar">Barra rapida</string>
     <string name="quick_item_wifi">Wi-Fi</string>
+    <string name="about_description">Una home per lettori e-book, in bianco e nero puro per l\'e-ink. Mostra il libro che stai leggendo in KOReader, tiene a portata di mano Wi-Fi, luce, contrasto e blocco schermo, e usa meno memoria possibile mentre leggi.</string>
+    <string name="about_project">Progetto, aggiornamenti e segnalazioni</string>
+    <string name="about_credits_title">Crediti</string>
+    <string name="about_credits">Basato su E-Ink Launcher di Modificator, con contributi di shunf4 e qwerty12. Traduzioni: Maciej Haudek (polacco), Limerainne (coreano).</string>
+    <string name="about_license">Licenza Apache 2.0</string>
+    <string name="report_error_description">\nFai uno screenshot di questa pagina e segnala il problema su\nhttps://github.com/giovaboy/E-Ink-Launcher/issues\n\n</string>
 </resources>
