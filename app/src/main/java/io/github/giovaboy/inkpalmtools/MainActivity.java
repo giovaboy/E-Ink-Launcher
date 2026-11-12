@@ -1,17 +1,22 @@
 package io.github.giovaboy.inkpalmtools;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.TextView;
 
-/**
- * One screen: status (system user? adb? listening on Wi-Fi?), adb over Wi-Fi on/off, reboot
- * into recovery, and a log of what each action did, including why something was refused.
- */
+import java.io.File;
+
+/** Status (system user? RAM), disable apps, save diagnostics, reboot into recovery. */
 public class MainActivity extends Activity {
+  private static final int REQUEST_STORAGE = 1;
+
   private final Handler handler = new Handler(Looper.getMainLooper());
   private TextView status;
   private TextView log;
@@ -22,60 +27,47 @@ public class MainActivity extends Activity {
     setContentView(R.layout.activity_main);
     status = findViewById(R.id.status);
     log = findViewById(R.id.log);
-    findViewById(R.id.adbWifiOn).setOnClickListener(v -> setAdbOverWifi(true));
-    findViewById(R.id.adbWifiOff).setOnClickListener(v -> setAdbOverWifi(false));
+    findViewById(R.id.apps).setOnClickListener(v -> startActivity(new Intent(this, AppsActivity.class)));
+    findViewById(R.id.diagnostics).setOnClickListener(v -> saveDiagnostics());
     findViewById(R.id.recovery).setOnClickListener(v -> confirmRecovery());
   }
 
   @Override
   protected void onResume() {
     super.onResume();
-    refreshStatus();
+    long[] ram = Diagnostics.ram(this);
+    status.setText(getString(R.string.status,
+            SystemTools.isSystemUser() ? getString(R.string.status_system_user)
+                    : getString(R.string.status_not_system_user, android.os.Process.myUid()),
+            ram[1], ram[0]));
   }
 
-  private void refreshStatus() {
-    new Thread(() -> {
-      boolean listening = SystemTools.isAdbListeningOnTcp();
-      String text = getString(R.string.status,
-              SystemTools.isSystemUser() ? getString(R.string.status_system_user)
-                      : getString(R.string.status_not_system_user, android.os.Process.myUid()),
-              SystemTools.getGlobalInt(this, "adb_enabled"),
-              SystemTools.getProperty("init.svc.adbd"),
-              SystemTools.getProperty("service.adb.tcp.port"),
-              SystemTools.getProperty("persist.adb.tcp.port"),
-              listening ? getString(R.string.status_listening, SystemTools.wifiAddress(this), SystemTools.ADB_TCP_PORT)
-                      : getString(R.string.status_not_listening));
-      handler.post(() -> status.setText(text));
-    }, "status").start();
-  }
-
-  private void addLog(String line) {
-    handler.post(() -> log.append(line + "\n"));
-  }
-
-  private void setAdbOverWifi(boolean on) {
-    log.setText("");
-    if (!SystemTools.isSystemUser()) {
-      addLog(getString(R.string.log_not_system));
+  private void saveDiagnostics() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+            && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+      requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE);
       return;
     }
-    String port = on ? String.valueOf(SystemTools.ADB_TCP_PORT) : "0";
+    log.setText(R.string.diagnostics_running);
     new Thread(() -> {
-      String result = SystemTools.setProperty("service.adb.tcp.port", port);
-      addLog("service.adb.tcp.port = " + port + ": " + (result == null ? "ok" : result));
-      // Persistent too, so adb keeps listening on Wi-Fi after a reboot.
-      result = SystemTools.setProperty("persist.adb.tcp.port", port);
-      addLog("persist.adb.tcp.port = " + port + ": " + (result == null ? "ok" : result));
+      String result;
       try {
-        addLog(getString(R.string.log_restarting_adb));
-        SystemTools.restartAdb(this);
-        Thread.sleep(3000);
-        addLog(getString(R.string.log_done));
+        File file = Diagnostics.write(this);
+        result = getString(R.string.diagnostics_saved, file.getPath());
       } catch (Exception e) {
-        addLog(String.valueOf(e));
+        result = String.valueOf(e);
       }
-      refreshStatus();
-    }, "adb").start();
+      final String text = result;
+      handler.post(() -> log.setText(text));
+    }, "diagnostics").start();
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    if (requestCode == REQUEST_STORAGE && grantResults.length > 0
+            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+      saveDiagnostics();
+    }
   }
 
   private void confirmRecovery() {

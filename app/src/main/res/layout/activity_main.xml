@@ -28,14 +28,14 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/adbWifiOn"
+            android:id="@+id/apps"
             style="@style/Action"
-            android:text="@string/adb_wifi_on" />
+            android:text="@string/apps_title" />
 
         <TextView
-            android:id="@+id/adbWifiOff"
+            android:id="@+id/diagnostics"
             style="@style/Action"
-            android:text="@string/adb_wifi_off" />
+            android:text="@string/diagnostics" />
 
         <TextView
             android:id="@+id/recovery"

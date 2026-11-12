@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- E-ink switch thumb: white knob with a black outline, inset so it sits inside the track. -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android" android:inset="4dp">
+    <shape android:shape="oval">
+        <solid android:color="#ffffff" />
+        <stroke android:width="2dp" android:color="#000000" />
+        <size android:width="24dp" android:height="24dp" />
+    </shape>
+</inset>

@@ -1,14 +1,16 @@
 <resources>
-    <string name="status">Eseguita come: %1$s\nadb_enabled: %2$d · adbd: %3$s\nservice.adb.tcp.port: %4$s\npersist.adb.tcp.port: %5$s\n%6$s</string>
+    <string name="status">Eseguita come: %1$s\nRAM libera: %2$d MB su %3$d MB</string>
     <string name="status_system_user">utente di sistema</string>
-    <string name="status_not_system_user">app normale (uid %1$d): questo firmware non accetta la chiave platform di test</string>
-    <string name="status_listening">adb via Wi-Fi ATTIVO: adb connect %1$s:%2$d</string>
-    <string name="status_not_listening">adb via Wi-Fi spento</string>
-    <string name="adb_wifi_on">Attiva adb via Wi-Fi</string>
-    <string name="adb_wifi_off">Disattiva adb via Wi-Fi</string>
+    <string name="status_not_system_user">app normale (uid %1$d): questo firmware non accetta la chiave platform di test, qui niente funzionerà</string>
+    <string name="apps_title">Disattiva app</string>
+    <string name="apps_show_all">Mostra tutte le app</string>
+    <string name="apps_show_suggested">Mostra solo le suggerite</string>
+    <string name="apps_summary_suggested">App del produttore suggerite: %1$d installate, %2$d disattivate. RAM libera: %3$d MB.\nUn\'app disattivata resta installata ma non gira mai; la riattivi quando vuoi.</string>
+    <string name="apps_summary_all">Tutte le app: %1$d, %2$d disattivate. RAM libera: %3$d MB.\nDisattiva solo app che conosci: alcune servono al sistema.</string>
+    <string name="apps_protected">protetta</string>
+    <string name="diagnostics">Salva diagnostica</string>
+    <string name="diagnostics_running">Salvataggio della diagnostica…</string>
+    <string name="diagnostics_saved">Salvata in %1$s</string>
     <string name="recovery">Riavvia in recovery</string>
     <string name="recovery_confirm">Il lettore si riavvierà nel menu di recovery. Per tornare ad Android scegli \"reboot system now\". Continuare?</string>
-    <string name="log_not_system">Non gira come utente di sistema: non può cambiare niente.</string>
-    <string name="log_restarting_adb">Riavvio di adb…</string>
-    <string name="log_done">Fatto.</string>
 </resources>
