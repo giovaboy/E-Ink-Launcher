@@ -146,4 +146,12 @@ PS: tieni premute le icone per qualche sorpresa
     <string name="reading_permission">Tocca per consentire l\'accesso ai file e vedere il libro in lettura</string>
     <string name="probe_saved">Report del dispositivo salvato in %s</string>
     <string name="probe_failed">Report del dispositivo non riuscito: %s</string>
+    <string name="panel_light_title">Luce</string>
+    <string name="panel_light_brightness">Intensità: %1$d</string>
+    <string name="panel_light_temperature">Calore: %1$d</string>
+    <string name="panel_light_off">Spegni</string>
+    <string name="panel_light_on">Accendi</string>
+    <string name="panel_contrast_title">Contrasto</string>
+    <string name="panel_refresh_mode">Modalità refresh</string>
+    <string name="panel_not_supported">Il firmware non permette al launcher di regolarlo: apro il pannello di sistema</string>
 </resources>

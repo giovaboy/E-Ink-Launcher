@@ -36,6 +36,7 @@ import cn.modificator.launcher.Config;
 import cn.modificator.launcher.Launcher;
 import cn.modificator.launcher.R;
 import cn.modificator.launcher.Utils;
+import cn.modificator.launcher.eink.EinkPanels;
 import cn.modificator.launcher.widgets.EInkLauncherView;
 
 /**
@@ -136,25 +137,9 @@ public class ItemCenter {
 //      }
           WifiControl.onClickWifiItem();
         } else if (itemInfo.id.equals(ItemCenter.BRIGHTNESS_ITEM_ID)) {
-          try {
-            Intent brightnessIntent = new Intent();
-            brightnessIntent.setComponent(new ComponentName("com.android.systemui", "com.android.systemui.moan.MoanBrightnessDialogActivity"));
-            brightnessIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            brightnessIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            context.startActivity(brightnessIntent);
-          } catch (Exception e) {
-            context.sendBroadcast(new Intent("com.mogu.show_brightness_dialog"));
-          }
+          EinkPanels.showLight(context);
         } else if (itemInfo.id.equals(ItemCenter.CONTRAST_ITEM_ID)) {
-          Intent contrastIntent = new Intent();
-          contrastIntent.setComponent(new ComponentName("com.android.systemui", "com.android.systemui.einksettings.EinkSettingsActivity"));
-          contrastIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-          contrastIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-          try {
-            context.startActivity(contrastIntent);
-          } catch (Exception e) {
-            return;
-          }
+          EinkPanels.showContrast(context);
         } else if (itemInfo.id.equals(ItemCenter.REFRESH_ITEM_ID)) {
           try {
             Window win = ((Activity) context).getWindow();
@@ -313,15 +298,7 @@ public class ItemCenter {
       } else if (itemInfo.id.equals(ItemCenter.BRIGHTNESS_ITEM_ID)) {
         context.sendBroadcast(new Intent("com.moan.toggle_backlight"));
       } else if (itemInfo.id.equals(ItemCenter.CONTRAST_ITEM_ID)) {
-        Intent refreshIntent = new Intent();
-        refreshIntent.setComponent(new ComponentName("com.android.systemui", "com.android.systemui.einksettings.RefreshModeSelectDialog"));
-        refreshIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        refreshIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        try {
-          context.startActivity(refreshIntent);
-        } catch (Exception e) {
-          return;
-        }
+        EinkPanels.openSystemRefreshModePanel(context);
       } else if (itemInfo.id.equals(ItemCenter.REFRESH_ITEM_ID)) {
         context.sendBroadcast(new Intent("com.mogu.clear_mem"));
       }

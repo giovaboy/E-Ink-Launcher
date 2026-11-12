@@ -169,4 +169,12 @@ Thanks.
     <string name="reading_permission">Tap to allow file access and show the book you are reading</string>
     <string name="probe_saved">Device report saved to %s</string>
     <string name="probe_failed">Device report failed: %s</string>
+    <string name="panel_light_title">Front light</string>
+    <string name="panel_light_brightness">Brightness: %1$d</string>
+    <string name="panel_light_temperature">Warmth: %1$d</string>
+    <string name="panel_light_off">Turn off</string>
+    <string name="panel_light_on">Turn on</string>
+    <string name="panel_contrast_title">Contrast</string>
+    <string name="panel_refresh_mode">Refresh mode</string>
+    <string name="panel_not_supported">This firmware does not let the launcher change it: opening the system panel</string>
 </resources>
