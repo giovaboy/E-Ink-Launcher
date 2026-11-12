@@ -37,6 +37,8 @@ public class Config {
   public boolean showStatusBar = false;
   public boolean showCustomIcon = false;
   public boolean showReadingCard = true;
+  /** One of BatteryView.STYLE_* */
+  public int batteryStyle = 0;
   public int sortFlags = -1;
   private String preferencesFileName = "launcherPropertyFile";
   private Set<String> hiddenItemIds = new HashSet<>();
@@ -58,6 +60,7 @@ public class Config {
     getStatusBarShowStatus();
     getItemTitleLines();
     getReadingCardShowStatus();
+    batteryStyle = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE).getInt(Launcher.BATTERY_STYLE_KEY, 0);
   }
 
   public static int getIconDensity(int requiredSize) {
@@ -242,6 +245,11 @@ public class Config {
     showStatusBar = b;
     SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
     preferences.edit().putBoolean(Launcher.SHOW_STATUS_BAR_KEY, b).apply();
+  }
+
+  public void setBatteryStyle(int style) {
+    batteryStyle = style;
+    context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE).edit().putInt(Launcher.BATTERY_STYLE_KEY, style).apply();
   }
 
   public boolean getReadingCardShowStatus() {

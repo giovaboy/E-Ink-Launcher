@@ -2,6 +2,10 @@ package cn.modificator.launcher;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
@@ -117,6 +121,29 @@ public final class DeviceProbe {
         }
       } catch (ClassNotFoundException e) {
         report.append("(not present)\n");
+      }
+    }
+
+    // Vendor and settings apps, with the activities other apps can open: settings screens
+    // that have no launcher icon can still be added to the grid by component name.
+    report.append("\n== Vendor and settings packages (exported activities)\n");
+    PackageManager pm = context.getPackageManager();
+    for (PackageInfo pkg : pm.getInstalledPackages(PackageManager.GET_ACTIVITIES)) {
+      String name = pkg.packageName.toLowerCase();
+      if (!(name.contains("moan") || name.contains("mogu") || name.contains("mgs") || name.contains("settings"))) {
+        continue;
+      }
+      report.append(pkg.packageName).append(" \"").append(pkg.applicationInfo.loadLabel(pm)).append("\"");
+      Intent launch = pm.getLaunchIntentForPackage(pkg.packageName);
+      if (launch != null && launch.getComponent() != null) {
+        report.append(" launcher=").append(launch.getComponent().getClassName());
+      }
+      report.append('\n');
+      if (pkg.activities == null) continue;
+      for (ActivityInfo activity : pkg.activities) {
+        if (activity.exported) {
+          report.append("  ").append(activity.name).append(" \"").append(activity.loadLabel(pm)).append("\"\n");
+        }
       }
     }
 

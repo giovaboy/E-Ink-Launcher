@@ -66,6 +66,34 @@ public class ScreenshotTest {
   }
 
   @Test
+  public void bottomBar() throws Exception {
+    Assume.assumeTrue(Boolean.getBoolean("screenshots"));
+    Launcher launcher = Robolectric.buildActivity(Launcher.class).setup().get();
+    shadowOf(Looper.getMainLooper()).idle();
+    save(launcher.getWindow().getDecorView(), 720, 1280, "home");
+
+    // Bottom bar in every battery style: normal, charging and low.
+    View bar = (View) launcher.findViewById(R.id.toSetting).getParent();
+    int[][] states = {{76, 0}, {76, android.os.BatteryManager.BATTERY_PLUGGED_USB}, {9, 0}};
+    String[] stateNames = {"normal", "charging", "low"};
+    String[] styleNames = {"icon", "ring", "text"};
+    for (int style = 0; style < 3; style++) {
+      launcher.config.batteryStyle = style;
+      launcher.applyBatteryStyle();
+      for (int s = 0; s < states.length; s++) {
+        android.content.Intent battery = new android.content.Intent(android.content.Intent.ACTION_BATTERY_CHANGED)
+                .putExtra(android.os.BatteryManager.EXTRA_LEVEL, states[s][0])
+                .putExtra(android.os.BatteryManager.EXTRA_SCALE, 100)
+                .putExtra(android.os.BatteryManager.EXTRA_PLUGGED, states[s][1])
+                .putExtra(android.os.BatteryManager.EXTRA_STATUS, states[s][1] != 0
+                        ? android.os.BatteryManager.BATTERY_STATUS_CHARGING : android.os.BatteryManager.BATTERY_STATUS_DISCHARGING);
+        launcher.batteryLevelReceiver.onReceive(launcher, battery);
+        save(bar, 720, 200, "bar_" + styleNames[style] + "_" + stateNames[s]);
+      }
+    }
+  }
+
+  @Test
   public void panels() throws Exception {
     Assume.assumeTrue(Boolean.getBoolean("screenshots"));
     Activity activity = Robolectric.buildActivity(Activity.class).setup().get();

@@ -24,79 +24,111 @@
         android:layout_height="0.7dp"
         android:background="#000000" />
 
+    <!-- Bottom bar: page, date and time, battery, settings; everything vertically centered. -->
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="45dp">
+        android:layout_height="48dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:visibility="visible">
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="12dp">
 
             <TextView
                 android:id="@+id/pageStatus"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="1/1"
-                android:textColor="#000000"
-                android:textSize="17sp" />
-
-            <TextView
-                android:id="@+id/textClock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:minWidth="32dp"
+                android:text="1/1"
                 android:textColor="#000000"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <cn.modificator.launcher.widgets.BatteryView
-                    android:id="@+id/batteryProgress"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp" />
+            <!-- Date and time packed to the left: when space runs out only the date shrinks,
+                 the time always stays whole. -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_weight="1">
 
                 <TextView
-                    android:id="@+id/batteryStatus"
+                    android:id="@+id/textClock"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="充电中"
+                    android:ellipsize="end"
+                    android:singleLine="true"
                     android:textColor="#000000"
-                    android:textSize="9sp" />
-            </LinearLayout>
+                    android:textSize="16sp"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintEnd_toStartOf="@+id/textTime"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
+                <TextView
+                    android:id="@+id/textTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:singleLine="true"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textClock"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Battery: BatteryView draws the icon or ring style, the text shows the percentage
+                 and warnings. Launcher.applyBatteryStyle() decides what is visible. -->
+            <cn.modificator.launcher.widgets.BatteryView
+                android:id="@+id/batteryProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp" />
+
+            <TextView
+                android:id="@+id/batteryPercent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/batteryStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/toSetting"
-                android:layout_width="60dp"
-                android:layout_height="45dp"
+                android:layout_width="52dp"
+                android:layout_height="48dp"
+                android:layout_marginLeft="4dp"
                 android:background="?android:selectableItemBackground"
                 android:clickable="true"
-                android:padding="10dp"
+                android:contentDescription="@string/settings_title"
+                android:padding="12dp"
                 android:src="@drawable/navibar_icon_settings_highlight" />
 
+            <!-- Not shown: page buttons kept for the click listeners in Launcher -->
             <Button
                 android:id="@+id/previousPage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Last Page"
                 android:visibility="gone" />
 
             <Button
                 android:id="@+id/nextPage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Next Page"
                 android:visibility="gone" />
         </LinearLayout>
 
@@ -108,6 +140,7 @@
             android:clickable="true"
             android:gravity="center"
             android:text="@string/app_manager_finish"
+            android:textColor="#000000"
             android:textSize="18sp"
             android:visibility="gone" />
     </FrameLayout>

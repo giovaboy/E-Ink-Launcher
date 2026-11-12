@@ -257,6 +257,39 @@
                         style="@style/SettingsSwitch" />
                 </LinearLayout>
 
+                <TextView
+                    style="@style/SettingsLabel"
+                    android:layout_width="match_parent"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="10dp"
+                    android:text="@string/settings_battery" />
+
+                <LinearLayout
+                    android:id="@+id/batteryStyleSegments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="8dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="8dp">
+
+                    <!-- Same order as BatteryView.STYLE_ICON, STYLE_RING, STYLE_TEXT -->
+                    <TextView
+                        style="@style/SettingsSegment"
+                        android:text="@string/settings_battery_icon" />
+
+                    <TextView
+                        style="@style/SettingsSegment"
+                        android:layout_marginLeft="6dp"
+                        android:text="@string/settings_battery_ring" />
+
+                    <TextView
+                        style="@style/SettingsSegment"
+                        android:layout_marginLeft="6dp"
+                        android:text="@string/settings_battery_text" />
+                </LinearLayout>
+
                 <View style="@style/SettingsDivider" />
 
                 <!-- More -->

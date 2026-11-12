@@ -36,7 +36,7 @@
     <string name="battery_heat">Batteria surriscaldata</string>
     <string name="battery_unknown">Sconosciuto</string>
     <string name="battery_charging">In carica</string>
-    <string name="battery_low">Batteria scarica</string>
+    <string name="battery_low">Scarica</string>
     <string name="battery_full">Carica</string>
     <string name="battery_wtf">WTF?</string>
 
@@ -136,7 +136,8 @@ PS: tieni premute le icone per qualche sorpresa
     </string-array>
     <string name="setting_language">Lingua</string>
     <string name="language_system">Sistema</string>
-    <string name="clock_date_pattern">"EEEE d MMMM · "</string>
+    <string name="clock_date_pattern">EEEE d MMMM</string>
+    <string name="clock_time_prefix">"· "</string>
     <string name="about_memory">Versione %1$s · Memoria: %2$s MB ora, %3$s MB in background</string>
     <string name="show_reading_card">Mostra libro in lettura</string>
     <string name="reading_continue">Continua a leggere</string>
@@ -169,4 +170,8 @@ PS: tieni premute le icone per qualche sorpresa
     <string name="settings_ftp">Server FTP</string>
     <string name="settings_ftp_off">Spento</string>
     <string name="settings_ftp_no_wifi">Wi-Fi non connesso</string>
+    <string name="settings_battery">Batteria</string>
+    <string name="settings_battery_icon">Icona</string>
+    <string name="settings_battery_ring">Cerchio</string>
+    <string name="settings_battery_text">Testo</string>
 </resources>

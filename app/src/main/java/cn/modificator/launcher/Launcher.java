@@ -64,6 +64,7 @@ public class Launcher extends FragmentActivity {
   public static final String SHOW_STATUS_BAR_KEY = "showStatusBarKey";
   public static final String SHOW_CUSTOM_ICON_KEY = "showCustomIconKey";
   public static final String SHOW_READING_CARD_KEY = "showReadingCardKey";
+  public static final String BATTERY_STYLE_KEY = "batteryStyleKey";
   public static final String FONT_SIZE_KEY = "fontSizeKey";
   public static final String HIDE_DIVIDER_KEY = "hideDividerKey";
 
@@ -80,7 +81,11 @@ public class Launcher extends FragmentActivity {
   LauncherUpdateReceiver updateReceiver;
   TextView pageStatus;
   BatteryView batteryProgress;
-  TextView batteryStatus, textClock;
+  TextView batteryStatus, batteryPercent, textClock, textTime;
+  private int batteryLevel = -1;
+  private int batteryStatusValue = -1;
+  private int batteryHealth = -1;
+  private boolean batteryPlugged;
 
   BroadcastReceiver timeListener;
   Calendar mCalendar;
@@ -121,7 +126,10 @@ public class Launcher extends FragmentActivity {
     pageStatus = findViewById(R.id.pageStatus);
     batteryProgress = findViewById(R.id.batteryProgress);
     batteryStatus = findViewById(R.id.batteryStatus);
+    batteryPercent = findViewById(R.id.batteryPercent);
+    applyBatteryStyle();
     textClock = findViewById(R.id.textClock);
+    textTime = findViewById(R.id.textTime);
     (this.<ImageView>findViewById(R.id.toSetting)).setImageDrawable(Utils.tintDrawable(getResources().getDrawable(R.drawable.navibar_icon_settings_highlight), ColorStateList.valueOf(0xff000000)));
 
     itemCenter = new ItemCenter(this, config);
@@ -257,7 +265,11 @@ public class Launcher extends FragmentActivity {
       boolean is24Hour = DateFormat.is24HourFormat(this);
       mCalendar.setTimeInMillis(System.currentTimeMillis());
 
-      StringBuilder timeFormatTextBuilder = new StringBuilder(getString(R.string.clock_date_pattern));
+      Locale locale = getResources().getConfiguration().locale;
+      // Date and time are separate views so that only the date gets shortened when space runs out.
+      textClock.setText(new SimpleDateFormat(getString(R.string.clock_date_pattern), locale).format(mCalendar.getTime()));
+
+      StringBuilder timeFormatTextBuilder = new StringBuilder();
       if (!is24Hour && isChina) {
         timeFormatTextBuilder.append(Utils.getAMPMCNString(mCalendar.get(Calendar.HOUR), mCalendar.get(Calendar.AM_PM)));
       }
@@ -269,8 +281,8 @@ public class Launcher extends FragmentActivity {
       if (!is24Hour && !isChina) {
         timeFormatTextBuilder.append(" a");
       }
-      Locale locale = getResources().getConfiguration().locale;
-      textClock.setText(new SimpleDateFormat(timeFormatTextBuilder.toString(), locale).format(mCalendar.getTime()));
+      textTime.setText(getString(R.string.clock_time_prefix)
+              + new SimpleDateFormat(timeFormatTextBuilder.toString(), locale).format(mCalendar.getTime()));
     }
   }
 
@@ -357,6 +369,9 @@ public class Launcher extends FragmentActivity {
       } else if (bundle.containsKey(SHOW_STATUS_BAR_KEY)) {
         config.setStatusBarShowStatus(bundle.getBoolean(SHOW_STATUS_BAR_KEY));
         toggleStatusBar();
+      } else if (bundle.containsKey(BATTERY_STYLE_KEY)) {
+        config.setBatteryStyle(bundle.getInt(BATTERY_STYLE_KEY));
+        applyBatteryStyle();
       } else if (bundle.containsKey(SHOW_READING_CARD_KEY)) {
         config.setReadingCardShowStatus(bundle.getBoolean(SHOW_READING_CARD_KEY));
         readingCard.setEnabled(config.showReadingCard);
@@ -399,62 +414,50 @@ public class Launcher extends FragmentActivity {
   BroadcastReceiver batteryLevelReceiver = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {
-      int rawlevel = intent.getIntExtra("level", -1);
-      int scale = intent.getIntExtra("scale", -1);
-      int status = intent.getIntExtra("status", -1);
-      int health = intent.getIntExtra("health", -1);
-      int level = -1; // percentage, or -1 for unknown
-      if (rawlevel >= 0 && scale > 0) {
-        level = (rawlevel * 100) / scale;
-      }
-      batteryProgress.setProgress(level);
-
-      batteryStatus.setVisibility(View.VISIBLE);
-      if (BatteryManager.BATTERY_HEALTH_OVERHEAT == health) {
-        batteryStatus.setText(R.string.battery_heat);
-      } else {
-        switch (status) {
-          case BatteryManager.BATTERY_STATUS_UNKNOWN:
-            batteryStatus.setText(R.string.battery_unknown);
-            break;
-          case BatteryManager.BATTERY_STATUS_CHARGING:
-            batteryStatus.setText(R.string.battery_charging);
-                        /*if (level <= 33)
-                            sb.append(" is charging, battery level is low"
-                                    + "[" + level + "]");
-                        else if (level <= 84)
-                            sb.append(" is charging." + "[" + level + "]");
-                        else
-                            sb.append(" will be fully charged.");*/
-            break;
-          case BatteryManager.BATTERY_STATUS_DISCHARGING:
-          case BatteryManager.BATTERY_STATUS_NOT_CHARGING:
-                        /*if (level == 0)
-                            sb.append(" needs charging right away.");
-                        else if (level > 0 && level <= 33)
-                            sb.append(" is about ready to be recharged, battery level is low"
-                                    + "[" + level + "]");
-                        else
-                            sb.append("'s battery level is" + "[" + level + "]");*/
-            if (level < 15) {
-              batteryStatus.setText(R.string.battery_low);
-            } else {
-              batteryStatus.setVisibility(View.GONE);
-            }
-            break;
-          case BatteryManager.BATTERY_STATUS_FULL:
-//                        sb.append(" is fully charged.");
-            batteryStatus.setText(R.string.battery_full);
-            break;
-          default:
-//                        sb.append("'s battery is indescribable!");
-            batteryStatus.setText(R.string.battery_wtf);
-            break;
-        }
-      }
-
+      int rawLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+      int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+      batteryLevel = rawLevel >= 0 && scale > 0 ? rawLevel * 100 / scale : -1;
+      batteryStatusValue = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+      batteryHealth = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, -1);
+      batteryPlugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) != 0;
+      updateBatteryViews();
     }
   };
+
+  /** Shows the battery in the style chosen in settings (see BatteryView). */
+  public void applyBatteryStyle() {
+    int style = config.batteryStyle;
+    batteryProgress.setStyle(style);
+    batteryProgress.setVisibility(style == BatteryView.STYLE_TEXT ? View.GONE : View.VISIBLE);
+    // The ring already shows the number inside.
+    batteryPercent.setVisibility(style == BatteryView.STYLE_RING ? View.GONE : View.VISIBLE);
+    updateBatteryViews();
+  }
+
+  private void updateBatteryViews() {
+    batteryProgress.setLevel(batteryLevel);
+    batteryProgress.setCharging(batteryPlugged);
+    batteryPercent.setText(batteryLevel >= 0 ? batteryLevel + "%" : "?");
+
+    // Text only for what the icon can't show: warnings, and charging in the text-only style.
+    int statusText = 0;
+    if (batteryHealth == BatteryManager.BATTERY_HEALTH_OVERHEAT) {
+      statusText = R.string.battery_heat;
+    } else if (batteryStatusValue == BatteryManager.BATTERY_STATUS_UNKNOWN) {
+      statusText = R.string.battery_unknown;
+    } else if (!batteryPlugged && batteryLevel >= 0 && batteryLevel < 15) {
+      statusText = R.string.battery_low;
+    } else if (batteryPlugged && config.batteryStyle == BatteryView.STYLE_TEXT) {
+      statusText = batteryStatusValue == BatteryManager.BATTERY_STATUS_FULL
+              ? R.string.battery_full : R.string.battery_charging;
+    }
+    if (statusText != 0) {
+      batteryStatus.setText(statusText);
+      batteryStatus.setVisibility(View.VISIBLE);
+    } else {
+      batteryStatus.setVisibility(View.GONE);
+    }
+  }
 
   private void detectUSB() {
     IntentFilter usbFilter = new IntentFilter();

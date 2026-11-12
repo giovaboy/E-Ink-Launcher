@@ -60,7 +60,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
   private View rootView;
   private TextView colValue, rowValue, fontValue, sortMethodValue, languageValue, ftpStatus;
   private Switch switchDivider, switchStatusBar, switchCustomIcon, switchReadingCard, switchFtp;
-  private ViewGroup titleLinesSegments;
+  private ViewGroup titleLinesSegments, batteryStyleSegments;
   // Local copies: the launcher updates Config asynchronously when it gets the broadcast.
   private int colNum, rowNum, fontSize;
 
@@ -96,6 +96,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     switchReadingCard = rootView.findViewById(R.id.switchReadingCard);
     switchFtp = rootView.findViewById(R.id.switchFtp);
     titleLinesSegments = rootView.findViewById(R.id.titleLinesSegments);
+    batteryStyleSegments = rootView.findViewById(R.id.batteryStyleSegments);
 
     colNum = config.colNum;
     rowNum = config.rowNum;
@@ -117,6 +118,17 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
         }
       });
     }
+    for (int i = 0; i < batteryStyleSegments.getChildCount(); i++) {
+      final int style = i;
+      batteryStyleSegments.getChildAt(i).setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          config.batteryStyle = style;
+          sendToLauncher(new Intent().putExtra(Launcher.BATTERY_STYLE_KEY, style));
+          selectSegment(batteryStyleSegments, style);
+        }
+      });
+    }
 
     updateViews();
     updateStatus();
@@ -127,7 +139,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     colValue.setText(String.valueOf(colNum));
     rowValue.setText(String.valueOf(rowNum));
     fontValue.setText(String.valueOf(fontSize));
-    selectTitleLinesSegment(getTitleLinesPosition());
+    selectSegment(titleLinesSegments, getTitleLinesPosition());
+    selectSegment(batteryStyleSegments, config.batteryStyle);
     sortMethodValue.setText(getResources().getStringArray(R.array.sort_method)[getSortMethodPosition()]);
     languageValue.setText(LocaleHelper.getLanguageNames(getActivity())[LocaleHelper.getLanguageIndex(getActivity())]);
     switchDivider.setChecked(!config.hideDivider);
@@ -144,9 +157,9 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     return Math.min(config.itemTitleLines, 3); // 3 = no limit (Integer.MAX_VALUE)
   }
 
-  private void selectTitleLinesSegment(int position) {
-    for (int i = 0; i < titleLinesSegments.getChildCount(); i++) {
-      titleLinesSegments.getChildAt(i).setSelected(i == position);
+  private static void selectSegment(ViewGroup segments, int position) {
+    for (int i = 0; i < segments.getChildCount(); i++) {
+      segments.getChildAt(i).setSelected(i == position);
     }
   }
 
@@ -251,7 +264,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     // The launcher maps position 3 to "no limit".
     config.itemTitleLines = position == 3 ? Integer.MAX_VALUE : position;
     sendToLauncher(new Intent().putExtra(Launcher.ITEM_TITLE_LINES_KEY, position));
-    selectTitleLinesSegment(position);
+    selectSegment(titleLinesSegments, position);
   }
 
   private void showSortMethodDialog() {

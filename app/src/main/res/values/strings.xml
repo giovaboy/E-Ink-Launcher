@@ -37,7 +37,7 @@
     <string name="battery_heat">Battery Overheat</string>
     <string name="battery_unknown">Unknown</string>
     <string name="battery_charging">Charging</string>
-    <string name="battery_low">Low Battery</string>
+    <string name="battery_low">Low</string>
     <string name="battery_full">Full</string>
     <string name="battery_wtf">WTF?</string>
 
@@ -157,8 +157,9 @@ Thanks.
     </string-array>
     <string name="setting_language">Language</string>
     <string name="language_system">System</string>
-    <!-- SimpleDateFormat pattern for the clock date; the time is appended right after it -->
-    <string name="clock_date_pattern">"EE, d MMM yyyy "</string>
+    <!-- SimpleDateFormat pattern of the date in the bottom bar; the time is shown after it, with clock_time_prefix in front -->
+    <string name="clock_date_pattern">EE, d MMM yyyy</string>
+    <string name="clock_time_prefix"></string>
     <!-- Version, launcher memory now (MB), launcher memory while another app was in front (MB) -->
     <string name="about_memory">Version %1$s · Memory: %2$s MB now, %3$s MB in background</string>
     <string name="show_reading_card">Show book being read</string>
@@ -192,4 +193,8 @@ Thanks.
     <string name="settings_ftp">FTP server</string>
     <string name="settings_ftp_off">Off</string>
     <string name="settings_ftp_no_wifi">Wi-Fi not connected</string>
+    <string name="settings_battery">Battery</string>
+    <string name="settings_battery_icon">Icon</string>
+    <string name="settings_battery_ring">Ring</string>
+    <string name="settings_battery_text">Text</string>
 </resources>
