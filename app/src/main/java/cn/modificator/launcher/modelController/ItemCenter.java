@@ -339,7 +339,7 @@ public class ItemCenter {
         return;
       }
       AlertDialog dialog1 = new AlertDialog.Builder(context)
-              .setIcon(itemInfo.drawable) // TODO: show replaced icon here?
+              .setIcon(itemInfo.getIcon(context, config))
               .setCustomTitle(textView)
               .setItems(items, new DialogInterface.OnClickListener() {
                 @Override
@@ -386,7 +386,7 @@ public class ItemCenter {
       break;
     case LauncherItemInfo.TYPE_SHORTCUT:
       AlertDialog dialog2 = new AlertDialog.Builder(context)
-              .setIcon( itemInfo.drawable) // TODO: show replaced icon here?
+              .setIcon(itemInfo.getIcon(context, config))
               .setTitle(itemInfo.title)
               .setMessage(context.getResources().getString(R.string.dialog_shortcut_id, itemInfo.title, itemInfo.id))
               .setPositiveButton(R.string.dialog_cancel, null)
@@ -426,7 +426,7 @@ public class ItemCenter {
         break;
       case LauncherItemInfo.TYPE_SHORTCUT:
         new AlertDialog.Builder(context)
-                .setIcon(itemInfo.drawable)
+                .setIcon(itemInfo.getIcon(context, config))
                 .setTitle(context.getString(R.string.delete_shortcut_title, itemInfo.title))
                 .setMessage(context.getResources().getString(R.string.delete_shortcut_message, itemInfo.title))
                 .setPositiveButton(R.string.dialog_cancel, null)
@@ -466,6 +466,13 @@ public class ItemCenter {
     return Collections.unmodifiableSet(mTemporaryHiddenItemIds);
   }
 
+  /** Drops every loaded icon, e.g. while the launcher is in the background. */
+  public void releaseAllIcons() {
+    for (LauncherItemInfo itemInfo : mAllItems) {
+      itemInfo.releaseIcon();
+    }
+  }
+
   private void loadAllItems() {
     mAllItems.clear();
 
@@ -496,7 +503,6 @@ public class ItemCenter {
       newItemInfo.intent = Intent.makeMainActivity(newItemInfo.componentName)
               .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
-      newItemInfo.loadDrawable(r, packageManager);
 
       mAllItems.add(newItemInfo);
     }
@@ -505,7 +511,6 @@ public class ItemCenter {
       LauncherItemInfo newItemInfo;
       try {
         newItemInfo = (LauncherItemInfo) shortcutItemInfo.clone();
-        newItemInfo.loadDrawable(null, packageManager);
         mAllItems.add(newItemInfo);
       } catch (CloneNotSupportedException e) {
         e.printStackTrace();
@@ -615,7 +620,7 @@ public class ItemCenter {
    private LauncherItemInfo createWifiItem(){
      LauncherItemInfo itemInfo = new LauncherItemInfo(LauncherItemInfo.TYPE_SPECIAL, 0);
      itemInfo.id = WIFI_ITEM_ID;
-     itemInfo.drawable = mContext.getResources().getDrawable(R.drawable.wifi_on);
+     itemInfo.iconRes = R.drawable.wifi_on;
 
      return itemInfo;
    }
@@ -624,7 +629,7 @@ public class ItemCenter {
      LauncherItemInfo itemInfo = new LauncherItemInfo(LauncherItemInfo.TYPE_SPECIAL, 0);
      itemInfo.id = ONE_KEY_LOCK_ITEM_ID;
      itemInfo.title = mContext.getString(R.string.item_lockscreen);
-     itemInfo.drawable = mContext.getResources().getDrawable(R.drawable.ic_one_key_lock);
+     itemInfo.iconRes = R.drawable.ic_one_key_lock;
 
      return itemInfo;
    }
@@ -633,7 +638,7 @@ public class ItemCenter {
     LauncherItemInfo itemInfo = new LauncherItemInfo(LauncherItemInfo.TYPE_SPECIAL, 0);
     itemInfo.id = BRIGHTNESS_ITEM_ID;
     itemInfo.title = mContext.getString(R.string.item_brightness);
-    itemInfo.drawable = mContext.getResources().getDrawable(R.drawable.bad_brightness_icon);
+    itemInfo.iconRes = R.drawable.bad_brightness_icon;
 
     return itemInfo;
   }
@@ -642,7 +647,7 @@ public class ItemCenter {
     LauncherItemInfo itemInfo = new LauncherItemInfo(LauncherItemInfo.TYPE_SPECIAL, 0);
     itemInfo.id = CONTRAST_ITEM_ID;
     itemInfo.title = mContext.getString(R.string.item_contrast);
-    itemInfo.drawable = mContext.getResources().getDrawable(R.drawable.bad_contrast_icon);
+    itemInfo.iconRes = R.drawable.bad_contrast_icon;
 
     return itemInfo;
   }
@@ -651,7 +656,7 @@ public class ItemCenter {
     LauncherItemInfo itemInfo = new LauncherItemInfo(LauncherItemInfo.TYPE_SPECIAL, 0);
     itemInfo.id = REFRESH_ITEM_ID;
     itemInfo.title = mContext.getString(R.string.item_clean);
-    itemInfo.drawable = mContext.getResources().getDrawable(R.drawable.bad_clean_icon);
+    itemInfo.iconRes = R.drawable.bad_clean_icon;
 
     return itemInfo;
   }

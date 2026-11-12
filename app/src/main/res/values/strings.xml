@@ -159,4 +159,6 @@ Thanks.
     <string name="language_system">System</string>
     <!-- SimpleDateFormat pattern for the clock date; the time is appended right after it -->
     <string name="clock_date_pattern">"EE, d MMM yyyy "</string>
+    <!-- Version, launcher memory now (MB), launcher memory while another app was in front (MB) -->
+    <string name="about_memory">Version %1$s · Memory: %2$s MB now, %3$s MB in background</string>
 </resources>

@@ -137,4 +137,5 @@ PS: tieni premute le icone per qualche sorpresa
     <string name="setting_language">Lingua</string>
     <string name="language_system">Sistema</string>
     <string name="clock_date_pattern">"EEEE d MMMM · "</string>
+    <string name="about_memory">Versione %1$s · Memoria: %2$s MB ora, %3$s MB in background</string>
 </resources>

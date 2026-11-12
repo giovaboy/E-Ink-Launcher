@@ -13,6 +13,8 @@ import android.content.res.ColorStateList;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.format.DateFormat;
 import android.view.KeyEvent;
 import android.view.View;
@@ -85,6 +87,8 @@ public class Launcher extends FragmentActivity {
   File iconFile;
   boolean isChina = true;
   FTPReceiver ftpReceiver = new FTPReceiver();
+  private final Handler memoryHandler = new Handler(Looper.getMainLooper());
+  private boolean isResumed;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -216,6 +220,7 @@ public class Launcher extends FragmentActivity {
   @Override
   protected void onResume() {
     super.onResume();
+    isResumed = true;
     IntentFilter batteryLevelFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
     registerReceiver(batteryLevelReceiver, batteryLevelFilter);
     timeListener = new BroadcastReceiver() {
@@ -265,15 +270,37 @@ public class Launcher extends FragmentActivity {
   @Override
   protected void onPause() {
     super.onPause();
+    isResumed = false;
     unregisterReceiver(batteryLevelReceiver);
     unregisterReceiver(timeListener);
     unregisterReceiver(usbReceiver);
     unregisterReceiver(ftpReceiver);
   }
 
+  /**
+   * When another app (typically a reader) is in front, drop the icons so the launcher, which
+   * is kept alive by HomeEntranceService, leaves as much RAM as possible to it. onResume()
+   * refreshes the current page, which loads them again.
+   */
+  @Override
+  public void onTrimMemory(int level) {
+    super.onTrimMemory(level);
+    if (level >= TRIM_MEMORY_UI_HIDDEN && itemCenter != null && launcherView != null) {
+      itemCenter.releaseAllIcons();
+      launcherView.clearIcons();
+      memoryHandler.removeCallbacksAndMessages(null);
+      memoryHandler.postDelayed(() -> {
+        if (!isResumed) {
+          MemoryStats.recordBackgroundUsage(Launcher.this);
+        }
+      }, 5000);
+    }
+  }
+
   @Override
   protected void onDestroy() {
     super.onDestroy();
+    memoryHandler.removeCallbacksAndMessages(null);
     unregisterReceiver(updateReceiver);
     unregisterReceiver(appChangedReceiver);
     try {

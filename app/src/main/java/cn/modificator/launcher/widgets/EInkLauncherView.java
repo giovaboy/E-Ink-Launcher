@@ -24,6 +24,7 @@ import java.util.Observer;
 
 import cn.modificator.launcher.R;
 import cn.modificator.launcher.modelController.ItemCenter;
+import cn.modificator.launcher.Utils;
 import cn.modificator.launcher.modelController.LauncherItemInfo;
 import cn.modificator.launcher.modelController.ObservableFloat;
 import cn.modificator.launcher.modelController.WifiControl;
@@ -146,8 +147,16 @@ public class EInkLauncherView extends ViewGroup{
   }
 
   private void refreshCurrentItems() {
+    List<LauncherItemInfo> newItems = itemCenter.getCurrentPageItemInfoList();
+    // Only the icons on screen are kept in memory.
+    for (LauncherItemInfo oldItem : itemInfoList) {
+      if (!newItems.contains(oldItem)) {
+        oldItem.releaseIcon();
+      }
+    }
     itemInfoList.clear();
-    itemInfoList.addAll(itemCenter.getCurrentPageItemInfoList());
+    itemInfoList.addAll(newItems);
+    int iconSizePx = getIconSizePx();
 
     View itemView;
     for (int i = 0; i < itemCenter.config.rowNum; i++) {
@@ -161,7 +170,7 @@ public class EInkLauncherView extends ViewGroup{
           final LauncherItemInfo itemInfo = itemInfoList.get(itemCenter.config.colNum * i + j);
           CharSequence itemTitle = itemInfo.title;
 
-          itemInfo.setIconImageForView((ImageView) itemView.findViewById(R.id.itemIcon), itemCenter.config);
+          itemInfo.setIconImageForView((ImageView) itemView.findViewById(R.id.itemIcon), itemCenter.config, iconSizePx);
           if (itemInfo.id.equals(ItemCenter.WIFI_ITEM_ID)) {
             WifiControl.bind(itemView);
           } else {
@@ -259,6 +268,26 @@ public class EInkLauncherView extends ViewGroup{
     }
   }
 
+  /**
+   * Size the icons are rasterized at: the icon box in launcher_item.xml is 80% of the cell
+   * width and 80% of the top 70% of the cell height. Falls back to 64dp before layout.
+   */
+  private int getIconSizePx() {
+    int width = getPerItemWidth();
+    int height = getPerItemHeight();
+    if (width <= 0 || height <= 0) {
+      return Utils.dp2Px(getContext(), 64);
+    }
+    return (int) Math.min(width * 0.8f, height * 0.7f * 0.8f);
+  }
+
+  /** Clears the icons from the views so their bitmaps can be freed while in the background. */
+  public void clearIcons() {
+    for (int i = 0; i < getChildCount(); i++) {
+      ((ImageView) getChildAt(i).findViewById(R.id.itemIcon)).setImageDrawable(null);
+    }
+  }
+
   private int getPerItemHeight() {
 //        return (getAdjustedHeight() - (ROW_NUM - 2) * dividerSize) / ROW_NUM;
     return getInnerHeight() / itemCenter.config.rowNum;
@@ -297,142 +326,6 @@ public class EInkLauncherView extends ViewGroup{
     }
   }
 
-//  private class ItemClickListener implements OnClickListener {
-//    int position = 0;
-//
-//    public ItemClickListener(int position) {
-//      this.position = position;
-//    }
-//
-//    @Override
-//    public void onClick(View v) {
-//      if (position >= itemInfoList.size()){
-//        return;
-//      }
-//      if (isInManagingState) {
-//        itemCenter.deleteItem(v.getContext(), itemInfoList.get(position));
-//        // Intent deleteIntent = new Intent(Intent.ACTION_DELETE, Uri.parse("package:" + itemInfoList.get(position).activityInfo.packageName));
-//        // v.getContext().startActivity(deleteIntent);
-//        return;
-//      }
-//      LauncherItemInfo itemInfo = itemInfoList.get(position);
-//
-//      itemInfo.executeOnClick(v.getContext());
-//
-////      if (itemInfo.id == ItemCenter.ONE_KEY_LOCK_ITEM_ID){
-////        ((Launcher) v.getContext()).lockScreen();
-////      } else if (itemInfo.id == ItemCenter.WIFI_ITEM_ID) {
-//////        Activity activity = (Activity) getContext();
-//////        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && activity.checkSelfPermission(Manifest.permission.CHANGE_WIFI_STATE)!=PackageManager.PERMISSION_GRANTED) {
-//////          activity.requestPermissions(new String[]{Manifest.permission.CHANGE_WIFI_STATE}, 0);
-//////        }
-////        WifiControl.onClickWifiItem();
-////      } else {
-////        ComponentName componentName = new ComponentName(info.activityInfo.packageName, info.activityInfo.name);
-////        Intent intent = new Intent();
-////        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-////        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-////        intent.setAction(Intent.ACTION_MAIN);
-////        intent.setComponent(componentName);
-////        intent.setPackage(info.activityInfo.packageName);
-////        v.getContext().startActivity(intent);
-////      }
-//    }
-//  }
-//
-//  private class ItemLongClickListener implements OnLongClickListener {
-//    int position = 0;
-//
-//    public ItemLongClickListener(int position) {
-//      this.position = position;
-//    }
-//
-//    @Override
-//    public boolean onLongClick(View v) {
-//      if (position >= itemInfoList.size()){
-//        return false;
-//      }
-//
-//      itemInfoList.get(position).executeOnLongClick(v.getContext());
-//
-////      final String packageName = dataList.get(position).activityInfo.packageName;
-////      if (packageName == ItemCenter.oneKeyLockPackageName){
-////        if (!isSystemApp) return true;
-////        new AlertDialog.Builder(v.getContext())
-////                .setTitle(R.string.power_title)
-////                .setItems(R.array.power_menu, new DialogInterface.OnClickListener() {
-////                  @Override
-////                  public void onClick(DialogInterface dialog, int which) {
-////                    if (which == 0) {
-////                      Intent intent = new Intent("android.intent.action.ACTION_REQUEST_SHUTDOWN");
-////                      intent.putExtra("android.intent.extra.KEY_CONFIRM", false);//true 确认是否关机
-////                      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-////                      getContext().startActivity(intent);
-////                    } else {
-//////                                                    Intent intent = new Intent("android.intent.action.REBOOT");
-//////                                                    intent.putExtra("android.intent.extra.KEY_CONFIRM", false);//true 确认是否关机
-//////                                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//////                                                    getContext().startActivity(intent);
-////                                                    /*intenet.putExtra("nowait",1);
-////                                                    intenet.putExtra("interval",1);
-////                                                    intenet.putExtra("window",0);
-////                                                    getContext().sendBroadcast(intenet);*/
-////                      PowerManager pManager = (PowerManager) getContext().getSystemService(Context.POWER_SERVICE);
-////                      pManager.reboot("重启");
-////                    }
-////                  }
-////                })
-////                .setPositiveButton("取消", null)
-////                .show();
-////      }else if (packageName == ItemCenter.wifiPackageName) {
-////        WifiControl.onLongClickWifiItem();
-////      }else {
-////        new AlertDialog.Builder(v.getContext())
-////                .setIcon(dataList.get(position).loadIcon(packageManager))
-////                .setTitle(dataList.get(position).loadLabel(packageManager))
-////                .setMessage(getResources().getString(R.string.dialog_pkg_name, packageName))
-////                .setPositiveButton(R.string.dialog_cancel, null)
-////                .setNeutralButton(R.string.dialog_hide, new DialogInterface.OnClickListener() {
-////                  @Override
-////                  public void onClick(DialogInterface dialog, int which) {
-////                    if (onSingleAppHideChange != null)
-////                      if (!hideAppPkg.add(packageName))
-////                        hideAppPkg.remove(packageName);
-////                    onSingleAppHideChange.change(packageName);
-////                  }
-////                })
-////                .setNegativeButton(R.string.dialog_uninstall, new DialogInterface.OnClickListener() {
-////                  @Override
-////                  public void onClick(DialogInterface dialog, int which) {
-////                    Intent deleteIntent = new Intent(Intent.ACTION_DELETE, Uri.parse("package:" + packageName));
-////                    getContext().startActivity(deleteIntent);
-////                  }
-////                })
-////                .show();
-////      }
-//      return true;
-//    }
-//  }
-//
-//  private class ItemHideClickListener implements OnClickListener {
-//    int position = 0;
-//
-//    public ItemHideClickListener(int position) {
-//      this.position = position;
-//    }
-//
-//    @Override
-//    public void onClick(View v) {
-//      String pkg = dataList.get(position).activityInfo.packageName;
-//      if (hideAppPkg.contains(pkg)) {
-//        v.setSelected(false);
-//        hideAppPkg.remove(pkg);
-//      } else {
-//        v.setSelected(true);
-//        hideAppPkg.add(pkg);
-//      }
-//    }
-//  }
 
   private Point touchDown = null;
   private @Nullable Boolean handleTouchDragAndDrop(MotionEvent event) {

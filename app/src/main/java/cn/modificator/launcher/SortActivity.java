@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -49,7 +48,6 @@ public class SortActivity extends Activity {
             LauncherItemInfoComparator.SORT_MODE_CUSTOM_WITH_FIRST_APPEAR
             | LauncherItemInfoComparator.SORT_ORDER_ASC));
 
-    PackageManager pm = getPackageManager();
     Iterator<LauncherItemInfo> it = mAllItems.iterator();
     while (it.hasNext()) {
       LauncherItemInfo itemInfo = it.next();
@@ -57,7 +55,6 @@ public class SortActivity extends Activity {
         it.remove();
         continue;
       }
-      itemInfo.loadDrawable(null, pm);
     }
 
     AutoFitRecyclerView recyclerView = findViewById(R.id.sort_recycler_view);
@@ -127,9 +124,18 @@ class SortItemAdapter extends RecyclerView.Adapter<SortItemAdapter.SortItemHolde
       public void afterTextChanged(Editable s) { }
     });
 
-    holder.itemInfo.setIconImageForView(icon, false);
+    // Loaded on demand: only the rows on screen get an icon.
+    icon.setImageDrawable(holder.itemInfo.getIcon(icon.getContext(), false, Utils.dp2Px(icon.getContext(), 48)));
     name.setText(holder.itemInfo.title);
     priorityInput.setText(String.valueOf(holder.itemInfo.priority));
+  }
+
+  @Override
+  public void onViewRecycled(@NonNull SortItemHolder holder) {
+    super.onViewRecycled(holder);
+    if (holder.itemInfo != null) {
+      holder.itemInfo.releaseIcon();
+    }
   }
 
   @Override

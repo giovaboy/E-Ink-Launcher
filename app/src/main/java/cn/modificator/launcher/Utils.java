@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.AdaptiveIconDrawable;
@@ -14,6 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.TextUtils;
 
+import androidx.annotation.Nullable;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import java.io.File;
@@ -31,6 +33,28 @@ import java.util.List;
 public class Utils {
 
   public static final boolean isMoann = TextUtils.equals(Build.DEVICE,"virgo-perf1");
+
+  /**
+   * Decodes an image file subsampled so that its larger side is about {@code targetSize}
+   * pixels (never less), instead of allocating it at full resolution.
+   */
+  @Nullable
+  public static Bitmap decodeSampledBitmap(String path, int targetSize) {
+    BitmapFactory.Options options = new BitmapFactory.Options();
+    options.inJustDecodeBounds = true;
+    BitmapFactory.decodeFile(path, options);
+    int largerSide = Math.max(options.outWidth, options.outHeight);
+    if (largerSide <= 0) {
+      return null;
+    }
+    int sampleSize = 1;
+    while (largerSide / (sampleSize * 2) >= targetSize) {
+      sampleSize *= 2;
+    }
+    options.inJustDecodeBounds = false;
+    options.inSampleSize = sampleSize;
+    return BitmapFactory.decodeFile(path, options);
+  }
 
   public static Bitmap createBitmapFromDrawable(Drawable drawable, int size, Context context) {
     Canvas canvas = new Canvas();

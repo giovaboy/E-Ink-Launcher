@@ -24,6 +24,7 @@ import java.util.List;
 
 import cn.modificator.launcher.Config;
 import cn.modificator.launcher.R;
+import cn.modificator.launcher.Utils;
 
 public class LauncherItemInfo implements Cloneable {
   public static final int TYPE_LAUNCHER_ACTIVITY = 0;
@@ -54,9 +55,16 @@ public class LauncherItemInfo implements Cloneable {
   @Nullable
   public String shortcutId;
 
-  /** Value is assigned at runtime */
+  /** Loaded on demand by {@link #getIcon}, null while the item is not on screen. */
   @Nullable
   public Drawable drawable;
+
+  /** Size and source of {@link #drawable}, to reload it when either changes. */
+  private int iconSizePx;
+  private boolean iconIsCustom;
+
+  /** For special items: the icon resource */
+  public int iconRes;
 
   /** For shortcuts only */
   @Nullable
@@ -116,36 +124,73 @@ public class LauncherItemInfo implements Cloneable {
     return showDelete;
   }
 
-  public void setIconImageForView(ImageView imageView, Config config) {
-    setIconImageForView(imageView, config.showCustomIcon);
+  public void setIconImageForView(ImageView imageView, Config config, int sizePx) {
+    imageView.setImageDrawable(getIcon(imageView.getContext(), config.showCustomIcon, sizePx));
   }
 
-  public void setIconImageForView(ImageView imageView, boolean showCustomIcon) {
-    if (showCustomIcon) {
-      if (replacementIconUri != null) {
-        imageView.setImageURI(replacementIconUri);
-        return;
+  /**
+   * Returns the icon, loading it on demand. App icons and custom icons are rasterized at
+   * {@code sizePx} instead of being kept at full resolution, and only the icons of the items
+   * on screen are kept in memory: see {@link #releaseIcon()}.
+   */
+  @Nullable
+  public Drawable getIcon(Context context, boolean showCustomIcon, int sizePx) {
+    boolean useCustomIcon = showCustomIcon && replacementIconUri != null;
+    if (drawable != null && iconSizePx == sizePx && iconIsCustom == useCustomIcon) {
+      return drawable;
+    }
+    drawable = null;
+    if (useCustomIcon) {
+      Bitmap custom = Utils.decodeSampledBitmap(replacementIconUri.getPath(), sizePx);
+      if (custom != null) {
+        drawable = new BitmapDrawable(context.getResources(), custom);
       }
     }
-    imageView.setImageDrawable(drawable);
+    if (drawable == null) {
+      drawable = loadDefaultIcon(context, sizePx);
+      useCustomIcon = false;
+    }
+    iconSizePx = sizePx;
+    iconIsCustom = useCustomIcon;
+    return drawable;
   }
 
-  public void loadDrawable(@Nullable ResolveInfo resolveInfo, @Nullable PackageManager pm) {
+  /** The icon if it is already loaded, otherwise loads it at the size used by the grid. */
+  @Nullable
+  public Drawable getIcon(Context context, Config config) {
+    return drawable != null ? drawable : getIcon(context, config.showCustomIcon, defaultIconSizePx(context));
+  }
+
+  /** Drops the icon so it can be garbage collected; it is reloaded on the next {@link #getIcon}. */
+  public void releaseIcon() {
+    drawable = null;
+  }
+
+  @Nullable
+  private Drawable loadDefaultIcon(Context context, int sizePx) {
     switch (type) {
       case TYPE_LAUNCHER_ACTIVITY:
-        if (resolveInfo == null) {
-          Intent intent = new Intent();
-          intent.setComponent(componentName);
-          resolveInfo = pm.resolveActivity(intent, 0);
+        Drawable appIcon;
+        try {
+          appIcon = context.getPackageManager().getActivityIcon(componentName);
+        } catch (PackageManager.NameNotFoundException e) {
+          appIcon = context.getPackageManager().getDefaultActivityIcon();
         }
-        drawable = resolveInfo.loadIcon(pm);
-        break;
+        // Don't upscale icons smaller than the cell, it only costs memory.
+        int intrinsic = Math.max(appIcon.getIntrinsicWidth(), appIcon.getIntrinsicHeight());
+        int size = intrinsic > 0 ? Math.min(sizePx, intrinsic) : sizePx;
+        return new BitmapDrawable(context.getResources(), Utils.createBitmapFromDrawable(appIcon, size, context));
       case TYPE_SHORTCUT:
-        drawable = new BitmapDrawable(bitmap);
-        break;
+        return bitmap != null ? new BitmapDrawable(context.getResources(), bitmap) : null;
       case TYPE_SPECIAL:
-        break; // assigned by createWifiItem and createPowerItem
+        return iconRes != 0 ? context.getResources().getDrawable(iconRes) : null;
+      default:
+        return null;
     }
+  }
+
+  private static int defaultIconSizePx(Context context) {
+    return Utils.dp2Px(context, 64);
   }
 
   public void executeShortcut(Context context) {

@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 /**
  * Created by Modificator
- * time: 17/1/7.下午2:40
+ * time: 2017-01-07 2:40 PM
  * des:create file and achieve model
  */
 
@@ -36,6 +36,12 @@ public class AboutDialog {
     appName.setText(R.string.app_name);
     appName.setTextSize(30);
     root.addView(appName);
+
+    TextView memoryInfo = new TextView(context);
+    memoryInfo.setText(MemoryStats.describe(context));
+    memoryInfo.setTextSize(14);
+    memoryInfo.setTextColor(0xff000000);
+    root.addView(memoryInfo);
     View line = new View(context);
     line.setBackgroundColor(0xff000000);
     root.addView(line, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dp2Px(context, 1)));
