@@ -36,4 +36,12 @@ public class VendorSettingsTest {
     MainActivity activity = Robolectric.buildActivity(MainActivity.class).setup().get();
     assertEquals(View.GONE, activity.findViewById(R.id.wifiStandby).getVisibility());
   }
+
+  @Test
+  public void moaanSettingsShortcutOpensTheStockMenu() {
+    MoaanSettingsActivity activity = Robolectric.buildActivity(MoaanSettingsActivity.class).setup().get();
+    android.content.Intent next = org.robolectric.Shadows.shadowOf(activity).getNextStartedActivity();
+    assertEquals(MoaanSettingsActivity.MOAAN_SETTINGS, next.getComponent());
+    assertTrue(activity.isFinishing());
+  }
 }

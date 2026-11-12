@@ -61,6 +61,9 @@ final class AppControl {
           "com.android.packageinstaller",
           "com.android.shell",
           "com.android.keychain",
+          // The stock launcher: it holds the Moaan settings menu and the screens for a forgotten
+          // lock password, which the firmware opens.
+          "com.moan.launcher",
           "com.moan.moanwm")); // E-Ink Launcher
 
   static final class App {

@@ -35,6 +35,11 @@
             android:layout_marginTop="12dp" />
 
         <TextView
+            android:id="@+id/moaanSettings"
+            style="@style/Action"
+            android:text="@string/moaan_settings" />
+
+        <TextView
             android:id="@+id/apps"
             style="@style/Action"
             android:text="@string/apps_title" />

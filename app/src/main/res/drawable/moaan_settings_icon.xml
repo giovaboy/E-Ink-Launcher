@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "Moaan settings" icon: a black gear with a hole, for e-ink. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#000000"
+        android:fillType="evenOdd"
+        android:pathData="M20.15,7.96 L20.39,3.31 L27.61,3.31 L27.85,7.96 L32.62,9.93 L36.08,6.82 L41.18,11.92 L38.07,15.38 L40.04,20.15 L44.69,20.39 L44.69,27.61 L40.04,27.85 L38.07,32.62 L41.18,36.08 L36.08,41.18 L32.62,38.07 L27.85,40.04 L27.61,44.69 L20.39,44.69 L20.15,40.04 L15.38,38.07 L11.92,41.18 L6.82,36.08 L9.93,32.62 L7.96,27.85 L3.31,27.61 L3.31,20.39 L7.96,20.15 L9.93,15.38 L6.82,11.92 L11.92,6.82 L15.38,9.93 Z M17,24 A7,7 0 1 0 31,24 A7,7 0 1 0 17,24 Z" />
+</vector>

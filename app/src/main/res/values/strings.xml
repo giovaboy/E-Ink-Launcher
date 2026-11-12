@@ -16,6 +16,8 @@
     <string name="background_not_changed">The firmware did not change the setting (now: %1$s).</string>
     <string name="wifi_standby">Wi-Fi on in standby</string>
     <string name="wifi_standby_summary">The firmware turns Wi-Fi off when the reader sleeps. Keep it on to find it already connected at wake-up; it uses a little more battery.</string>
+    <string name="moaan_settings">Moaan settings</string>
+    <string name="moaan_settings_missing">The Moaan settings could not be opened (%1$s). They are part of the stock launcher, com.moan.launcher: it must be installed and enabled.</string>
     <string name="diagnostics">Save diagnostics</string>
     <string name="diagnostics_running">Saving diagnostics…</string>
     <string name="diagnostics_saved">Saved to %1$s</string>

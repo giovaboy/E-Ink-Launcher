@@ -35,6 +35,12 @@ public class MainActivity extends Activity {
     findViewById(R.id.apps).setOnClickListener(v -> startActivity(new Intent(this, AppsActivity.class)));
     findViewById(R.id.background).setOnClickListener(v -> startActivity(new Intent(this, BackgroundActivity.class)));
     findViewById(R.id.diagnostics).setOnClickListener(v -> saveDiagnostics());
+    findViewById(R.id.moaanSettings).setOnClickListener(v -> {
+      String error = MoaanSettingsActivity.open(this);
+      if (error != null) {
+        log.setText(getString(R.string.moaan_settings_missing, error));
+      }
+    });
     findViewById(R.id.recovery).setOnClickListener(v -> confirmRecovery());
     setUpWifiStandby();
   }

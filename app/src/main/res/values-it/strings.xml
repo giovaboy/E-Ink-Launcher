@@ -15,6 +15,8 @@
     <string name="background_not_changed">Il firmware non ha cambiato l\'impostazione (ora: %1$s).</string>
     <string name="wifi_standby">Wi-Fi acceso in standby</string>
     <string name="wifi_standby_summary">Il firmware spegne il Wi-Fi quando il lettore va in standby. Lascialo acceso per trovarlo già connesso al risveglio; consuma un po\' più di batteria.</string>
+    <string name="moaan_settings">Impostazioni Moaan</string>
+    <string name="moaan_settings_missing">Impossibile aprire le impostazioni Moaan (%1$s). Fanno parte del launcher di serie, com.moan.launcher: deve essere installato e attivo.</string>
     <string name="diagnostics">Salva diagnostica</string>
     <string name="diagnostics_running">Salvataggio della diagnostica…</string>
     <string name="diagnostics_saved">Salvata in %1$s</string>

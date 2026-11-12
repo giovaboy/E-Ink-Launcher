@@ -25,6 +25,21 @@
         <activity android:name=".AppsActivity" />
         <activity android:name=".BackgroundActivity" />
 
+        <!-- Own icon and label in the app list: a shortcut to the Moaan settings menu. -->
+        <activity
+            android:name=".MoaanSettingsActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:icon="@drawable/moaan_settings_icon"
+            android:label="@string/moaan_settings"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
