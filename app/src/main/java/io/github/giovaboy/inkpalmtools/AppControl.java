@@ -47,6 +47,9 @@ final class AppControl {
           "com.android.backupconfirm",
           "com.android.mms.service",
           "com.android.phone",
+          // The firmware updater, a system process always running. V11 is the last firmware
+          // for the inkPalm 5; disabling it only stops future firmware updates.
+          "com.abupdate.fota_demo_iot",
           "com.goodix.rawdata");
 
   /** Never offered: the device would not work, or not be fixable from here, without them. */

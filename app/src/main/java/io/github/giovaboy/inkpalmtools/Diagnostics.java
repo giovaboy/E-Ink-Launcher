@@ -43,16 +43,36 @@ final class Diagnostics {
       out.write("InkPalm Tools diagnostics " + stamp + "\n");
       out.write("RAM: " + ram[0] + " MB total, " + ram[1] + " MB available\n\n");
 
-      out.write("== Processes by memory (PSS, MB)\n");
+      out.write("\n== Disabled apps\n");
+      writeDisabledApps(context, out);
+
+      out.write("\n== Processes by memory (PSS, MB)\n");
       writeProcesses(context, out);
 
       out.write("\n== dumpsys meminfo\n");
       runCommand(out, "dumpsys", "meminfo");
 
+      // Breakdown (Java heap, native, graphics, code...) of the launcher, to see where it goes.
+      out.write("\n== dumpsys meminfo com.moan.moanwm (E-Ink Launcher)\n");
+      runCommand(out, "dumpsys", "meminfo", "com.moan.moanwm");
+
       out.write("\n== logcat (last 3000 lines)\n");
       runCommand(out, "logcat", "-d", "-v", "threadtime", "-t", "3000");
     }
     return file;
+  }
+
+  private static void writeDisabledApps(Context context, Writer out) throws IOException {
+    int count = 0;
+    for (AppControl.App app : AppControl.list(context, false)) {
+      if (!app.enabled) {
+        out.write(app.packageName + "  (" + app.label + ")\n");
+        count++;
+      }
+    }
+    if (count == 0) {
+      out.write("(none)\n");
+    }
   }
 
   private static void writeProcesses(Context context, Writer out) throws IOException {
