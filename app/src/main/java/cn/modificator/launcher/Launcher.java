@@ -39,6 +39,7 @@ import cn.modificator.launcher.modelController.ItemCenter;
 import cn.modificator.launcher.modelController.HomeEntranceService;
 import cn.modificator.launcher.modelController.LauncherItemInfo;
 import cn.modificator.launcher.modelController.WifiControl;
+import cn.modificator.launcher.reading.ReadingCard;
 import cn.modificator.launcher.widgets.BatteryView;
 import cn.modificator.launcher.widgets.EInkLauncherView;
 
@@ -62,6 +63,7 @@ public class Launcher extends FragmentActivity {
   public static final String HIDDEN_ITEM_IDS_KEY = "hiddenItemIds";
   public static final String SHOW_STATUS_BAR_KEY = "showStatusBarKey";
   public static final String SHOW_CUSTOM_ICON_KEY = "showCustomIconKey";
+  public static final String SHOW_READING_CARD_KEY = "showReadingCardKey";
   public static final String FONT_SIZE_KEY = "fontSizeKey";
   public static final String HIDE_DIVIDER_KEY = "hideDividerKey";
 
@@ -89,6 +91,7 @@ public class Launcher extends FragmentActivity {
   FTPReceiver ftpReceiver = new FTPReceiver();
   private final Handler memoryHandler = new Handler(Looper.getMainLooper());
   private boolean isResumed;
+  private ReadingCard readingCard;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +110,7 @@ public class Launcher extends FragmentActivity {
     isChina = getResources().getConfiguration().locale.getCountry().equals("CN");
 
     initView();
+    readingCard = new ReadingCard(this, findViewById(R.id.readingCard), config.showReadingCard);
     checkLaunchHomeNotification();
   }
 
@@ -235,6 +239,9 @@ public class Launcher extends FragmentActivity {
     if (itemCenter != null && launcherView != null) {
       itemCenter.refresh(ItemCenter.REFRESH_LEVEL_1_REPLACED_ICONS);
     }
+    if (readingCard != null) {
+      readingCard.refresh();
+    }
     detectUSB();
 
     IntentFilter ftpIntentFilter = new IntentFilter(FTPService.ACTION_START_FTPSERVER);
@@ -288,6 +295,9 @@ public class Launcher extends FragmentActivity {
     if (level >= TRIM_MEMORY_UI_HIDDEN && itemCenter != null && launcherView != null) {
       itemCenter.releaseAllIcons();
       launcherView.clearIcons();
+      if (readingCard != null) {
+        readingCard.releaseMemory();
+      }
       memoryHandler.removeCallbacksAndMessages(null);
       memoryHandler.postDelayed(() -> {
         if (!isResumed) {
@@ -347,6 +357,9 @@ public class Launcher extends FragmentActivity {
       } else if (bundle.containsKey(SHOW_STATUS_BAR_KEY)) {
         config.setStatusBarShowStatus(bundle.getBoolean(SHOW_STATUS_BAR_KEY));
         toggleStatusBar();
+      } else if (bundle.containsKey(SHOW_READING_CARD_KEY)) {
+        config.setReadingCardShowStatus(bundle.getBoolean(SHOW_READING_CARD_KEY));
+        readingCard.setEnabled(config.showReadingCard);
       } else if (bundle.containsKey(SHOW_CUSTOM_ICON_KEY)) {
         config.setCustomIconShowStatus(bundle.getBoolean(SHOW_CUSTOM_ICON_KEY));
         itemCenter.refresh(ItemCenter.REFRESH_LEVEL_1_REPLACED_ICONS);

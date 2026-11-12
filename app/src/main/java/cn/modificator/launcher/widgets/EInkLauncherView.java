@@ -281,6 +281,20 @@ public class EInkLauncherView extends ViewGroup{
     return (int) Math.min(width * 0.8f, height * 0.7f * 0.8f);
   }
 
+  @Override
+  protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+    super.onSizeChanged(w, h, oldw, oldh);
+    if (oldw > 0 && oldh > 0 && itemCenter != null) {
+      // E.g. the reading card appeared: rasterize the icons again for the new cell size.
+      post(new Runnable() {
+        @Override
+        public void run() {
+          refresh(REFRESH_LEVEL_1_CURRENT_ITEMS);
+        }
+      });
+    }
+  }
+
   /** Clears the icons from the views so their bitmaps can be freed while in the background. */
   public void clearIcons() {
     for (int i = 0; i < getChildCount(); i++) {

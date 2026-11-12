@@ -161,4 +161,10 @@ Thanks.
     <string name="clock_date_pattern">"EE, d MMM yyyy "</string>
     <!-- Version, launcher memory now (MB), launcher memory while another app was in front (MB) -->
     <string name="about_memory">Version %1$s · Memory: %2$s MB now, %3$s MB in background</string>
+    <string name="show_reading_card">Show book being read</string>
+    <string name="reading_continue">Continue reading</string>
+    <string name="reading_progress">%1$d%% · Continue reading</string>
+    <string name="reading_finished">Finished</string>
+    <string name="reading_open_koreader">Open KOReader</string>
+    <string name="reading_permission">Tap to allow file access and show the book you are reading</string>
 </resources>

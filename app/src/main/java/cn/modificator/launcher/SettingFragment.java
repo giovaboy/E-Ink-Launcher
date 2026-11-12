@@ -41,7 +41,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
   Spinner itemTitleLinesSpinner;
   SeekBar fontControl;
   View rootView;
-  TextView hideDivider, ftpAddr, ftpStatus,showStatusBar,showCustomIcon;
+  TextView hideDivider, ftpAddr, ftpStatus,showStatusBar,showCustomIcon, showReadingCard;
 
   public ItemCenter itemCenter;
   public Config config;
@@ -80,6 +80,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
 
     showStatusBar = rootView.findViewById(R.id.showStatusBar);
     showCustomIcon = rootView.findViewById(R.id.showCustomIcon);
+    showReadingCard = rootView.findViewById(R.id.showReadingCard);
     ftpStatus = rootView.findViewById(R.id.ftp_status);
     ftpAddr = rootView.findViewById(R.id.ftp_addr);
     hideDivider = rootView.findViewById(R.id.hideDivider);
@@ -92,11 +93,13 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     showStatusBar.setOnClickListener(this);
     hideDivider.setOnClickListener(this);
     showCustomIcon.setOnClickListener(this);
+    showReadingCard.setOnClickListener(this);
     showStatusBar.getPaint().setStrikeThruText(config.showStatusBar);
     hideDivider.getPaint().setStrikeThruText(config.hideDivider);
     rowNumSpinner.setSelection(config.rowNum - 2, false);
     fontControl.setProgress((int) ((config.fontSize - 10) * 10));
     showCustomIcon.getPaint().setStrikeThruText(config.showCustomIcon);
+    showReadingCard.getPaint().setStrikeThruText(config.showReadingCard);
 
     rowNumSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
       @Override
@@ -258,6 +261,11 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 10002);
       }
+    } else if (id == R.id.showReadingCard) {
+      intent = new Intent(Launcher.LAUNCHER_ACTION);
+      intent.putExtra(Launcher.SHOW_READING_CARD_KEY, !config.showReadingCard);
+      getActivity().sendBroadcast(intent);
+      getActivity().onBackPressed();
     } else if (id == R.id.showCustomIcon) {
       Utils.checkStroagePermission(getActivity(), new Runnable() {
         @Override

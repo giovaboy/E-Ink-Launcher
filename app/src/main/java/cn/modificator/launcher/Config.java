@@ -36,6 +36,7 @@ public class Config {
   public boolean hideDivider = false;
   public boolean showStatusBar = false;
   public boolean showCustomIcon = false;
+  public boolean showReadingCard = true;
   public int sortFlags = -1;
   private String preferencesFileName = "launcherPropertyFile";
   private Set<String> hiddenItemIds = new HashSet<>();
@@ -56,6 +57,7 @@ public class Config {
     getDividerHideStatus();
     getStatusBarShowStatus();
     getItemTitleLines();
+    getReadingCardShowStatus();
   }
 
   public static int getIconDensity(int requiredSize) {
@@ -236,6 +238,15 @@ public class Config {
     showStatusBar = b;
     SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
     preferences.edit().putBoolean(Launcher.SHOW_STATUS_BAR_KEY, b).apply();
+  }
+
+  public boolean getReadingCardShowStatus() {
+    return showReadingCard = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE).getBoolean(Launcher.SHOW_READING_CARD_KEY, true);
+  }
+
+  public void setReadingCardShowStatus(boolean b) {
+    showReadingCard = b;
+    context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE).edit().putBoolean(Launcher.SHOW_READING_CARD_KEY, b).apply();
   }
 
   public boolean getCustomIconShowStatus(){

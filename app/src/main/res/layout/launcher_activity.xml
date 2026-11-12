@@ -5,6 +5,8 @@
     android:background="#ffffff"
     android:orientation="vertical">
 
+    <include layout="@layout/reading_card" />
+
     <cn.modificator.launcher.widgets.EInkLauncherView
         android:id="@+id/mList"
         android:layout_width="match_parent"
