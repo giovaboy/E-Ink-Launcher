@@ -25,7 +25,7 @@
     <string name="battery_status_low_battery">Low power</string>
     <string name="setting_show_divider">Show Divider</string>
     <string name="setting_hide_divider">Hide Divider</string>
-    <string name="setting_set_font_size">Change Font Size</string>
+    <string name="setting_set_font_size">Text size</string>
     <string name="setting_apps_manager">Apps Manager</string>
     <string name="setting_column_icons">Column</string>
     <string name="setting_row_icons">"   Row   "</string>
@@ -79,7 +79,7 @@
     <string name="show_wifi_name">Show Wi-Fi Name</string>
     <string name="show_custom_icon">Show custom icon</string>
     <string name="notification_click_back_launcher">Click here to go back to the launcher</string>
-    <string name="item_title_display">Item Name</string>
+    <string name="item_title_display">App names</string>
 
     <string name="dev_admin_desc">E-Ink Launcher getting lock screen permissions</string>
     <!-- E-Ink Launcher 获取锁屏权限 -->
