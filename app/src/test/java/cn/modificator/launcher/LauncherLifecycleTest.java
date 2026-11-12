@@ -86,6 +86,32 @@ public class LauncherLifecycleTest {
   }
 
   @Test
+  public void quickBarHoldsTheSpecialItemsAndHidesThem() {
+    Launcher launcher = start();
+    android.view.ViewGroup bar = launcher.findViewById(R.id.quickBar);
+    // Not a Moaan device here: Wi-Fi and lock only, in the bar and not in the grid.
+    assertEquals(2, bar.getChildCount());
+    assertEquals(cn.modificator.launcher.modelController.ItemCenter.WIFI_ITEM_ID, bar.getChildAt(0).getTag());
+    for (cn.modificator.launcher.modelController.LauncherItemInfo item : launcher.itemCenter.getAllItems()) {
+      assertEquals(false, item.type == cn.modificator.launcher.modelController.LauncherItemInfo.TYPE_SPECIAL);
+    }
+
+    openSettings(launcher);
+    android.view.ViewGroup toggles = launcher.findViewById(R.id.quickItemToggles);
+    assertEquals(2, toggles.getChildCount());
+    toggles.getChildAt(1).performClick(); // hide lock
+    idle();
+    assertEquals(1, bar.getChildCount());
+    toggles.getChildAt(0).performClick(); // hide Wi-Fi
+    idle();
+    assertEquals(android.view.View.GONE, launcher.findViewById(R.id.quickBarContainer).getVisibility());
+    toggles.getChildAt(0).performClick(); // show them again
+    toggles.getChildAt(1).performClick();
+    idle();
+    assertEquals(2, bar.getChildCount());
+  }
+
+  @Test
   public void readingCardOptionOnlyWithKOReader() {
     Launcher launcher = start();
     openSettings(launcher);

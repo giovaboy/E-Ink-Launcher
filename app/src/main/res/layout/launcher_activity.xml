@@ -19,6 +19,27 @@
         android:clipChildren="false"
         android:clipToPadding="false" />
 
+    <!-- Quick bar: Wi-Fi, front light, contrast, refresh and lock on one centered row, filled by
+         Launcher.refreshQuickBar(). Gone when every item is hidden in settings. -->
+    <LinearLayout
+        android:id="@+id/quickBarContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.7dp"
+            android:background="#000000" />
+
+        <LinearLayout
+            android:id="@+id/quickBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal" />
+    </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0.7dp"

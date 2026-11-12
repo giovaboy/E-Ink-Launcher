@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A settings row with a label and an e-ink switch, for rows built in code (quick bar items). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/SettingsRow"
+    android:background="?android:selectableItemBackground">
+
+    <TextView
+        android:id="@+id/rowLabel"
+        style="@style/SettingsLabel" />
+
+    <Switch
+        android:id="@+id/rowSwitch"
+        style="@style/SettingsSwitch" />
+</LinearLayout>

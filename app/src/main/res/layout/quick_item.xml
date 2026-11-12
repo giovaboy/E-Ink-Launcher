@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One item of the quick bar (Wi-Fi, light, contrast, refresh, lock). The ids match
+     launcher_item.xml so WifiControl.bind() works on it too. Fixed width: the bar centers them. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="72dp"
+    android:layout_height="wrap_content"
+    android:background="?android:selectableItemBackground"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingTop="6dp"
+    android:paddingBottom="4dp">
+
+    <ImageView
+        android:id="@+id/itemIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:scaleType="fitCenter" />
+
+    <TextView
+        android:id="@+id/itemTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:singleLine="true"
+        android:textColor="#000000"
+        android:textSize="12sp" />
+</LinearLayout>

@@ -28,6 +28,7 @@ import java.util.HashMap;
 
 import cn.modificator.launcher.ftpservice.FTPService;
 import cn.modificator.launcher.modelController.ItemCenter;
+import cn.modificator.launcher.modelController.LauncherItemInfo;
 import cn.modificator.launcher.modelController.LauncherItemInfoComparator;
 import cn.modificator.launcher.modelController.WifiControl;
 import cn.modificator.launcher.reading.KOReader;
@@ -135,8 +136,33 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
       });
     }
 
+    buildQuickItemToggles();
     updateViews();
     updateStatus();
+  }
+
+  /** One switch per quick bar item available on this device; switched on means shown. */
+  private void buildQuickItemToggles() {
+    ViewGroup toggles = rootView.findViewById(R.id.quickItemToggles);
+    LayoutInflater inflater = LayoutInflater.from(getActivity());
+    for (final LauncherItemInfo item : itemCenter.getAllQuickItems()) {
+      final View row = inflater.inflate(R.layout.settings_switch_row, toggles, false);
+      // The Wi-Fi item's title is its live status, so it gets a fixed name here.
+      ((TextView) row.findViewById(R.id.rowLabel)).setText(ItemCenter.WIFI_ITEM_ID.equals(item.id)
+              ? getString(R.string.quick_item_wifi) : item.title);
+      final Switch toggle = row.findViewById(R.id.rowSwitch);
+      toggle.setChecked(!config.isQuickItemHidden(item.id));
+      row.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          boolean hide = !config.isQuickItemHidden(item.id);
+          config.setQuickItemHidden(item.id, hide);
+          toggle.setChecked(!hide);
+          sendToLauncher(new Intent().putExtra(Launcher.QUICK_BAR_CHANGED_KEY, true));
+        }
+      });
+      toggles.addView(row);
+    }
   }
 
   /** Shows the current values. Config uses some inverted flags: see the comments. */

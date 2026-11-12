@@ -41,6 +41,7 @@ public class Config {
   public int batteryStyle = 0;
   /** Extra space under the bottom bar, in dp: the device bezel can hide the bottom of the screen. */
   public int bottomInset = 0;
+  private Set<String> hiddenQuickItems;
   public int sortFlags = -1;
   private String preferencesFileName = "launcherPropertyFile";
   private Set<String> hiddenItemIds = new HashSet<>();
@@ -248,6 +249,26 @@ public class Config {
     showStatusBar = b;
     SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
     preferences.edit().putBoolean(Launcher.SHOW_STATUS_BAR_KEY, b).apply();
+  }
+
+  public boolean isQuickItemHidden(String id) {
+    if (hiddenQuickItems == null) {
+      hiddenQuickItems = new HashSet<>(context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE)
+              .getStringSet(Launcher.HIDDEN_QUICK_ITEMS_KEY, new HashSet<String>()));
+    }
+    return hiddenQuickItems.contains(id);
+  }
+
+  public void setQuickItemHidden(String id, boolean hidden) {
+    isQuickItemHidden(id); // load
+    if (hidden) {
+      hiddenQuickItems.add(id);
+    } else {
+      hiddenQuickItems.remove(id);
+    }
+    // A copy: SharedPreferences must never get the same mutated set instance twice.
+    context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE).edit()
+            .putStringSet(Launcher.HIDDEN_QUICK_ITEMS_KEY, new HashSet<>(hiddenQuickItems)).apply();
   }
 
   public void setBottomInset(int dp) {

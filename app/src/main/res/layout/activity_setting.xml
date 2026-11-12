@@ -313,6 +313,19 @@
 
                 <View style="@style/SettingsDivider" />
 
+                <!-- Quick bar: one switch per item, added by SettingFragment -->
+                <TextView
+                    style="@style/SettingsSection"
+                    android:text="@string/settings_section_quick_bar" />
+
+                <LinearLayout
+                    android:id="@+id/quickItemToggles"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+                <View style="@style/SettingsDivider" />
+
                 <!-- More -->
                 <TextView
                     style="@style/SettingsSection"

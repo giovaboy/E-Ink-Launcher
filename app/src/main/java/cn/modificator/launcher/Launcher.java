@@ -18,6 +18,7 @@ import android.os.Looper;
 import android.text.format.DateFormat;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -66,6 +68,8 @@ public class Launcher extends FragmentActivity {
   public static final String SHOW_READING_CARD_KEY = "showReadingCardKey";
   public static final String BATTERY_STYLE_KEY = "batteryStyleKey";
   public static final String BOTTOM_INSET_KEY = "bottomInsetKey";
+  public static final String HIDDEN_QUICK_ITEMS_KEY = "hiddenQuickItems";
+  public static final String QUICK_BAR_CHANGED_KEY = "quickBarChanged";
   public static final String FONT_SIZE_KEY = "fontSizeKey";
   public static final String HIDE_DIVIDER_KEY = "hideDividerKey";
 
@@ -152,6 +156,7 @@ public class Launcher extends FragmentActivity {
     config.getRowNum();
 
     itemCenter.refresh(ItemCenter.REFRESH_LEVEL_0_ALL, EInkLauncherView.REFRESH_LEVEL_0_LAYOUT);
+    refreshQuickBar();
 
     findViewById(R.id.previousPage).setOnClickListener(new View.OnClickListener() {
       @Override
@@ -248,6 +253,7 @@ public class Launcher extends FragmentActivity {
     registerReceiver(timeListener, new IntentFilter(Intent.ACTION_TIME_TICK));
     if (itemCenter != null && launcherView != null) {
       itemCenter.refresh(ItemCenter.REFRESH_LEVEL_1_REPLACED_ICONS);
+      refreshQuickBar();
     }
     if (readingCard != null) {
       readingCard.refresh();
@@ -371,6 +377,8 @@ public class Launcher extends FragmentActivity {
       } else if (bundle.containsKey(SHOW_STATUS_BAR_KEY)) {
         config.setStatusBarShowStatus(bundle.getBoolean(SHOW_STATUS_BAR_KEY));
         toggleStatusBar();
+      } else if (bundle.containsKey(QUICK_BAR_CHANGED_KEY)) {
+        refreshQuickBar();
       } else if (bundle.containsKey(BOTTOM_INSET_KEY)) {
         config.setBottomInset(bundle.getInt(BOTTOM_INSET_KEY));
         applyBottomInset();
@@ -383,6 +391,7 @@ public class Launcher extends FragmentActivity {
       } else if (bundle.containsKey(SHOW_CUSTOM_ICON_KEY)) {
         config.setCustomIconShowStatus(bundle.getBoolean(SHOW_CUSTOM_ICON_KEY));
         itemCenter.refresh(ItemCenter.REFRESH_LEVEL_1_REPLACED_ICONS);
+        refreshQuickBar();
       } else if (bundle.containsKey(FONT_SIZE_KEY)) {
         launcherView.setFontSize(bundle.getFloat(FONT_SIZE_KEY));
       } else if (bundle.containsKey(HIDE_DIVIDER_KEY)) {
@@ -433,6 +442,56 @@ public class Launcher extends FragmentActivity {
    * Raises the bottom bar by the margin chosen in settings: on the device the bezel sits a bit
    * above the e-ink panel and visually covers its bottom edge.
    */
+  /**
+   * Fills the quick bar with the visible quick items (see ItemCenter.getVisibleQuickItems()).
+   * The views are only rebuilt when the set of items changes; otherwise they are just rebound,
+   * so returning to the home screen doesn't redraw (and flash) the whole bar on e-ink.
+   */
+  public void refreshQuickBar() {
+    ViewGroup bar = findViewById(R.id.quickBar);
+    List<LauncherItemInfo> items = itemCenter.getVisibleQuickItems();
+    findViewById(R.id.quickBarContainer).setVisibility(items.isEmpty() ? View.GONE : View.VISIBLE);
+
+    boolean sameItems = bar.getChildCount() == items.size();
+    for (int i = 0; sameItems && i < items.size(); i++) {
+      sameItems = items.get(i).id.equals(bar.getChildAt(i).getTag());
+    }
+    if (!sameItems) {
+      WifiControl.bind(null); // re-bound below if the Wi-Fi item is still shown
+      bar.removeAllViews();
+      for (LauncherItemInfo item : items) {
+        View view = getLayoutInflater().inflate(R.layout.quick_item, bar, false);
+        view.setTag(item.id);
+        bar.addView(view);
+      }
+    }
+
+    int iconSize = Utils.dp2Px(this, 40);
+    for (int i = 0; i < items.size(); i++) {
+      final LauncherItemInfo item = items.get(i);
+      View view = bar.getChildAt(i);
+      ((ImageView) view.findViewById(R.id.itemIcon)).setImageDrawable(item.getIcon(this, config.showCustomIcon, iconSize));
+      if (ItemCenter.WIFI_ITEM_ID.equals(item.id)) {
+        WifiControl.bind(view); // sets the icon and label from the Wi-Fi state
+      } else {
+        ((TextView) view.findViewById(R.id.itemTitle)).setText(item.title);
+      }
+      view.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          itemCenter.executeItemOnClick(v.getContext(), item);
+        }
+      });
+      view.setOnLongClickListener(new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+          itemCenter.executeItemOnLongClick(v.getContext(), item);
+          return true;
+        }
+      });
+    }
+  }
+
   public void applyBottomInset() {
     View bar = findViewById(R.id.bottomBar);
     int inset = Utils.dp2Px(this, config.bottomInset);

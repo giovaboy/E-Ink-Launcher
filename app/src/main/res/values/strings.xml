@@ -198,4 +198,6 @@ Thanks.
     <string name="settings_battery_ring">Ring</string>
     <string name="settings_battery_text">Text</string>
     <string name="settings_bottom_inset">Bottom margin</string>
+    <string name="settings_section_quick_bar">Quick bar</string>
+    <string name="quick_item_wifi">Wi-Fi</string>
 </resources>

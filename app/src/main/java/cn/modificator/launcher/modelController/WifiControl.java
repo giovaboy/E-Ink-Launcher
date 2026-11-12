@@ -16,10 +16,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import cn.modificator.launcher.R;
 import cn.modificator.launcher.Utils;
-import cn.modificator.launcher.widgets.ObserverFontTextView;
+
 import cn.modificator.launcher.widgets.RatioImageView;
 
 /**
@@ -29,7 +30,8 @@ import cn.modificator.launcher.widgets.RatioImageView;
  */
 
 public class WifiControl {
-  ObserverFontTextView appName;
+  // A plain TextView: the label is an ObserverFontTextView in the grid but not in the quick bar.
+  TextView appName;
   ImageView appImage;
   WifiStateReceiver wifiStateReceiver;
   WifiManager wifiManager;

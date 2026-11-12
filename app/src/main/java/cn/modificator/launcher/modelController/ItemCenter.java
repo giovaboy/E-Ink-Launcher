@@ -45,6 +45,8 @@ import cn.modificator.launcher.widgets.EInkLauncherView;
 public class ItemCenter {
   private Context mContext;
   private List<LauncherItemInfo> mAllItems = new ArrayList<>();
+  /** Wi-Fi, front light, contrast, refresh and lock: shown in the quick bar, not in the grid. */
+  private final List<LauncherItemInfo> mQuickItems = new ArrayList<>();
   private Set<String> mTemporaryHiddenItemIds = new HashSet<>();
   private List<LauncherItemInfo> mCurrentVisibleSortedItems = new ArrayList<>();
   private boolean isInManagingState;
@@ -458,6 +460,9 @@ public class ItemCenter {
     for (LauncherItemInfo itemInfo : mAllItems) {
       itemInfo.releaseIcon();
     }
+    for (LauncherItemInfo itemInfo : mQuickItems) {
+      itemInfo.releaseIcon();
+    }
   }
 
   private void loadAllItems() {
@@ -504,13 +509,31 @@ public class ItemCenter {
       }
     }
 
-    mAllItems.add(createPowerItem());
-    mAllItems.add(createWifiItem());
+    // Wi-Fi, light, contrast, refresh and lock live in the quick bar, not in the grid.
+    mQuickItems.clear();
+    mQuickItems.add(createWifiItem());
     if (Utils.isMoann) {
-      mAllItems.add(createBrightnessItem());
-      mAllItems.add(createContrastItem());
-      mAllItems.add(createRefreshItem());
+      mQuickItems.add(createBrightnessItem());
+      mQuickItems.add(createContrastItem());
+      mQuickItems.add(createRefreshItem());
     }
+    mQuickItems.add(createPowerItem());
+  }
+
+  /** Every quick bar item available on this device, in bar order. */
+  public List<LauncherItemInfo> getAllQuickItems() {
+    return Collections.unmodifiableList(mQuickItems);
+  }
+
+  /** The quick bar items to show: the available ones minus those hidden in settings. */
+  public List<LauncherItemInfo> getVisibleQuickItems() {
+    List<LauncherItemInfo> visible = new ArrayList<>();
+    for (LauncherItemInfo item : mQuickItems) {
+      if (!config.isQuickItemHidden(item.id)) {
+        visible.add(item);
+      }
+    }
+    return visible;
   }
 
   private void loadAllReplacedIcons() {
@@ -526,7 +549,9 @@ public class ItemCenter {
       }
     }
 
-    for (LauncherItemInfo itemInfo : mAllItems) {
+    List<LauncherItemInfo> withQuickItems = new ArrayList<>(mAllItems);
+    withQuickItems.addAll(mQuickItems);
+    for (LauncherItemInfo itemInfo : withQuickItems) {
       File f = replacements.get(itemInfo.getNameForIconReplacementMatch());
       if (f != null) {
         itemInfo.replacementIconUri = Uri.fromFile(f);

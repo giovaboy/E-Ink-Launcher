@@ -175,4 +175,6 @@ PS: tieni premute le icone per qualche sorpresa
     <string name="settings_battery_ring">Cerchio</string>
     <string name="settings_battery_text">Testo</string>
     <string name="settings_bottom_inset">Margine in basso</string>
+    <string name="settings_section_quick_bar">Barra rapida</string>
+    <string name="quick_item_wifi">Wi-Fi</string>
 </resources>
