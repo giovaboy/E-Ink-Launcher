@@ -101,26 +101,29 @@ public class LauncherLifecycleTest {
   public void quickBarHoldsTheSpecialItemsAndHidesThem() {
     Launcher launcher = start();
     android.view.ViewGroup bar = launcher.findViewById(R.id.quickBar);
-    // Not a Moaan device here: Wi-Fi and lock only, in the bar and not in the grid.
-    assertEquals(2, bar.getChildCount());
+    // Not a Moaan device here: Wi-Fi, FTP and lock only, in the bar and not in the grid.
+    assertEquals(3, bar.getChildCount());
     assertEquals(cn.modificator.launcher.modelController.ItemCenter.WIFI_ITEM_ID, bar.getChildAt(0).getTag());
+    assertEquals(cn.modificator.launcher.modelController.ItemCenter.FTP_ITEM_ID, bar.getChildAt(1).getTag());
     for (cn.modificator.launcher.modelController.LauncherItemInfo item : launcher.itemCenter.getAllItems()) {
       assertEquals(false, item.type == cn.modificator.launcher.modelController.LauncherItemInfo.TYPE_SPECIAL);
     }
 
     openSettings(launcher);
     android.view.ViewGroup toggles = launcher.findViewById(R.id.quickItemToggles);
-    assertEquals(2, toggles.getChildCount());
-    toggles.getChildAt(1).performClick(); // hide lock
+    assertEquals(3, toggles.getChildCount());
+    toggles.getChildAt(2).performClick(); // hide lock
     idle();
-    assertEquals(1, bar.getChildCount());
+    assertEquals(2, bar.getChildCount());
     toggles.getChildAt(0).performClick(); // hide Wi-Fi
+    toggles.getChildAt(1).performClick(); // hide FTP
     idle();
     assertEquals(android.view.View.GONE, launcher.findViewById(R.id.quickBarContainer).getVisibility());
     toggles.getChildAt(0).performClick(); // show them again
     toggles.getChildAt(1).performClick();
+    toggles.getChildAt(2).performClick();
     idle();
-    assertEquals(2, bar.getChildCount());
+    assertEquals(3, bar.getChildCount());
   }
 
   @Test
@@ -227,5 +230,23 @@ public class LauncherLifecycleTest {
     String text = MemoryStats.describe(start());
     assertNotNull(text);
     assertEquals(true, text.contains(BuildConfig.VERSION_NAME));
+  }
+
+  @Test
+  public void ftpItemNeedsWifiAndShowsItsState() {
+    Launcher launcher = start();
+    android.view.View ftp = launcher.findViewById(R.id.quickBar).findViewWithTag(cn.modificator.launcher.modelController.ItemCenter.FTP_ITEM_ID);
+    assertEquals("FTP", ((TextView) ftp.findViewById(R.id.itemTitle)).getText().toString());
+    assertEquals(launcher.getString(R.string.item_ftp_off), ftp.getContentDescription());
+    // Robolectric grants storage access but has no Wi-Fi: the server stays off, with a hint.
+    shadowOf(launcher.getApplication()).grantPermissions(android.Manifest.permission.READ_EXTERNAL_STORAGE,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+    ftp.performClick();
+    idle();
+    assertEquals(false, cn.modificator.launcher.ftpservice.FTPService.isRunning());
+    assertEquals(launcher.getString(R.string.toast_need_wifi_connnect), org.robolectric.shadows.ShadowToast.getTextOfLatestToast());
+    ftp.performLongClick();
+    idle();
+    assertEquals(launcher.getString(R.string.item_ftp_off), org.robolectric.shadows.ShadowToast.getTextOfLatestToast());
   }
 }

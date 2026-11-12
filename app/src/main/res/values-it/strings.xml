@@ -154,6 +154,10 @@
     <string name="settings_ftp">Server FTP</string>
     <string name="settings_ftp_off">Spento</string>
     <string name="settings_ftp_no_wifi">Wi-Fi non connesso</string>
+    <string name="item_ftp">FTP</string>
+    <string name="item_ftp_on">Server FTP acceso</string>
+    <string name="item_ftp_off">Server FTP spento</string>
+    <string name="ftp_failed">Il server FTP non è partito</string>
     <string name="settings_battery">Batteria</string>
     <string name="settings_battery_icon">Icona</string>
     <string name="settings_battery_ring">Cerchio</string>

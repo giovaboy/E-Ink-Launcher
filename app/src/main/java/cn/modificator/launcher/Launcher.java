@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -98,6 +99,23 @@ public class Launcher extends FragmentActivity {
   File iconFile;
   boolean isChina = true;
   FTPReceiver ftpReceiver = new FTPReceiver();
+  /** Updates the FTP quick item when the server starts or stops. */
+  private final BroadcastReceiver ftpStateReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      View view = findViewById(R.id.quickBar).findViewWithTag(ItemCenter.FTP_ITEM_ID);
+      if (view != null) {
+        bindFtpItem(view);
+      }
+      if (FTPService.ACTION_STARTED.equals(intent.getAction()) && ftpStartedFromBar) {
+        showFtpAddress();
+      } else if (FTPService.ACTION_FAILEDTOSTART.equals(intent.getAction())) {
+        Toast.makeText(context, R.string.ftp_failed, Toast.LENGTH_LONG).show();
+      }
+      ftpStartedFromBar = false;
+    }
+  };
+  private boolean ftpStartedFromBar;
   private final Handler memoryHandler = new Handler(Looper.getMainLooper());
   private boolean isResumed;
   private ReadingCard readingCard;
@@ -261,6 +279,10 @@ public class Launcher extends FragmentActivity {
     IntentFilter ftpIntentFilter = new IntentFilter(FTPService.ACTION_START_FTPSERVER);
     ftpIntentFilter.addAction(FTPService.ACTION_STOP_FTPSERVER);
     registerReceiver(ftpReceiver,ftpIntentFilter);
+    IntentFilter ftpStateFilter = new IntentFilter(FTPService.ACTION_STARTED);
+    ftpStateFilter.addAction(FTPService.ACTION_STOPPED);
+    ftpStateFilter.addAction(FTPService.ACTION_FAILEDTOSTART);
+    registerReceiver(ftpStateReceiver, ftpStateFilter);
   }
 
   /**
@@ -300,6 +322,7 @@ public class Launcher extends FragmentActivity {
     unregisterReceiver(timeListener);
     unregisterReceiver(usbReceiver);
     unregisterReceiver(ftpReceiver);
+    unregisterReceiver(ftpStateReceiver);
   }
 
   @Override
@@ -478,6 +501,8 @@ public class Launcher extends FragmentActivity {
       ((ImageView) view.findViewById(R.id.itemIcon)).setImageDrawable(item.getIcon(this, config.showCustomIcon, iconSize));
       if (ItemCenter.WIFI_ITEM_ID.equals(item.id)) {
         WifiControl.bind(view); // sets the icon and label from the Wi-Fi state
+      } else if (ItemCenter.FTP_ITEM_ID.equals(item.id)) {
+        bindFtpItem(view);
       } else {
         ((TextView) view.findViewById(R.id.itemTitle)).setText(item.title);
       }
@@ -495,6 +520,45 @@ public class Launcher extends FragmentActivity {
         }
       });
     }
+  }
+
+  /** The FTP item: filled arrows when the server runs, outlined when it is off, like Wi-Fi. */
+  private void bindFtpItem(View view) {
+    boolean running = FTPService.isRunning();
+    ((ImageView) view.findViewById(R.id.itemIcon)).setImageResource(running ? R.drawable.ftp_on : R.drawable.ftp_off);
+    ((TextView) view.findViewById(R.id.itemTitle)).setText(R.string.item_ftp);
+    view.setContentDescription(getString(running ? R.string.item_ftp_on : R.string.item_ftp_off));
+  }
+
+  /** Starts or stops the FTP server from the quick bar; it needs Wi-Fi and storage access. */
+  public void toggleFtpServer() {
+    Utils.checkStroagePermission(this, new Runnable() {
+      @Override
+      public void run() {
+        Intent service = new Intent(Launcher.this, FTPService.class);
+        if (FTPService.isRunning()) {
+          stopService(service);
+        } else if (FTPService.isConnectedToWifi(Launcher.this)) {
+          ftpStartedFromBar = true;
+          startService(service);
+        } else {
+          Toast.makeText(Launcher.this, R.string.toast_need_wifi_connnect, Toast.LENGTH_SHORT).show();
+        }
+      }
+    });
+  }
+
+  /** Tells where to connect, or that the server is off (long press on the FTP item). */
+  public void showFtpAddress() {
+    String text;
+    if (!FTPService.isRunning()) {
+      text = getString(R.string.item_ftp_off);
+    } else {
+      java.net.InetAddress address = FTPService.getLocalInetAddress(this);
+      text = address == null ? getString(R.string.settings_ftp_no_wifi)
+              : "ftp://" + address.getHostAddress() + ":" + FTPService.getPort();
+    }
+    Toast.makeText(this, text, Toast.LENGTH_LONG).show();
   }
 
   /** Shows the battery in the style chosen in settings (see BatteryView). */

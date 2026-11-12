@@ -161,6 +161,10 @@
     <string name="settings_ftp">FTP server</string>
     <string name="settings_ftp_off">Off</string>
     <string name="settings_ftp_no_wifi">Wi-Fi not connected</string>
+    <string name="item_ftp">FTP</string>
+    <string name="item_ftp_on">FTP server on</string>
+    <string name="item_ftp_off">FTP server off</string>
+    <string name="ftp_failed">The FTP server could not start</string>
     <string name="settings_battery">Battery</string>
     <string name="settings_battery_icon">Icon</string>
     <string name="settings_battery_ring">Ring</string>

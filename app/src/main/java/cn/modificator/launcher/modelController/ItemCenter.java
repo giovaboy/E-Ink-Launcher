@@ -64,6 +64,7 @@ public class ItemCenter {
   public static final String BRIGHTNESS_ITEM_ID = "E-ink_Launcher.Brightness";
   public static final String CONTRAST_ITEM_ID = "E-ink_Launcher.Contrast";
   public static final String REFRESH_ITEM_ID = "E-ink_Launcher.Refresh";
+  public static final String FTP_ITEM_ID = "E-ink_Launcher.Ftp";
 
   public static final int REFRESH_LEVEL_0_ALL = 0;
   private static final int REFRESH_LEVEL_1_MIN = 10;
@@ -143,6 +144,8 @@ public class ItemCenter {
           EinkPanels.showLight(context);
         } else if (itemInfo.id.equals(ItemCenter.CONTRAST_ITEM_ID)) {
           EinkPanels.showContrast(context);
+        } else if (itemInfo.id.equals(ItemCenter.FTP_ITEM_ID)) {
+          ((Launcher) context).toggleFtpServer();
         } else if (itemInfo.id.equals(ItemCenter.REFRESH_ITEM_ID)) {
           try {
             Window win = ((Activity) context).getWindow();
@@ -302,6 +305,8 @@ public class ItemCenter {
         context.sendBroadcast(new Intent("com.moan.toggle_backlight"));
       } else if (itemInfo.id.equals(ItemCenter.CONTRAST_ITEM_ID)) {
         EinkPanels.openSystemRefreshModePanel(context);
+      } else if (itemInfo.id.equals(ItemCenter.FTP_ITEM_ID)) {
+        ((Launcher) context).showFtpAddress();
       } else if (itemInfo.id.equals(ItemCenter.REFRESH_ITEM_ID)) {
         context.sendBroadcast(new Intent("com.mogu.clear_mem"));
       }
@@ -513,6 +518,7 @@ public class ItemCenter {
     // Wi-Fi, light, contrast, refresh and lock live in the quick bar, not in the grid.
     mQuickItems.clear();
     mQuickItems.add(createWifiItem());
+    mQuickItems.add(createFtpItem());
     if (Utils.isMoann) {
       mQuickItems.add(createBrightnessItem());
       mQuickItems.add(createContrastItem());
@@ -644,6 +650,16 @@ public class ItemCenter {
 
      return itemInfo;
    }
+
+  /** The FTP server switch; the bar shows its state (see Launcher.bindFtpItem()). */
+  private LauncherItemInfo createFtpItem() {
+    LauncherItemInfo itemInfo = new LauncherItemInfo(LauncherItemInfo.TYPE_SPECIAL, 0);
+    itemInfo.id = FTP_ITEM_ID;
+    itemInfo.title = mContext.getString(R.string.settings_ftp);
+    itemInfo.iconRes = R.drawable.ftp_off;
+
+    return itemInfo;
+  }
 
    private LauncherItemInfo createPowerItem() {
      LauncherItemInfo itemInfo = new LauncherItemInfo(LauncherItemInfo.TYPE_SPECIAL, 0);
