@@ -94,6 +94,65 @@ public class ScreenshotTest {
     }
   }
 
+  /** Home screen for the README, with made-up apps and a public domain book (no personal data). */
+  @Test
+  @Config(qualifiers = "en-w411dp-h731dp-280dpi")
+  public void readmeHome() throws Exception {
+    Assume.assumeTrue(Boolean.getBoolean("screenshots"));
+    android.content.Intent main = new android.content.Intent(android.content.Intent.ACTION_MAIN)
+            .addCategory(android.content.Intent.CATEGORY_LAUNCHER);
+    String[] apps = {"KOReader", "Files", "Browser", "Calendar", "Notes", "Dictionary", "Settings", "Music"};
+    org.robolectric.shadows.ShadowPackageManager pm = shadowOf(
+            org.robolectric.RuntimeEnvironment.getApplication().getPackageManager());
+    for (String app : apps) {
+      String pkg = "org.example." + app.toLowerCase();
+      android.content.pm.ResolveInfo info = new android.content.pm.ResolveInfo();
+      info.activityInfo = new android.content.pm.ActivityInfo();
+      info.activityInfo.packageName = pkg;
+      info.activityInfo.name = pkg + ".Main";
+      info.activityInfo.applicationInfo = new android.content.pm.ApplicationInfo();
+      info.activityInfo.applicationInfo.packageName = pkg;
+      info.nonLocalizedLabel = app;
+      pm.addResolveInfoForIntent(main, info);
+    }
+    Launcher launcher = Robolectric.buildActivity(Launcher.class).setup().get();
+    shadowOf(Looper.getMainLooper()).idle();
+
+    // Fill the reading card by hand: the real one reads KOReader's files.
+    launcher.findViewById(R.id.readingCard).setVisibility(View.VISIBLE);
+    ((android.widget.TextView) launcher.findViewById(R.id.readingTitle)).setText("Pride and Prejudice");
+    ((android.widget.TextView) launcher.findViewById(R.id.readingAuthor)).setText("Jane Austen");
+    ((android.widget.ProgressBar) launcher.findViewById(R.id.readingProgress)).setProgress(420);
+    ((android.widget.TextView) launcher.findViewById(R.id.readingStatus)).setText(
+            launcher.getString(R.string.reading_progress, 42));
+    android.content.Intent battery = new android.content.Intent(android.content.Intent.ACTION_BATTERY_CHANGED)
+            .putExtra(android.os.BatteryManager.EXTRA_LEVEL, 82)
+            .putExtra(android.os.BatteryManager.EXTRA_SCALE, 100)
+            .putExtra(android.os.BatteryManager.EXTRA_STATUS, android.os.BatteryManager.BATTERY_STATUS_DISCHARGING);
+    launcher.batteryLevelReceiver.onReceive(launcher, battery);
+    shadowOf(Looper.getMainLooper()).idle();
+    save(launcher.getWindow().getDecorView(), 720, 1280, "readme_home");
+  }
+
+  /** Settings and light panel in English, for the README. */
+  @Test
+  @Config(qualifiers = "en-w411dp-h731dp-280dpi")
+  public void readmeSettingsAndPanel() throws Exception {
+    Assume.assumeTrue(Boolean.getBoolean("screenshots"));
+    Launcher launcher = Robolectric.buildActivity(Launcher.class).setup().get();
+    shadowOf(Looper.getMainLooper()).idle();
+    launcher.findViewById(R.id.toSetting).performClick();
+    shadowOf(Looper.getMainLooper()).idle();
+    save(launcher.getWindow().getDecorView(), 720, 1280, "readme_settings");
+    View light = LayoutInflater.from(launcher).inflate(R.layout.panel_light, null);
+    ((android.widget.TextView) light.findViewById(R.id.lightBrightnessLabel)).setText(launcher.getString(R.string.panel_light_brightness, 6));
+    ((android.widget.TextView) light.findViewById(R.id.lightTemperatureLabel)).setText(launcher.getString(R.string.panel_light_temperature, 14));
+    ((android.widget.ProgressBar) light.findViewById(R.id.lightBrightnessBar)).setProgress(6);
+    ((android.widget.ProgressBar) light.findViewById(R.id.lightTemperatureBar)).setProgress(14);
+    ((android.widget.TextView) light.findViewById(R.id.lightToggle)).setText(R.string.panel_light_off);
+    save(light, 620, 1280, "readme_light");
+  }
+
   @Test
   public void panels() throws Exception {
     Assume.assumeTrue(Boolean.getBoolean("screenshots"));

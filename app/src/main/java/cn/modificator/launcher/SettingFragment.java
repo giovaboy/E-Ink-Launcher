@@ -30,6 +30,7 @@ import cn.modificator.launcher.ftpservice.FTPService;
 import cn.modificator.launcher.modelController.ItemCenter;
 import cn.modificator.launcher.modelController.LauncherItemInfoComparator;
 import cn.modificator.launcher.modelController.WifiControl;
+import cn.modificator.launcher.reading.KOReader;
 
 /**
  * Launcher settings, shown as a centered modal over the home screen. Every change is sent to
@@ -156,6 +157,9 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     boolean needsLocation = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
             && getActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED;
     rootView.findViewById(R.id.showWifiName).setVisibility(needsLocation ? View.VISIBLE : View.GONE);
+    // The reading card only works with KOReader: no point offering it without.
+    boolean hasKOReader = KOReader.findPackage(getActivity().getPackageManager()) != null;
+    rootView.findViewById(R.id.toggleReadingCard).setVisibility(hasKOReader ? View.VISIBLE : View.GONE);
   }
 
   private int getTitleLinesPosition() {

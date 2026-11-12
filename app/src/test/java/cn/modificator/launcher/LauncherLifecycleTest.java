@@ -86,6 +86,26 @@ public class LauncherLifecycleTest {
   }
 
   @Test
+  public void readingCardOptionOnlyWithKOReader() {
+    Launcher launcher = start();
+    openSettings(launcher);
+    assertEquals(android.view.View.GONE, launcher.findViewById(R.id.toggleReadingCard).getVisibility());
+    launcher.onBackPressed();
+    idle();
+
+    // Install a fake KOReader launcher activity.
+    android.content.pm.ResolveInfo koreader = new android.content.pm.ResolveInfo();
+    koreader.activityInfo = new android.content.pm.ActivityInfo();
+    koreader.activityInfo.packageName = "org.koreader.launcher";
+    koreader.activityInfo.name = "org.koreader.launcher.MainActivity";
+    shadowOf(launcher.getPackageManager()).addResolveInfoForIntent(
+            new android.content.Intent(android.content.Intent.ACTION_MAIN).addCategory(android.content.Intent.CATEGORY_LAUNCHER),
+            koreader);
+    openSettings(launcher);
+    assertEquals(android.view.View.VISIBLE, launcher.findViewById(R.id.toggleReadingCard).getVisibility());
+  }
+
+  @Test
   public void bottomMarginRaisesTheBar() {
     Launcher launcher = start();
     openSettings(launcher);
