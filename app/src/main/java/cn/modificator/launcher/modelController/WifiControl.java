@@ -24,7 +24,7 @@ import cn.modificator.launcher.widgets.RatioImageView;
 
 /**
  * Created by Modificator
- * time: 16/12/3.下午12:46
+ * time: 2016-12-03 12:46 PM
  * des:create file and achieve model
  */
 
@@ -100,7 +100,8 @@ public class WifiControl {
 
   private void updateStatus(){
     if (appName!=null) {
-      appName.setText(mContext.getString(showNameRes, connectWifiName));
+      // Use the view (activity) context: it carries the in-app language, the app context may not.
+      appName.setText(appName.getContext().getString(showNameRes, connectWifiName));
       appImage.setImageResource(showIconRes);
     }
   }
@@ -128,7 +129,7 @@ public class WifiControl {
   }
 
   public static void onClickWifiItem(){
-    int wifiApState = instance.wifiManager.getWifiState();  //获取wifi状态
+    int wifiApState = instance.wifiManager.getWifiState();  // Current Wi-Fi state
 
     if (wifiApState == instance.wifiManager.WIFI_STATE_ENABLING || wifiApState == instance.wifiManager.WIFI_STATE_ENABLED) {
       instance.wifiManager.setWifiEnabled(false);

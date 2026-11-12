@@ -3,6 +3,7 @@ package cn.modificator.launcher;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.Build;
 import android.text.TextUtils;
 
 import java.util.Locale;
@@ -56,7 +57,16 @@ public final class LocaleHelper {
     }
     Locale locale = new Locale(tag);
     Locale.setDefault(locale);
-    Configuration config = new Configuration(base.getResources().getConfiguration());
+    Configuration config;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+      // Only the locale as an override delta: density, font scale and any per-app
+      // display tweaks applied by e-ink firmwares stay those of the base context.
+      config = new Configuration();
+    } else {
+      // Before N the empty constructor sets defaults (e.g. font scale 1) instead of
+      // leaving fields undefined, so start from the current configuration.
+      config = new Configuration(base.getResources().getConfiguration());
+    }
     config.setLocale(locale);
     return base.createConfigurationContext(config);
   }
