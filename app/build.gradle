@@ -1,0 +1,53 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'io.github.giovaboy.inkpalmtools'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'io.github.giovaboy.inkpalmtools'
+        minSdk 21
+        // The inkPalm 5 runs Android 8.1 (API 27).
+        targetSdk 27
+        versionCode 1
+        versionName '0.1.0'
+    }
+
+    // Signed with the public AOSP *platform test key*: on firmwares built with test keys
+    // (like the inkPalm 5) this makes android:sharedUserId="android.uid.system" valid, so the
+    // app runs as the system user. On any other firmware the install is refused.
+    signingConfigs {
+        platform {
+            storeFile rootProject.file('keys/platform.p12')
+            storeType 'pkcs12'
+            storePassword 'android'
+            keyAlias 'platform'
+            keyPassword 'android'
+            enableV1Signing true
+            enableV2Signing true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.platform
+        }
+        debug {
+            signingConfig signingConfigs.platform
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lint {
+        abortOnError false
+        // Not a Play Store app: it targets the Android 8.1 of the inkPalm 5 on purpose.
+        disable 'ExpiredTargetSdkVersion'
+    }
+}

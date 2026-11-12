@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">InkPalm Tools</string>
+    <string name="status">Runs as: %1$s\nadb_enabled: %2$d · adbd: %3$s\nservice.adb.tcp.port: %4$s\npersist.adb.tcp.port: %5$s\n%6$s</string>
+    <string name="status_system_user">system user</string>
+    <string name="status_not_system_user">normal app (uid %1$d): this firmware does not accept the platform test key</string>
+    <string name="status_listening">adb over Wi-Fi is ON: adb connect %1$s:%2$d</string>
+    <string name="status_not_listening">adb over Wi-Fi is off</string>
+    <string name="adb_wifi_on">Turn on adb over Wi-Fi</string>
+    <string name="adb_wifi_off">Turn off adb over Wi-Fi</string>
+    <string name="recovery">Reboot into recovery</string>
+    <string name="recovery_confirm">The reader will restart into the recovery menu. To come back to Android choose \"reboot system now\". Continue?</string>
+    <string name="log_not_system">Not running as the system user: nothing can be changed.</string>
+    <string name="log_restarting_adb">Restarting adb…</string>
+    <string name="log_done">Done.</string>
+</resources>
