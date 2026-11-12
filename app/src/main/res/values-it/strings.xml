@@ -154,4 +154,19 @@ PS: tieni premute le icone per qualche sorpresa
     <string name="panel_contrast_title">Contrasto</string>
     <string name="panel_refresh_mode">Modalità refresh</string>
     <string name="panel_not_supported">Il firmware non permette al launcher di regolarlo: apro il pannello di sistema</string>
+    <string name="settings_title">Impostazioni</string>
+    <string name="settings_section_grid">Griglia</string>
+    <string name="settings_section_show">Mostra</string>
+    <string name="settings_section_more">Altro</string>
+    <string name="settings_columns">Colonne</string>
+    <string name="settings_rows">Righe</string>
+    <string name="settings_title_lines_none">No</string>
+    <string name="settings_title_lines_all">Tutto</string>
+    <string name="settings_dividers">Divisori</string>
+    <string name="settings_status_bar">Barra di stato</string>
+    <string name="settings_custom_icons">Icone personalizzate</string>
+    <string name="settings_reading_card">Libro in lettura</string>
+    <string name="settings_ftp">Server FTP</string>
+    <string name="settings_ftp_off">Spento</string>
+    <string name="settings_ftp_no_wifi">Wi-Fi non connesso</string>
 </resources>

@@ -177,4 +177,19 @@ Thanks.
     <string name="panel_contrast_title">Contrast</string>
     <string name="panel_refresh_mode">Refresh mode</string>
     <string name="panel_not_supported">This firmware does not let the launcher change it: opening the system panel</string>
+    <string name="settings_title">Settings</string>
+    <string name="settings_section_grid">Grid</string>
+    <string name="settings_section_show">Show</string>
+    <string name="settings_section_more">More</string>
+    <string name="settings_columns">Columns</string>
+    <string name="settings_rows">Rows</string>
+    <string name="settings_title_lines_none">None</string>
+    <string name="settings_title_lines_all">All</string>
+    <string name="settings_dividers">Dividers</string>
+    <string name="settings_status_bar">Status bar</string>
+    <string name="settings_custom_icons">Custom icons</string>
+    <string name="settings_reading_card">Book being read</string>
+    <string name="settings_ftp">FTP server</string>
+    <string name="settings_ftp_off">Off</string>
+    <string name="settings_ftp_no_wifi">Wi-Fi not connected</string>
 </resources>

@@ -1,11 +1,14 @@
 package cn.modificator.launcher;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.Manifest;
-import androidx.fragment.app.Fragment;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -13,13 +16,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.SeekBar;
-import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,22 +31,17 @@ import cn.modificator.launcher.modelController.ItemCenter;
 import cn.modificator.launcher.modelController.LauncherItemInfoComparator;
 import cn.modificator.launcher.modelController.WifiControl;
 
-import static android.app.Activity.RESULT_OK;
-
 /**
- * Created by mod on 16-5-3.
+ * Launcher settings, shown as a centered modal over the home screen. Every change is sent to
+ * the launcher right away (LAUNCHER_ACTION broadcasts), so the grid behind updates live.
  */
 public class SettingFragment extends Fragment implements View.OnClickListener {
-  Spinner colNumSpinner;
-  Spinner rowNumSpinner;
-  Spinner sortMethodSpinner;
-  Spinner itemTitleLinesSpinner;
-  SeekBar fontControl;
-  View rootView;
-  TextView hideDivider, ftpAddr, ftpStatus,showStatusBar,showCustomIcon, showReadingCard;
-
-  public ItemCenter itemCenter;
-  public Config config;
+  private static final int MIN_GRID = 2;
+  private static final int MAX_GRID = 10;
+  private static final int MIN_FONT_SIZE = 10;
+  private static final int MAX_FONT_SIZE = 30;
+  private static final int REQUEST_SORT = 10000;
+  private static final int REQUEST_LOCATION = 10002;
 
   private static final Integer[] SORT_FLAGS_IN_ARRAY = new Integer[] {
           LauncherItemInfoComparator.SORT_MODE_ALPHABETICAL | LauncherItemInfoComparator.SORT_ORDER_ASC,
@@ -57,14 +54,19 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
           LauncherItemInfoComparator.SORT_MODE_CUSTOM_WITH_ALPHABETICAL | LauncherItemInfoComparator.SORT_ORDER_DESC,
   };
 
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-  }
+  public ItemCenter itemCenter;
+  public Config config;
+
+  private View rootView;
+  private TextView colValue, rowValue, fontValue, sortMethodValue, languageValue, ftpStatus;
+  private Switch switchDivider, switchStatusBar, switchCustomIcon, switchReadingCard, switchFtp;
+  private ViewGroup titleLinesSegments;
+  // Local copies: the launcher updates Config asynchronously when it gets the broadcast.
+  private int colNum, rowNum, fontSize;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.activity_setting, null);
+    return inflater.inflate(R.layout.activity_setting, container, false);
   }
 
   @Override
@@ -81,178 +83,138 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
       itemCenter = launcher.itemCenter;
     }
     rootView = getView();
-    rootView.findViewById(R.id.toBack).setOnClickListener(this);
-    rootView.findViewById(R.id.rootView).setOnClickListener(this);
-    rootView.findViewById(R.id.manageApps).setOnClickListener(this);
-    rootView.findViewById(R.id.toSort).setOnClickListener(this);
-    rootView.findViewById(R.id.language).setOnClickListener(this);
-    rootView.findViewById(R.id.showWifiName).setOnClickListener(this);
 
-    showStatusBar = rootView.findViewById(R.id.showStatusBar);
-    showCustomIcon = rootView.findViewById(R.id.showCustomIcon);
-    showReadingCard = rootView.findViewById(R.id.showReadingCard);
+    colValue = rootView.findViewById(R.id.colValue);
+    rowValue = rootView.findViewById(R.id.rowValue);
+    fontValue = rootView.findViewById(R.id.fontValue);
+    sortMethodValue = rootView.findViewById(R.id.sortMethodValue);
+    languageValue = rootView.findViewById(R.id.languageValue);
     ftpStatus = rootView.findViewById(R.id.ftp_status);
-    ftpAddr = rootView.findViewById(R.id.ftp_addr);
-    hideDivider = rootView.findViewById(R.id.hideDivider);
-    fontControl = rootView.findViewById(R.id.font_control);
-    colNumSpinner = rootView.findViewById(R.id.col_num_spinner);
-    rowNumSpinner = rootView.findViewById(R.id.row_num_spinner);
-    sortMethodSpinner = rootView.findViewById(R.id.sort_method_spinner);
-    itemTitleLinesSpinner = rootView.findViewById(R.id.item_title_line);
+    switchDivider = rootView.findViewById(R.id.switchDivider);
+    switchStatusBar = rootView.findViewById(R.id.switchStatusBar);
+    switchCustomIcon = rootView.findViewById(R.id.switchCustomIcon);
+    switchReadingCard = rootView.findViewById(R.id.switchReadingCard);
+    switchFtp = rootView.findViewById(R.id.switchFtp);
+    titleLinesSegments = rootView.findViewById(R.id.titleLinesSegments);
 
-    showStatusBar.setOnClickListener(this);
-    hideDivider.setOnClickListener(this);
-    showCustomIcon.setOnClickListener(this);
-    showReadingCard.setOnClickListener(this);
-    showStatusBar.getPaint().setStrikeThruText(config.showStatusBar);
-    hideDivider.getPaint().setStrikeThruText(config.hideDivider);
-    rowNumSpinner.setSelection(config.rowNum - 2, false);
-    fontControl.setProgress((int) ((config.fontSize - 10) * 10));
-    showCustomIcon.getPaint().setStrikeThruText(config.showCustomIcon);
-    showReadingCard.getPaint().setStrikeThruText(config.showReadingCard);
+    colNum = config.colNum;
+    rowNum = config.rowNum;
+    fontSize = Math.round(config.fontSize);
 
-    rowNumSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-      @Override
-      public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent();
-        intent.putExtra(Launcher.ROW_NUM_KEY, position + 2);
-        intent.setAction(Launcher.LAUNCHER_ACTION);
-        getActivity().sendBroadcast(intent);
-      }
-
-      @Override
-      public void onNothingSelected(AdapterView<?> parent) {
-
-      }
-    });
-    colNumSpinner.setSelection(config.colNum - 2, false);
-    colNumSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-      @Override
-      public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent();
-        intent.putExtra(Launcher.COL_NUM_KEY, position + 2);
-        intent.setAction(Launcher.LAUNCHER_ACTION);
-        getActivity().sendBroadcast(intent);
-      }
-
-      @Override
-      public void onNothingSelected(AdapterView<?> parent) {
-
-      }
-    });
-    itemTitleLinesSpinner.setSelection(getItemLineSpinnerSelectPosition(),false);
-    itemTitleLinesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-      @Override
-      public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent();
-        intent.putExtra(Launcher.ITEM_TITLE_LINES_KEY, position);
-        intent.setAction(Launcher.LAUNCHER_ACTION);
-        getActivity().sendBroadcast(intent);
-      }
-
-      @Override
-      public void onNothingSelected(AdapterView<?> parent) {
-
-      }
-    });
-    sortMethodSpinner.setSelection(getSortMethodSelectPosition(),false);
-    sortMethodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-      @Override
-      public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent();
-        intent.putExtra(Launcher.SORT_FLAGS_KEY, SORT_FLAGS_IN_ARRAY[position]);
-        intent.setAction(Launcher.LAUNCHER_ACTION);
-        getActivity().sendBroadcast(intent);
-      }
-
-      @Override
-      public void onNothingSelected(AdapterView<?> parent) {
-
-      }
-    });
-    rootView.findViewById(R.id.btnHideFontControl).setOnClickListener(this);
-    rootView.findViewById(R.id.changeFontSize).setOnClickListener(this);
-    rootView.findViewById(R.id.helpAbout).setOnClickListener(this);
-    rootView.findViewById(R.id.menu_ftp).setOnClickListener(this);
-
-    fontControl.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-      @Override
-      public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        if (fromUser) {
-          Intent intent = new Intent();
-          config.fontSize = 10 + progress / 10f;
-          intent.putExtra(Launcher.FONT_SIZE_KEY, 10 + progress / 10f);
-          intent.setAction(Launcher.LAUNCHER_ACTION);
-          getActivity().sendBroadcast(intent);
+    int[] clickable = {R.id.rootView, R.id.toBack, R.id.colDown, R.id.colUp, R.id.rowDown, R.id.rowUp,
+            R.id.fontDown, R.id.fontUp, R.id.sortMethod, R.id.toggleDivider, R.id.toggleStatusBar,
+            R.id.toggleCustomIcon, R.id.toggleReadingCard, R.id.menu_ftp, R.id.showWifiName,
+            R.id.manageApps, R.id.toSort, R.id.language, R.id.helpAbout};
+    for (int id : clickable) {
+      rootView.findViewById(id).setOnClickListener(this);
+    }
+    for (int i = 0; i < titleLinesSegments.getChildCount(); i++) {
+      final int position = i;
+      titleLinesSegments.getChildAt(i).setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          setTitleLines(position);
         }
-      }
+      });
+    }
 
-      @Override
-      public void onStartTrackingTouch(SeekBar seekBar) {
-      }
-
-      @Override
-      public void onStopTrackingTouch(SeekBar seekBar) {
-      }
-    });
-
+    updateViews();
     updateStatus();
   }
 
-  private int getItemLineSpinnerSelectPosition() {
-    if (config.itemTitleLines < 3) {
-      return config.itemTitleLines;
-    }
-    return 3;
+  /** Shows the current values. Config uses some inverted flags: see the comments. */
+  private void updateViews() {
+    colValue.setText(String.valueOf(colNum));
+    rowValue.setText(String.valueOf(rowNum));
+    fontValue.setText(String.valueOf(fontSize));
+    selectTitleLinesSegment(getTitleLinesPosition());
+    sortMethodValue.setText(getResources().getStringArray(R.array.sort_method)[getSortMethodPosition()]);
+    languageValue.setText(LocaleHelper.getLanguageNames(getActivity())[LocaleHelper.getLanguageIndex(getActivity())]);
+    switchDivider.setChecked(!config.hideDivider);
+    // config.showStatusBar is true when the launcher runs full screen, i.e. the bar is hidden.
+    switchStatusBar.setChecked(!config.showStatusBar);
+    switchCustomIcon.setChecked(config.showCustomIcon);
+    switchReadingCard.setChecked(config.showReadingCard);
+    boolean needsLocation = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+            && getActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED;
+    rootView.findViewById(R.id.showWifiName).setVisibility(needsLocation ? View.VISIBLE : View.GONE);
   }
 
-  private int getSortMethodSelectPosition() {
+  private int getTitleLinesPosition() {
+    return Math.min(config.itemTitleLines, 3); // 3 = no limit (Integer.MAX_VALUE)
+  }
+
+  private void selectTitleLinesSegment(int position) {
+    for (int i = 0; i < titleLinesSegments.getChildCount(); i++) {
+      titleLinesSegments.getChildAt(i).setSelected(i == position);
+    }
+  }
+
+  private int getSortMethodPosition() {
     int result = Arrays.asList(SORT_FLAGS_IN_ARRAY).indexOf(config.getSortFlags());
     if (result < 0) {
-        config.setSortFlags(LauncherItemInfoComparator.SORT_MODE_ALPHABETICAL | LauncherItemInfoComparator.SORT_ORDER_ASC);
-        result = 0;
+      config.setSortFlags(LauncherItemInfoComparator.SORT_MODE_ALPHABETICAL | LauncherItemInfoComparator.SORT_ORDER_ASC);
+      result = 0;
     }
-
     return result;
+  }
+
+  private void sendToLauncher(Intent intent) {
+    intent.setAction(Launcher.LAUNCHER_ACTION);
+    getActivity().sendBroadcast(intent);
   }
 
   @Override
   public void onClick(View v) {
     // Resource IDs are not compile-time constants since AGP 8, so this can't be a switch.
     int id = v.getId();
-    Intent intent;
     if (id == R.id.toBack || id == R.id.rootView) {
       getActivity().onBackPressed();
-    } else if (id == R.id.manageApps) {
-      intent = new Intent();
-      intent.putExtra(Launcher.DO_MANAGE_APP_KEY, true);
-      intent.setAction(Launcher.LAUNCHER_ACTION);
-      getActivity().sendBroadcast(intent);
-      getActivity().onBackPressed();
-    } else if (id == R.id.showStatusBar) {
-      config.showStatusBar = !config.showStatusBar;
-
-      intent = new Intent(Launcher.LAUNCHER_ACTION);
-      intent.putExtra(Launcher.SHOW_STATUS_BAR_KEY, config.showStatusBar);
-      getActivity().sendBroadcast(intent);
-      getActivity().onBackPressed();
-    } else if (id == R.id.helpAbout) {
-      AboutDialog.getInstance(getActivity()).show();
-    } else if (id == R.id.btnHideFontControl) {
-      rootView.findViewById(R.id.menuList).setVisibility(View.VISIBLE);
-      rootView.findViewById(R.id.font_control_p).setVisibility(View.GONE);
-    } else if (id == R.id.changeFontSize) {
-      rootView.findViewById(R.id.menuList).setVisibility(View.GONE);
-      rootView.findViewById(R.id.font_control_p).setVisibility(View.VISIBLE);
-    } else if (id == R.id.hideDivider) {
+    } else if (id == R.id.colDown || id == R.id.colUp) {
+      int next = clamp(colNum + (id == R.id.colUp ? 1 : -1), MIN_GRID, MAX_GRID);
+      if (next != colNum) {
+        colNum = next;
+        sendToLauncher(new Intent().putExtra(Launcher.COL_NUM_KEY, colNum));
+        updateViews();
+      }
+    } else if (id == R.id.rowDown || id == R.id.rowUp) {
+      int next = clamp(rowNum + (id == R.id.rowUp ? 1 : -1), MIN_GRID, MAX_GRID);
+      if (next != rowNum) {
+        rowNum = next;
+        sendToLauncher(new Intent().putExtra(Launcher.ROW_NUM_KEY, rowNum));
+        updateViews();
+      }
+    } else if (id == R.id.fontDown || id == R.id.fontUp) {
+      int next = clamp(fontSize + (id == R.id.fontUp ? 1 : -1), MIN_FONT_SIZE, MAX_FONT_SIZE);
+      if (next != fontSize) {
+        fontSize = next;
+        config.fontSize = fontSize; // saved by the launcher when the settings close
+        sendToLauncher(new Intent().putExtra(Launcher.FONT_SIZE_KEY, (float) fontSize));
+        updateViews();
+      }
+    } else if (id == R.id.sortMethod) {
+      showSortMethodDialog();
+    } else if (id == R.id.toggleDivider) {
       config.hideDivider = !config.hideDivider;
-      hideDivider.setText(config.hideDivider ? R.string.setting_show_divider : R.string.setting_hide_divider);
-
-      intent = new Intent();
-      intent.putExtra(Launcher.HIDE_DIVIDER_KEY, config.hideDivider);
-      intent.setAction(Launcher.LAUNCHER_ACTION);
-      getActivity().sendBroadcast(intent);
-      getActivity().onBackPressed();
+      sendToLauncher(new Intent().putExtra(Launcher.HIDE_DIVIDER_KEY, config.hideDivider));
+      updateViews();
+    } else if (id == R.id.toggleStatusBar) {
+      config.showStatusBar = !config.showStatusBar;
+      sendToLauncher(new Intent().putExtra(Launcher.SHOW_STATUS_BAR_KEY, config.showStatusBar));
+      updateViews();
+    } else if (id == R.id.toggleCustomIcon) {
+      Utils.checkStroagePermission(getActivity(), new Runnable() {
+        @Override
+        public void run() {
+          config.showCustomIcon = !config.showCustomIcon;
+          sendToLauncher(new Intent().putExtra(Launcher.SHOW_CUSTOM_ICON_KEY, config.showCustomIcon));
+          updateViews();
+        }
+      });
+    } else if (id == R.id.toggleReadingCard) {
+      config.showReadingCard = !config.showReadingCard;
+      sendToLauncher(new Intent().putExtra(Launcher.SHOW_READING_CARD_KEY, config.showReadingCard));
+      updateViews();
     } else if (id == R.id.menu_ftp) {
       Utils.checkStroagePermission(getActivity(), new Runnable() {
         @Override
@@ -269,37 +231,46 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
       });
     } else if (id == R.id.showWifiName) {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 10002);
+        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
       }
-    } else if (id == R.id.showReadingCard) {
-      intent = new Intent(Launcher.LAUNCHER_ACTION);
-      intent.putExtra(Launcher.SHOW_READING_CARD_KEY, !config.showReadingCard);
-      getActivity().sendBroadcast(intent);
+    } else if (id == R.id.manageApps) {
+      sendToLauncher(new Intent().putExtra(Launcher.DO_MANAGE_APP_KEY, true));
       getActivity().onBackPressed();
-    } else if (id == R.id.showCustomIcon) {
-      Utils.checkStroagePermission(getActivity(), new Runnable() {
-        @Override
-        public void run() {
-          config.showCustomIcon = !config.showCustomIcon;
-          Intent intent = new Intent(Launcher.LAUNCHER_ACTION);
-          intent.putExtra(Launcher.SHOW_CUSTOM_ICON_KEY, config.showCustomIcon);
-          getActivity().sendBroadcast(intent);
-          getActivity().onBackPressed();
-        }
-      });
     } else if (id == R.id.toSort) {
-      intent = new Intent(v.getContext(), SortActivity.class);
-      intent.putExtra(SortActivity.ALL_ITEMS_WITH_PRIORITY_KEY, config.gson.toJson(itemCenter.getAllItems()));
-      startActivityForResult(intent, 10000);
+      Intent intent = new Intent(v.getContext(), SortActivity.class);
+      intent.putExtra(SortActivity.ALL_ITEMS_WITH_PRIORITY_KEY, Config.gson.toJson(itemCenter.getAllItems()));
+      startActivityForResult(intent, REQUEST_SORT);
     } else if (id == R.id.language) {
       showLanguageDialog();
+    } else if (id == R.id.helpAbout) {
+      AboutDialog.getInstance(getActivity()).show();
     }
+  }
+
+  private void setTitleLines(int position) {
+    // The launcher maps position 3 to "no limit".
+    config.itemTitleLines = position == 3 ? Integer.MAX_VALUE : position;
+    sendToLauncher(new Intent().putExtra(Launcher.ITEM_TITLE_LINES_KEY, position));
+    selectTitleLinesSegment(position);
+  }
+
+  private void showSortMethodDialog() {
+    new AlertDialog.Builder(getActivity())
+            .setTitle(R.string.sort_method)
+            .setSingleChoiceItems(R.array.sort_method, getSortMethodPosition(), (dialog, which) -> {
+              dialog.dismiss();
+              config.setSortFlags(SORT_FLAGS_IN_ARRAY[which]);
+              sendToLauncher(new Intent().putExtra(Launcher.SORT_FLAGS_KEY, SORT_FLAGS_IN_ARRAY[which]));
+              updateViews();
+            })
+            .setNegativeButton(R.string.dialog_cancel, null)
+            .show();
   }
 
   private void showLanguageDialog() {
     final Launcher launcher = (Launcher) getActivity();
     final int current = LocaleHelper.getLanguageIndex(launcher);
-    new android.app.AlertDialog.Builder(launcher)
+    new AlertDialog.Builder(launcher)
             .setTitle(R.string.setting_language)
             .setSingleChoiceItems(LocaleHelper.getLanguageNames(launcher), current, (dialog, which) -> {
               dialog.dismiss();
@@ -312,14 +283,16 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
             .show();
   }
 
+  private static int clamp(int value, int min, int max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    if (requestCode == 10000 && resultCode == RESULT_OK) {
+    if (requestCode == REQUEST_SORT && resultCode == RESULT_OK) {
       HashMap<String, Integer> priorityMap = (HashMap<String, Integer>) data.getSerializableExtra(Launcher.PRIORITY_KEY);
-      Intent intent = new Intent(Launcher.LAUNCHER_ACTION);
-      intent.putExtra(Launcher.PRIORITY_KEY, priorityMap);
-      getActivity().sendBroadcast(intent);
+      sendToLauncher(new Intent().putExtra(Launcher.PRIORITY_KEY, priorityMap));
       getActivity().onBackPressed();
     }
   }
@@ -327,9 +300,9 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
   @Override
   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    if (requestCode==10002){
+    if (requestCode == REQUEST_LOCATION) {
       WifiControl.reloadWifiName();
-      getActivity().onBackPressed();
+      updateViews();
     }
   }
 
@@ -354,7 +327,6 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     getActivity().unregisterReceiver(ftpReceiver);
   }
 
-
   /**
    * Sends a broadcast to start ftp server
    */
@@ -370,21 +342,17 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
   }
 
   /**
-   * Update UI widgets based on connection status
+   * Update the FTP row based on connection and server status
    */
   private void updateStatus() {
-    if (FTPService.isConnectedToWifi(getActivity())) {
-      if (FTPService.isRunning()) {
-        ftpStatus.setText(R.string.setting_cloud_manager_on);
-        ftpAddr.setVisibility(View.VISIBLE);
-        ftpAddr.setText(getFTPAddressString());
-      } else {
-        ftpStatus.setText(R.string.setting_cloud_manager_off);
-        ftpAddr.setVisibility(View.GONE);
-      }
+    boolean running = FTPService.isRunning();
+    switchFtp.setChecked(running);
+    if (!FTPService.isConnectedToWifi(getActivity())) {
+      ftpStatus.setText(R.string.settings_ftp_no_wifi);
+    } else if (running) {
+      ftpStatus.setText(getFTPAddressString());
     } else {
-      ftpStatus.setText(R.string.setting_cloud_manager_wifi_off);
-      ftpAddr.setVisibility(View.GONE);
+      ftpStatus.setText(R.string.settings_ftp_off);
     }
   }
 
@@ -395,21 +363,18 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     return "ftp://" + FTPService.getLocalInetAddress(getActivity()).getHostAddress() + ":" + FTPService.getPort();
   }
 
-
   private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
-
     @Override
     public void onReceive(Context context, Intent intent) {
       ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
       NetworkInfo netInfo = conMan.getActiveNetworkInfo();
-      if (netInfo != null && netInfo.getType() == ConnectivityManager.TYPE_WIFI) {
-
-      } else {
+      if (netInfo == null || netInfo.getType() != ConnectivityManager.TYPE_WIFI) {
         stopServer();
       }
       updateStatus();
     }
   };
+
   private BroadcastReceiver ftpReceiver = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {

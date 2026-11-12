@@ -68,6 +68,24 @@ public class LauncherLifecycleTest {
   }
 
   @Test
+  public void settingsApplyChangesLiveAndStayOpen() {
+    Launcher launcher = start();
+    openSettings(launcher);
+    int columns = launcher.config.colNum;
+    boolean readingCard = launcher.config.showReadingCard;
+
+    launcher.findViewById(columns < 10 ? R.id.colUp : R.id.colDown).performClick();
+    launcher.findViewById(R.id.toggleReadingCard).performClick();
+    idle();
+
+    assertEquals(columns < 10 ? columns + 1 : columns - 1, launcher.config.colNum);
+    assertEquals(!readingCard, launcher.config.showReadingCard);
+    assertEquals(!readingCard, ((android.widget.Switch) launcher.findViewById(R.id.switchReadingCard)).isChecked());
+    // Still open: the settings card is on screen.
+    assertNotNull(launcher.findViewById(R.id.settingsCard));
+  }
+
+  @Test
   public void survivesLanguageChange() {
     Launcher launcher = start();
     openSettings(launcher);

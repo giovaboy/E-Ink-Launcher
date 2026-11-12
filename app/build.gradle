@@ -30,8 +30,8 @@ android {
         applicationId "com.moan.moanwm"
         minSdkVersion 17
         targetSdkVersion 29
-        versionCode 43
-        versionName "0.5.0"
+        versionCode 44
+        versionName "0.6.0"
     }
     buildFeatures {
         buildConfig true
@@ -61,6 +61,10 @@ android {
     testOptions {
         unitTests {
             includeAndroidResources = true
+            all {
+                // ./gradlew testHomeDebugUnitTest -Pscreenshots renders app/build/screenshots/*.png
+                systemProperty "screenshots", project.hasProperty("screenshots") ? "true" : "false"
+            }
         }
     }
     lint {
