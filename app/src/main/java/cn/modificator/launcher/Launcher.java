@@ -67,7 +67,6 @@ public class Launcher extends FragmentActivity {
   public static final String SHOW_CUSTOM_ICON_KEY = "showCustomIconKey";
   public static final String SHOW_READING_CARD_KEY = "showReadingCardKey";
   public static final String BATTERY_STYLE_KEY = "batteryStyleKey";
-  public static final String BOTTOM_INSET_KEY = "bottomInsetKey";
   public static final String HIDDEN_QUICK_ITEMS_KEY = "hiddenQuickItems";
   public static final String QUICK_BAR_CHANGED_KEY = "quickBarChanged";
   public static final String FONT_SIZE_KEY = "fontSizeKey";
@@ -133,7 +132,6 @@ public class Launcher extends FragmentActivity {
     batteryStatus = findViewById(R.id.batteryStatus);
     batteryPercent = findViewById(R.id.batteryPercent);
     applyBatteryStyle();
-    applyBottomInset();
     textClock = findViewById(R.id.textClock);
     textTime = findViewById(R.id.textTime);
     (this.<ImageView>findViewById(R.id.toSetting)).setImageDrawable(Utils.tintDrawable(getResources().getDrawable(R.drawable.navibar_icon_settings_highlight), ColorStateList.valueOf(0xff000000)));
@@ -230,8 +228,8 @@ public class Launcher extends FragmentActivity {
       itemCenter.showPreviousPage();
     } else if (keyCode == KeyEvent.KEYCODE_PAGE_DOWN) {
       itemCenter.showNextPage();
-    } else if (keyCode == KeyEvent.KEYCODE_BACK) {
-      return true;
+    } else if (keyCode == KeyEvent.KEYCODE_BACK && !hasOpenScreen()) {
+      return true; // nothing to go back to on the home screen
     }
     return super.onKeyUp(keyCode, event);
   }
@@ -379,9 +377,6 @@ public class Launcher extends FragmentActivity {
         toggleStatusBar();
       } else if (bundle.containsKey(QUICK_BAR_CHANGED_KEY)) {
         refreshQuickBar();
-      } else if (bundle.containsKey(BOTTOM_INSET_KEY)) {
-        config.setBottomInset(bundle.getInt(BOTTOM_INSET_KEY));
-        applyBottomInset();
       } else if (bundle.containsKey(BATTERY_STYLE_KEY)) {
         config.setBatteryStyle(bundle.getInt(BATTERY_STYLE_KEY));
         applyBatteryStyle();
@@ -439,10 +434,6 @@ public class Launcher extends FragmentActivity {
   };
 
   /**
-   * Raises the bottom bar by the margin chosen in settings: on the device the bezel sits a bit
-   * above the e-ink panel and visually covers its bottom edge.
-   */
-  /**
    * Fills the quick bar with the visible quick items (see ItemCenter.getVisibleQuickItems()).
    * The views are only rebuilt when the set of items changes; otherwise they are just rebound,
    * so returning to the home screen doesn't redraw (and flash) the whole bar on e-ink.
@@ -490,14 +481,6 @@ public class Launcher extends FragmentActivity {
         }
       });
     }
-  }
-
-  public void applyBottomInset() {
-    View bar = findViewById(R.id.bottomBar);
-    int inset = Utils.dp2Px(this, config.bottomInset);
-    bar.getLayoutParams().height = Utils.dp2Px(this, 48) + inset;
-    bar.setPadding(0, 0, 0, inset);
-    bar.requestLayout();
   }
 
   /** Shows the battery in the style chosen in settings (see BatteryView). */
@@ -582,10 +565,17 @@ public class Launcher extends FragmentActivity {
 
   @Override
   public boolean onKeyDown(int keyCode, KeyEvent event) {
-    if (keyCode == KeyEvent.KEYCODE_BACK && getFragmentManager().getBackStackEntryCount() == 0) {
+    // The settings are an AndroidX fragment: getFragmentManager() (the framework one) never saw
+    // them, so the back key was always swallowed and could not close the settings.
+    if (keyCode == KeyEvent.KEYCODE_BACK && !hasOpenScreen()) {
       return true;
     }
     return super.onKeyDown(keyCode, event);
+  }
+
+  /** Whether a screen (the settings) is open over the home screen. */
+  private boolean hasOpenScreen() {
+    return getSupportFragmentManager().getBackStackEntryCount() > 0;
   }
 
   public boolean isDeviceAdmin() {

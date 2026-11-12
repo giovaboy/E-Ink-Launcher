@@ -165,7 +165,6 @@
     <string name="settings_battery_icon">Icon</string>
     <string name="settings_battery_ring">Ring</string>
     <string name="settings_battery_text">Text</string>
-    <string name="settings_bottom_inset">Bottom margin</string>
     <string name="settings_section_quick_bar">Quick bar</string>
     <string name="quick_item_wifi">Wi-Fi</string>
     <string name="about_description">A home screen for e-readers, in pure black and white for e-ink. It shows the book you are reading in KOReader, keeps Wi-Fi, front light, contrast and lock at hand, and uses as little memory as possible while you read.</string>

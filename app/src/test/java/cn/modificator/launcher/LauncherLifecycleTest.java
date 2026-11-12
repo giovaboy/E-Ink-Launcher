@@ -144,19 +144,6 @@ public class LauncherLifecycleTest {
   }
 
   @Test
-  public void bottomMarginRaisesTheBar() {
-    Launcher launcher = start();
-    openSettings(launcher);
-    launcher.findViewById(R.id.insetUp).performClick();
-    idle();
-    assertEquals(2, launcher.config.bottomInset);
-    assertEquals(Utils.dp2Px(launcher, 50), launcher.findViewById(R.id.bottomBar).getLayoutParams().height);
-    launcher.findViewById(R.id.insetDown).performClick();
-    idle();
-    assertEquals(0, launcher.config.bottomInset);
-  }
-
-  @Test
   public void survivesLanguageChange() {
     Launcher launcher = start();
     openSettings(launcher);
@@ -185,6 +172,24 @@ public class LauncherLifecycleTest {
     String text = new String(java.nio.file.Files.readAllBytes(report.toPath()), "UTF-8");
     assertEquals(true, text.contains("/proc/lm3630a/warm_level: exists=false"));
     assertEquals(true, text.contains("== android.app.ActivityManager"));
+  }
+
+  @Test
+  public void backKeyClosesTheSettings() {
+    Launcher launcher = start();
+    openSettings(launcher);
+    assertEquals(1, launcher.getSupportFragmentManager().getBackStackEntryCount());
+    pressBack(launcher);
+    assertEquals(0, launcher.getSupportFragmentManager().getBackStackEntryCount());
+    // On the home screen back does nothing and the launcher stays.
+    pressBack(launcher);
+    assertEquals(false, launcher.isFinishing());
+  }
+
+  private static void pressBack(Launcher launcher) {
+    launcher.dispatchKeyEvent(new android.view.KeyEvent(android.view.KeyEvent.ACTION_DOWN, android.view.KeyEvent.KEYCODE_BACK));
+    launcher.dispatchKeyEvent(new android.view.KeyEvent(android.view.KeyEvent.ACTION_UP, android.view.KeyEvent.KEYCODE_BACK));
+    idle();
   }
 
   @Test
