@@ -46,6 +46,9 @@ final class Diagnostics {
       out.write("\n== Disabled apps\n");
       writeDisabledApps(context, out);
 
+      out.write("\n== Background kill (freeze) setting\n");
+      writeBackgroundKill(context, out);
+
       out.write("\n== Processes by memory (PSS, MB)\n");
       writeProcesses(context, out);
 
@@ -72,6 +75,13 @@ final class Diagnostics {
     }
     if (count == 0) {
       out.write("(none)\n");
+    }
+  }
+
+  private static void writeBackgroundKill(Context context, Writer out) throws IOException {
+    out.write(BackgroundKill.describeApi());
+    for (BackgroundKill.App app : BackgroundKill.list(context)) {
+      out.write(app.freeze + "  " + app.packageName + "\n");
     }
   }
 

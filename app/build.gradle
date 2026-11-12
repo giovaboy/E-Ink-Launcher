@@ -11,8 +11,8 @@ android {
         minSdk 21
         // The inkPalm 5 runs Android 8.1 (API 27).
         targetSdk 27
-        versionCode 3
-        versionName '0.3.0'
+        versionCode 4
+        versionName '0.4.0'
     }
 
     // Signed with the public AOSP *platform test key*: on firmwares built with test keys

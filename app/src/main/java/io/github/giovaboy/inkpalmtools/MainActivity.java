@@ -13,7 +13,10 @@ import android.widget.TextView;
 
 import java.io.File;
 
-/** Status (system user? RAM), disable apps, save diagnostics, reboot into recovery. */
+/**
+ * Status (system user? RAM), disable apps, keep apps running in the background, save
+ * diagnostics, reboot into recovery.
+ */
 public class MainActivity extends Activity {
   private static final int REQUEST_STORAGE = 1;
 
@@ -28,6 +31,7 @@ public class MainActivity extends Activity {
     status = findViewById(R.id.status);
     log = findViewById(R.id.log);
     findViewById(R.id.apps).setOnClickListener(v -> startActivity(new Intent(this, AppsActivity.class)));
+    findViewById(R.id.background).setOnClickListener(v -> startActivity(new Intent(this, BackgroundActivity.class)));
     findViewById(R.id.diagnostics).setOnClickListener(v -> saveDiagnostics());
     findViewById(R.id.recovery).setOnClickListener(v -> confirmRecovery());
   }

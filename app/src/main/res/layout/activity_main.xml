@@ -33,6 +33,11 @@
             android:text="@string/apps_title" />
 
         <TextView
+            android:id="@+id/background"
+            style="@style/Action"
+            android:text="@string/background_title" />
+
+        <TextView
             android:id="@+id/diagnostics"
             style="@style/Action"
             android:text="@string/diagnostics" />

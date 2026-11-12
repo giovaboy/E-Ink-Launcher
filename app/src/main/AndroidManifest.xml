@@ -19,6 +19,7 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar">
         <activity android:name=".AppsActivity" />
+        <activity android:name=".BackgroundActivity" />
 
         <activity
             android:name=".MainActivity"
