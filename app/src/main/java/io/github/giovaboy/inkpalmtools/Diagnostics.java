@@ -46,6 +46,9 @@ final class Diagnostics {
       out.write("\n== Disabled apps\n");
       writeDisabledApps(context, out);
 
+      out.write("\n== Vendor settings\n");
+      out.write(VendorSettings.describe(context));
+
       out.write("\n== Background kill (freeze) setting\n");
       writeBackgroundKill(context, out);
 

@@ -11,6 +11,10 @@
     <uses-permission
         android:name="android.permission.REBOOT"
         tools:ignore="ProtectedPermissions" />
+    <!-- Granted to the system user anyway; for the vendor settings in Settings.Global. -->
+    <uses-permission
+        android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application

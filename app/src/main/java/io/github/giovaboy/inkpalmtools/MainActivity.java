@@ -9,6 +9,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.io.File;
@@ -34,6 +36,28 @@ public class MainActivity extends Activity {
     findViewById(R.id.background).setOnClickListener(v -> startActivity(new Intent(this, BackgroundActivity.class)));
     findViewById(R.id.diagnostics).setOnClickListener(v -> saveDiagnostics());
     findViewById(R.id.recovery).setOnClickListener(v -> confirmRecovery());
+    setUpWifiStandby();
+  }
+
+  /** The "Wi-Fi on in standby" switch, only on Moaan firmwares. */
+  private void setUpWifiStandby() {
+    View row = findViewById(R.id.wifiStandby);
+    if (!VendorSettings.isMoaan()) {
+      row.setVisibility(View.GONE);
+      return;
+    }
+    ((TextView) row.findViewById(R.id.label)).setText(R.string.wifi_standby);
+    ((TextView) row.findViewById(R.id.packageName)).setText(R.string.wifi_standby_summary);
+    row.findViewById(R.id.protectedLabel).setVisibility(View.GONE);
+    Switch toggle = row.findViewById(R.id.toggle);
+    toggle.setChecked(VendorSettings.keepsWifiInStandby(this));
+    row.setOnClickListener(v -> {
+      String error = VendorSettings.setKeepWifiInStandby(this, !VendorSettings.keepsWifiInStandby(this));
+      if (error != null) {
+        log.setText(error);
+      }
+      toggle.setChecked(VendorSettings.keepsWifiInStandby(this));
+    });
   }
 
   @Override
