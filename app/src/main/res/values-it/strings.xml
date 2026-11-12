@@ -52,7 +52,7 @@
     <string name="wifi_status_closing">Spegnimento Wi-Fi…</string>
     <string name="wifi_status_opening">Accensione Wi-Fi…</string>
     <string name="wifi_status_on">Wi-Fi acceso</string>
-    <string name="wifi_status_connected">Wi-Fi connesso: %s</string>
+    <string name="wifi_status_connected">Wi-Fi connesso</string>
     <string name="wifi_status_connecting">Connessione Wi-Fi…</string>
     <string name="wifi_status_disconnected">Wi-Fi disconnesso</string>
     <string name="wifi_status_disconnecting">Disconnessione Wi-Fi…</string>

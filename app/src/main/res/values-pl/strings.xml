@@ -48,7 +48,7 @@
     <string name="wifi_status_closing">Wyłączanie Wi-Fi</string>
     <string name="wifi_status_opening">Włączanie Wi-Fi</string>
     <string name="wifi_status_on">Wi-Fi wł.</string>
-    <string name="wifi_status_connected">Wi-Fi połączone:%s</string>
+    <string name="wifi_status_connected">Wi-Fi połączone</string>
     <string name="wifi_status_connecting">Łączenie Wi-Fi</string>
     <string name="wifi_status_disconnected">Wi-Fi wyłączone</string>
     <string name="wifi_status_disconnecting">Rozłączanie Wi-Fi</string>

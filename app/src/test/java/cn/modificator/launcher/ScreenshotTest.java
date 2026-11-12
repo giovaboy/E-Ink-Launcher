@@ -22,13 +22,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 /**
- * Renders screens to PNG at the inkPalm 5 resolution (720x1280, xhdpi), to look at layout
+ * Renders screens to PNG like on the inkPalm 5 (720x1280 at 280 dpi), to look at layout
  * changes without the device. Only runs with -Dscreenshots=true; images go to
  * app/build/screenshots/.
  */
 @RunWith(RobolectricTestRunner.class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
-@Config(sdk = 27, qualifiers = "it-w360dp-h640dp-xhdpi")
+// 720x1280 at 280 dpi: the per-app density the firmware gives the launcher on the device
+@Config(sdk = 27, qualifiers = "it-w411dp-h731dp-280dpi")
 public class ScreenshotTest {
 
   private static File outDir() {

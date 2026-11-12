@@ -92,7 +92,7 @@ public class WifiControl {
     if (instance.showNameRes == R.string.wifi_status_connected && instance.connectWifiName!=null && instance.connectWifiName.contains("unknown ssid")){
       instance.connectWifiName = instance.wifiManager.getConnectionInfo().getSSID().replace("\"","");
       if (!TextUtils.isEmpty(instance.connectWifiName)){
-        instance.connectWifiName = "\n"+instance.connectWifiName;
+        instance.connectWifiName = instance.connectWifiName.trim();
       }
       instance.updateStatus();
     }
@@ -101,7 +101,12 @@ public class WifiControl {
   private void updateStatus(){
     if (appName!=null) {
       // Use the view (activity) context: it carries the in-app language, the app context may not.
-      appName.setText(appName.getContext().getString(showNameRes, connectWifiName));
+      // When connected, the network name alone is the label: "Wi-Fi connected" only when the
+      // name is not known (e.g. missing location permission, which Android 8 requires for it).
+      String networkName = connectWifiName != null ? connectWifiName.trim() : "";
+      boolean showNetworkName = showNameRes == R.string.wifi_status_connected
+              && !networkName.isEmpty() && !networkName.contains("unknown ssid");
+      appName.setText(showNetworkName ? networkName : appName.getContext().getString(showNameRes));
       appImage.setImageResource(showIconRes);
     }
   }
@@ -189,7 +194,7 @@ public class WifiControl {
                 wifiName = wifiManager.getConnectionInfo().getSSID().replace("\"","");
               }
               if (!TextUtils.isEmpty(wifiName)){
-                wifiName = "\n"+wifiName;
+                wifiName = wifiName.trim();
               }
               showNameRes= R.string.wifi_status_connected;
               connectWifiName = wifiName;
