@@ -302,15 +302,29 @@ public class Launcher extends FragmentActivity {
     unregisterReceiver(ftpReceiver);
   }
 
-  /**
-   * When another app (typically a reader) is in front, drop the icons so the launcher, which
-   * is kept alive by HomeEntranceService, leaves as much RAM as possible to it. onResume()
-   * refreshes the current page, which loads them again.
-   */
   @Override
   public void onTrimMemory(int level) {
     super.onTrimMemory(level);
-    if (level >= TRIM_MEMORY_UI_HIDDEN && itemCenter != null && launcherView != null) {
+    if (level >= TRIM_MEMORY_UI_HIDDEN) {
+      releaseForBackground();
+    }
+  }
+
+  @Override
+  protected void onStop() {
+    super.onStop();
+    // Not only on onTrimMemory(UI_HIDDEN): on the device the background memory was never
+    // recorded that way, while onStop() is always called when another app comes in front.
+    releaseForBackground();
+  }
+
+  /**
+   * When another app (typically a reader) is in front, drop the icons so the launcher, which
+   * is kept alive by HomeEntranceService, leaves as much RAM as possible to it, and record how
+   * much it uses then. onResume() refreshes the current page, which loads them again.
+   */
+  private void releaseForBackground() {
+    if (itemCenter != null && launcherView != null) {
       itemCenter.releaseAllIcons();
       launcherView.clearIcons();
       if (readingCard != null) {
@@ -544,6 +558,10 @@ public class Launcher extends FragmentActivity {
 
   @Override
   public void onBackPressed() {
+    androidx.fragment.app.Fragment open = getSupportFragmentManager().findFragmentById(android.R.id.content);
+    if (open instanceof SettingFragment && ((SettingFragment) open).onBackPressedInPanel()) {
+      return; // Help & About went back to the settings list
+    }
     if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
       super.onBackPressed();
       config.saveFontSize();

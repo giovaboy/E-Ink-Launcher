@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Help & About, shown inside the settings card (SettingFragment). A long press on the version
+     line opens the developer tools (AboutPanel). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/aboutContent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        style="@style/PanelLabel"
+        android:text="@string/app_name"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/aboutVersion"
+        style="@style/PanelLabel"
+        android:layout_marginTop="4dp"
+        android:textSize="14sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="14dp"
+        android:background="#000000" />
+
+    <TextView
+        style="@style/PanelLabel"
+        android:lineSpacingMultiplier="1.15"
+        android:text="@string/about_description"
+        android:textSize="16sp" />
+
+    <TextView
+        style="@style/PanelLabel"
+        android:layout_marginTop="18dp"
+        android:text="@string/about_project"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <TextView
+        style="@style/PanelLabel"
+        android:text="@string/about_project_url"
+        android:textSize="16sp" />
+
+    <TextView
+        style="@style/PanelLabel"
+        android:layout_marginTop="18dp"
+        android:text="@string/about_credits_title"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <TextView
+        style="@style/PanelLabel"
+        android:lineSpacingMultiplier="1.15"
+        android:text="@string/about_credits"
+        android:textSize="15sp" />
+
+    <TextView
+        style="@style/PanelLabel"
+        android:layout_marginTop="18dp"
+        android:text="@string/about_license"
+        android:textSize="14sp" />
+</LinearLayout>

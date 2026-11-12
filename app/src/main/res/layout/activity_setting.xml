@@ -30,7 +30,22 @@
             android:orientation="horizontal"
             android:paddingLeft="20dp">
 
+            <!-- Back to the settings list, shown with Help & About -->
             <TextView
+                android:id="@+id/settingsBack"
+                android:layout_width="44dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="-12dp"
+                android:background="?android:selectableItemBackground"
+                android:contentDescription="@string/settings_title"
+                android:gravity="center"
+                android:text="‹"
+                android:textColor="#000000"
+                android:textSize="32sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/settingsTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -70,6 +85,7 @@
             android:background="#000000" />
 
         <ScrollView
+            android:id="@+id/settingsScroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fadeScrollbars="false"
@@ -77,7 +93,16 @@
             android:fadingEdge="none"
             android:overScrollMode="never">
 
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <include
+                layout="@layout/about_content"
+                android:visibility="gone" />
+
             <LinearLayout
+                android:id="@+id/settingsList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -420,6 +445,7 @@
                         android:textSize="22sp" />
                 </LinearLayout>
             </LinearLayout>
+            </FrameLayout>
         </ScrollView>
     </LinearLayout>
 </FrameLayout>

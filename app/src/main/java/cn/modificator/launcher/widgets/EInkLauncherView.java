@@ -92,11 +92,6 @@ public class EInkLauncherView extends ViewGroup{
         getChildAt(i * itemCenter.config.colNum + j).layout(childLeft, childTop, childRight, childBottom);
       }
     }
-    if (getChildCount() > 0){
-      if (getChildAt(0).findViewById(R.id.itemTitle).getMeasuredWidth() == 0) {
-        refresh(REFRESH_LEVEL_1_CURRENT_ITEMS);
-      }
-    }
   }
 
   private void refreshLayout() {
@@ -302,8 +297,11 @@ public class EInkLauncherView extends ViewGroup{
   @Override
   protected void onSizeChanged(int w, int h, int oldw, int oldh) {
     super.onSizeChanged(w, h, oldw, oldh);
-    if (oldw > 0 && oldh > 0 && itemCenter != null) {
-      // E.g. the reading card appeared: rasterize the icons again for the new cell size.
+    if (w > 0 && h > 0 && itemCenter != null) {
+      // The first real size, or a new one (e.g. the reading card appeared): bind the items
+      // again so names are laid out and icons rasterized for the actual cell size. This
+      // replaces a check in onLayout() ("first item name has width 0") that looped forever,
+      // eating memory, when the grid was empty.
       post(new Runnable() {
         @Override
         public void run() {

@@ -30,8 +30,8 @@ android {
         applicationId "com.moan.moanwm"
         minSdkVersion 17
         targetSdkVersion 29
-        versionCode 55
-        versionName "0.8.5"
+        versionCode 56
+        versionName "0.8.6"
     }
     buildFeatures {
         buildConfig true
@@ -129,4 +129,11 @@ android.applicationVariants.configureEach { variant ->
             }
         }
     }
+}
+
+// A hang in the Robolectric tests (e.g. an endless layout loop) fails the build after a while
+// instead of blocking it for good. JUnit timeout rules can't be used: Robolectric runs each
+// test on its own main thread.
+tasks.withType(Test).configureEach {
+    timeout = java.time.Duration.ofMinutes(8)
 }

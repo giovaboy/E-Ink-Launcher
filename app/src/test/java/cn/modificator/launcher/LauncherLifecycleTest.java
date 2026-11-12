@@ -186,6 +186,30 @@ public class LauncherLifecycleTest {
     assertEquals(false, launcher.isFinishing());
   }
 
+  @Test
+  public void aboutOpensInsideTheSettingsAndBackReturns() {
+    Launcher launcher = start();
+    openSettings(launcher);
+    launcher.findViewById(R.id.helpAbout).performClick();
+    idle();
+    assertEquals(android.view.View.VISIBLE, launcher.findViewById(R.id.aboutContent).getVisibility());
+    assertEquals(android.view.View.GONE, launcher.findViewById(R.id.settingsList).getVisibility());
+    pressBack(launcher); // back to the settings list, still open
+    assertEquals(android.view.View.VISIBLE, launcher.findViewById(R.id.settingsList).getVisibility());
+    assertEquals(1, launcher.getSupportFragmentManager().getBackStackEntryCount());
+    pressBack(launcher); // closes the settings
+    assertEquals(0, launcher.getSupportFragmentManager().getBackStackEntryCount());
+  }
+
+  @Test
+  public void backgroundMemoryIsRecordedOnStop() {
+    Launcher launcher = start();
+    controller.pause().stop();
+    shadowOf(Looper.getMainLooper()).idleFor(Duration.ofSeconds(6));
+    String text = MemoryStats.describe(launcher);
+    assertEquals(false, text.contains("–"));
+  }
+
   private static void pressBack(Launcher launcher) {
     launcher.dispatchKeyEvent(new android.view.KeyEvent(android.view.KeyEvent.ACTION_DOWN, android.view.KeyEvent.KEYCODE_BACK));
     launcher.dispatchKeyEvent(new android.view.KeyEvent(android.view.KeyEvent.ACTION_UP, android.view.KeyEvent.KEYCODE_BACK));

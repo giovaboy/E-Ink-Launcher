@@ -60,6 +60,9 @@ public class ScreenshotTest {
     shadowOf(Looper.getMainLooper()).idle();
     View root = launcher.getWindow().getDecorView();
     save(root, 720, 1280, "settings");
+    launcher.findViewById(R.id.helpAbout).performClick();
+    shadowOf(Looper.getMainLooper()).idle();
+    save(root, 720, 1280, "settings_about");
     // The whole settings content, unscrolled, to check every row.
     View card = launcher.findViewById(R.id.settingsCard);
     View content = ((android.view.ViewGroup) ((android.view.ViewGroup) card).getChildAt(2)).getChildAt(0);
@@ -157,7 +160,7 @@ public class ScreenshotTest {
   public void about() throws Exception {
     Assume.assumeTrue(Boolean.getBoolean("screenshots"));
     Activity activity = Robolectric.buildActivity(Activity.class).setup().get();
-    View about = LayoutInflater.from(activity).inflate(R.layout.about_dialog, null);
+    View about = LayoutInflater.from(activity).inflate(R.layout.about_content, null);
     ((android.widget.TextView) about.findViewById(R.id.aboutVersion)).setText(activity.getString(R.string.about_memory, "0.7.1", "19,8", "9,4"));
     save(about, 620, 1280, "about");
   }

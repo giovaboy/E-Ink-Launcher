@@ -109,7 +109,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     int[] clickable = {R.id.rootView, R.id.toBack, R.id.colDown, R.id.colUp, R.id.rowDown, R.id.rowUp,
             R.id.fontDown, R.id.fontUp, R.id.sortMethod, R.id.toggleDivider, R.id.toggleStatusBar,
             R.id.toggleCustomIcon, R.id.toggleReadingCard, R.id.menu_ftp, R.id.showWifiName,
-            R.id.manageApps, R.id.toSort, R.id.language, R.id.helpAbout};
+            R.id.manageApps, R.id.toSort, R.id.language, R.id.helpAbout, R.id.settingsBack};
     for (int id : clickable) {
       rootView.findViewById(id).setOnClickListener(this);
     }
@@ -288,8 +288,37 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     } else if (id == R.id.language) {
       showLanguageDialog();
     } else if (id == R.id.helpAbout) {
-      AboutDialog.getInstance(getActivity()).show();
+      showAbout(true);
+    } else if (id == R.id.settingsBack) {
+      showAbout(false);
     }
+  }
+
+  /**
+   * Shows Help & About in place of the settings list, in the same card, instead of a second
+   * dialog on top of the settings.
+   */
+  private void showAbout(boolean show) {
+    View about = rootView.findViewById(R.id.aboutContent);
+    if (show) {
+      AboutPanel.bind(about);
+    }
+    about.setVisibility(show ? View.VISIBLE : View.GONE);
+    rootView.findViewById(R.id.settingsList).setVisibility(show ? View.GONE : View.VISIBLE);
+    rootView.findViewById(R.id.settingsBack).setVisibility(show ? View.VISIBLE : View.GONE);
+    rootView.findViewById(R.id.helpAbout).setVisibility(show ? View.GONE : View.VISIBLE);
+    ((TextView) rootView.findViewById(R.id.settingsTitle)).setText(
+            show ? R.string.setting_help_and_about : R.string.settings_title);
+    rootView.findViewById(R.id.settingsScroll).scrollTo(0, 0);
+  }
+
+  /** The back key: from Help & About back to the settings list. Returns false otherwise. */
+  public boolean onBackPressedInPanel() {
+    if (rootView != null && rootView.findViewById(R.id.aboutContent).getVisibility() == View.VISIBLE) {
+      showAbout(false);
+      return true;
+    }
+    return false;
   }
 
   private void setTitleLines(int position) {
