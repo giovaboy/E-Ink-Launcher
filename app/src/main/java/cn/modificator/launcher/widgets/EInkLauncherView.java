@@ -279,7 +279,8 @@ public class EInkLauncherView extends ViewGroup{
   }
 
   public void refreshItemTitleLines() {
-    for (int i = 0; i < itemCenter.config.rowNum * itemCenter.config.colNum; i++) {
+    // Only the cells that exist: none yet when the font size is set during onCreate().
+    for (int i = 0; i < getChildCount(); i++) {
       TextView tvAppName = getChildAt(i).findViewById(R.id.itemTitle);
       applyTitleLines(tvAppName);
     }
