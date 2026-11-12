@@ -30,8 +30,8 @@ android {
         applicationId "com.moan.moanwm"
         minSdkVersion 17
         targetSdkVersion 29
-        versionCode 59
-        versionName "0.8.9"
+        versionCode 60
+        versionName "0.9.0"
     }
     buildFeatures {
         buildConfig true

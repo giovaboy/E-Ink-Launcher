@@ -162,6 +162,9 @@
     <string name="settings_battery_icon">Icona</string>
     <string name="settings_battery_ring">Cerchio</string>
     <string name="settings_battery_text">Testo</string>
+    <string name="settings_quick_icons">Icone</string>
+    <string name="settings_quick_icons_framed">Cornice</string>
+    <string name="settings_quick_icons_line">Linea</string>
     <string name="settings_section_quick_bar">Barra rapida</string>
     <string name="quick_item_wifi">Wi-Fi</string>
     <string name="about_description">Una home per lettori e-book, in bianco e nero puro per l\'e-ink. Mostra il libro che stai leggendo in KOReader, tiene a portata di mano Wi-Fi, luce, contrasto e blocco schermo, e usa meno memoria possibile mentre leggi.</string>

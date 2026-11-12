@@ -165,30 +165,46 @@ public class ScreenshotTest {
     save(about, 620, 1280, "about");
   }
 
-  /** The quick bar with the six items of the device and labels of different lengths. */
+  /**
+   * The quick bar with the six items of the device and labels of different lengths, in both
+   * icon styles, with the Wi-Fi and FTP items on and off.
+   */
   @Test
   public void quickBar() throws Exception {
     Assume.assumeTrue(Boolean.getBoolean("screenshots"));
-    Activity activity = Robolectric.buildActivity(Activity.class).setup().get();
-    cn.modificator.launcher.widgets.QuickBarRow bar = new cn.modificator.launcher.widgets.QuickBarRow(activity);
     String[] labels = {"Home-WiFi", "FTP", "Luminosità", "Contrasto", "Pulisci", "Blocca schermo"};
-    int[] icons = {R.drawable.wifi_on, R.drawable.ftp_on, R.drawable.bad_brightness_icon, R.drawable.bad_contrast_icon,
-            R.drawable.bad_clean_icon, R.drawable.ic_one_key_lock};
-    for (int i = 0; i < labels.length; i++) {
-      View item = LayoutInflater.from(activity).inflate(R.layout.quick_item, bar, false);
-      ((android.widget.ImageView) item.findViewById(R.id.itemIcon)).setImageResource(icons[i]);
-      ((android.widget.TextView) item.findViewById(R.id.itemTitle)).setText(labels[i]);
-      bar.addView(item);
-    }
-    // Attached to a window, or detached TextViews draw no text in Robolectric.
-    activity.setContentView(bar, new android.view.ViewGroup.LayoutParams(
-            android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
-    shadowOf(Looper.getMainLooper()).idle();
-    save(bar, 720, 400, "quick_bar_6");
-    // Same width for every item: evenly spaced icons.
-    for (int i = 1; i < bar.getChildCount(); i++) {
-      org.junit.Assert.assertEquals(bar.getChildAt(0).getWidth(), bar.getChildAt(i).getWidth());
-      org.junit.Assert.assertEquals(bar.getChildAt(i - 1).getRight(), bar.getChildAt(i).getLeft());
+    int[] on = {R.drawable.wifi_on, R.drawable.ftp_on, R.drawable.quick_brightness, R.drawable.quick_contrast,
+            R.drawable.quick_clean, R.drawable.quick_lock};
+    int[] off = {R.drawable.wifi_off, R.drawable.ftp_off, R.drawable.quick_brightness, R.drawable.quick_contrast,
+            R.drawable.quick_clean, R.drawable.quick_lock};
+    String[] styles = {"framed", "line"};
+    try {
+      for (int style = 0; style < styles.length; style++) {
+        cn.modificator.launcher.modelController.QuickIcons.setStyle(style);
+        for (int state = 0; state < 2; state++) {
+          Activity activity = Robolectric.buildActivity(Activity.class).setup().get();
+          cn.modificator.launcher.widgets.QuickBarRow bar = new cn.modificator.launcher.widgets.QuickBarRow(activity);
+          for (int i = 0; i < labels.length; i++) {
+            View item = LayoutInflater.from(activity).inflate(R.layout.quick_item, bar, false);
+            int icon = cn.modificator.launcher.modelController.QuickIcons.res(state == 0 ? on[i] : off[i]);
+            ((android.widget.ImageView) item.findViewById(R.id.itemIcon)).setImageResource(icon);
+            ((android.widget.TextView) item.findViewById(R.id.itemTitle)).setText(labels[i]);
+            bar.addView(item);
+          }
+          // Attached to a window, or detached TextViews draw no text in Robolectric.
+          activity.setContentView(bar, new android.view.ViewGroup.LayoutParams(
+                  android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
+          shadowOf(Looper.getMainLooper()).idle();
+          save(bar, 720, 400, "quick_bar_" + styles[style] + (state == 0 ? "_on" : "_off"));
+          // Same width for every item: evenly spaced icons.
+          for (int i = 1; i < bar.getChildCount(); i++) {
+            org.junit.Assert.assertEquals(bar.getChildAt(0).getWidth(), bar.getChildAt(i).getWidth());
+            org.junit.Assert.assertEquals(bar.getChildAt(i - 1).getRight(), bar.getChildAt(i).getLeft());
+          }
+        }
+      }
+    } finally {
+      cn.modificator.launcher.modelController.QuickIcons.setStyle(0);
     }
   }
 

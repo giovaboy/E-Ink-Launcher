@@ -186,7 +186,7 @@ public class LauncherItemInfo implements Cloneable {
       case TYPE_SHORTCUT:
         return bitmap != null ? new BitmapDrawable(context.getResources(), bitmap) : null;
       case TYPE_SPECIAL:
-        return iconRes != 0 ? context.getResources().getDrawable(iconRes) : null;
+        return iconRes != 0 ? context.getResources().getDrawable(QuickIcons.res(iconRes)) : null;
       default:
         return null;
     }

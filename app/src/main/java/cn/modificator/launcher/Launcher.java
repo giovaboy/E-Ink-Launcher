@@ -39,6 +39,7 @@ import cn.modificator.launcher.ftpservice.FTPReceiver;
 import cn.modificator.launcher.ftpservice.FTPService;
 import cn.modificator.launcher.modelController.AdminReceiver;
 import cn.modificator.launcher.modelController.ItemCenter;
+import cn.modificator.launcher.modelController.QuickIcons;
 import cn.modificator.launcher.modelController.HomeEntranceService;
 import cn.modificator.launcher.modelController.LauncherItemInfo;
 import cn.modificator.launcher.modelController.WifiControl;
@@ -68,6 +69,7 @@ public class Launcher extends FragmentActivity {
   public static final String SHOW_CUSTOM_ICON_KEY = "showCustomIconKey";
   public static final String SHOW_READING_CARD_KEY = "showReadingCardKey";
   public static final String BATTERY_STYLE_KEY = "batteryStyleKey";
+  public static final String QUICK_ICON_STYLE_KEY = "quickIconStyleKey";
   public static final String HIDDEN_QUICK_ITEMS_KEY = "hiddenQuickItems";
   public static final String QUICK_BAR_CHANGED_KEY = "quickBarChanged";
   public static final String FONT_SIZE_KEY = "fontSizeKey";
@@ -150,6 +152,7 @@ public class Launcher extends FragmentActivity {
     batteryStatus = findViewById(R.id.batteryStatus);
     batteryPercent = findViewById(R.id.batteryPercent);
     applyBatteryStyle();
+    QuickIcons.setStyle(config.quickIconStyle);
     textClock = findViewById(R.id.textClock);
     textTime = findViewById(R.id.textTime);
     (this.<ImageView>findViewById(R.id.toSetting)).setImageDrawable(Utils.tintDrawable(getResources().getDrawable(R.drawable.navibar_icon_settings_highlight), ColorStateList.valueOf(0xff000000)));
@@ -414,6 +417,10 @@ public class Launcher extends FragmentActivity {
         toggleStatusBar();
       } else if (bundle.containsKey(QUICK_BAR_CHANGED_KEY)) {
         refreshQuickBar();
+      } else if (bundle.containsKey(QUICK_ICON_STYLE_KEY)) {
+        config.setQuickIconStyle(bundle.getInt(QUICK_ICON_STYLE_KEY));
+        QuickIcons.setStyle(config.quickIconStyle);
+        refreshQuickBar();
       } else if (bundle.containsKey(BATTERY_STYLE_KEY)) {
         config.setBatteryStyle(bundle.getInt(BATTERY_STYLE_KEY));
         applyBatteryStyle();
@@ -525,7 +532,7 @@ public class Launcher extends FragmentActivity {
   /** The FTP item: filled arrows when the server runs, outlined when it is off, like Wi-Fi. */
   private void bindFtpItem(View view) {
     boolean running = FTPService.isRunning();
-    ((ImageView) view.findViewById(R.id.itemIcon)).setImageResource(running ? R.drawable.ftp_on : R.drawable.ftp_off);
+    ((ImageView) view.findViewById(R.id.itemIcon)).setImageResource(QuickIcons.res(running ? R.drawable.ftp_on : R.drawable.ftp_off));
     ((TextView) view.findViewById(R.id.itemTitle)).setText(R.string.item_ftp);
     view.setContentDescription(getString(running ? R.string.item_ftp_on : R.string.item_ftp_off));
   }

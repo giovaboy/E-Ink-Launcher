@@ -249,4 +249,23 @@ public class LauncherLifecycleTest {
     idle();
     assertEquals(launcher.getString(R.string.item_ftp_off), org.robolectric.shadows.ShadowToast.getTextOfLatestToast());
   }
+
+  @Test
+  public void quickIconStyleSwitchesTheBarIcons() {
+    Launcher launcher = start();
+    android.view.View ftp = launcher.findViewById(R.id.quickBar).findViewWithTag(cn.modificator.launcher.modelController.ItemCenter.FTP_ITEM_ID);
+    android.widget.ImageView icon = ftp.findViewById(R.id.itemIcon);
+    assertEquals(R.drawable.ftp_off, shadowOf(icon.getDrawable()).getCreatedFromResId());
+    openSettings(launcher);
+    android.view.ViewGroup segments = launcher.findViewById(R.id.quickIconSegments);
+    segments.getChildAt(1).performClick(); // Line
+    idle();
+    assertEquals(cn.modificator.launcher.modelController.QuickIcons.STYLE_LINE, launcher.config.quickIconStyle);
+    assertEquals(true, segments.getChildAt(1).isSelected());
+    icon = launcher.findViewById(R.id.quickBar).findViewWithTag(cn.modificator.launcher.modelController.ItemCenter.FTP_ITEM_ID).findViewById(R.id.itemIcon);
+    assertEquals(R.drawable.ftp_off_line, shadowOf(icon.getDrawable()).getCreatedFromResId());
+    segments.getChildAt(0).performClick(); // back to Framed
+    idle();
+    assertEquals(cn.modificator.launcher.modelController.QuickIcons.STYLE_FRAMED, launcher.config.quickIconStyle);
+  }
 }

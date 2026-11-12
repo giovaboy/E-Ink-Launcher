@@ -665,7 +665,7 @@ public class ItemCenter {
      LauncherItemInfo itemInfo = new LauncherItemInfo(LauncherItemInfo.TYPE_SPECIAL, 0);
      itemInfo.id = ONE_KEY_LOCK_ITEM_ID;
      itemInfo.title = mContext.getString(R.string.item_lockscreen);
-     itemInfo.iconRes = R.drawable.ic_one_key_lock;
+     itemInfo.iconRes = R.drawable.quick_lock;
 
      return itemInfo;
    }
@@ -674,7 +674,7 @@ public class ItemCenter {
     LauncherItemInfo itemInfo = new LauncherItemInfo(LauncherItemInfo.TYPE_SPECIAL, 0);
     itemInfo.id = BRIGHTNESS_ITEM_ID;
     itemInfo.title = mContext.getString(R.string.item_brightness);
-    itemInfo.iconRes = R.drawable.bad_brightness_icon;
+    itemInfo.iconRes = R.drawable.quick_brightness;
 
     return itemInfo;
   }
@@ -683,7 +683,7 @@ public class ItemCenter {
     LauncherItemInfo itemInfo = new LauncherItemInfo(LauncherItemInfo.TYPE_SPECIAL, 0);
     itemInfo.id = CONTRAST_ITEM_ID;
     itemInfo.title = mContext.getString(R.string.item_contrast);
-    itemInfo.iconRes = R.drawable.bad_contrast_icon;
+    itemInfo.iconRes = R.drawable.quick_contrast;
 
     return itemInfo;
   }
@@ -692,7 +692,7 @@ public class ItemCenter {
     LauncherItemInfo itemInfo = new LauncherItemInfo(LauncherItemInfo.TYPE_SPECIAL, 0);
     itemInfo.id = REFRESH_ITEM_ID;
     itemInfo.title = mContext.getString(R.string.item_clean);
-    itemInfo.iconRes = R.drawable.bad_clean_icon;
+    itemInfo.iconRes = R.drawable.quick_clean;
 
     return itemInfo;
   }

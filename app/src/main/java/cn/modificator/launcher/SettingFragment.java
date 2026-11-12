@@ -64,7 +64,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
   private View rootView;
   private TextView colValue, rowValue, fontValue, sortMethodValue, languageValue, ftpStatus;
   private Switch switchDivider, switchStatusBar, switchCustomIcon, switchReadingCard, switchFtp;
-  private ViewGroup titleLinesSegments, batteryStyleSegments;
+  private ViewGroup titleLinesSegments, batteryStyleSegments, quickIconSegments;
   // Local copies: the launcher updates Config asynchronously when it gets the broadcast.
   private int colNum, rowNum, fontSize;
 
@@ -101,6 +101,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     switchFtp = rootView.findViewById(R.id.switchFtp);
     titleLinesSegments = rootView.findViewById(R.id.titleLinesSegments);
     batteryStyleSegments = rootView.findViewById(R.id.batteryStyleSegments);
+    quickIconSegments = rootView.findViewById(R.id.quickIconSegments);
 
     colNum = config.colNum;
     rowNum = config.rowNum;
@@ -130,6 +131,18 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
           config.batteryStyle = style;
           sendToLauncher(new Intent().putExtra(Launcher.BATTERY_STYLE_KEY, style));
           selectSegment(batteryStyleSegments, style);
+        }
+      });
+    }
+
+    for (int i = 0; i < quickIconSegments.getChildCount(); i++) {
+      final int style = i;
+      quickIconSegments.getChildAt(i).setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          config.quickIconStyle = style;
+          sendToLauncher(new Intent().putExtra(Launcher.QUICK_ICON_STYLE_KEY, style));
+          selectSegment(quickIconSegments, style);
         }
       });
     }
@@ -170,6 +183,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     fontValue.setText(String.valueOf(fontSize));
     selectSegment(titleLinesSegments, getTitleLinesPosition());
     selectSegment(batteryStyleSegments, config.batteryStyle);
+    selectSegment(quickIconSegments, config.quickIconStyle);
     sortMethodValue.setText(getResources().getStringArray(R.array.sort_method)[getSortMethodPosition()]);
     languageValue.setText(LocaleHelper.getLanguageNames(getActivity())[LocaleHelper.getLanguageIndex(getActivity())]);
     switchDivider.setChecked(!config.hideDivider);

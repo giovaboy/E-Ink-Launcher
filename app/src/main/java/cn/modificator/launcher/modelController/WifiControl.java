@@ -109,7 +109,7 @@ public class WifiControl {
       boolean showNetworkName = showNameRes == R.string.wifi_status_connected
               && !networkName.isEmpty() && !networkName.contains("unknown ssid");
       appName.setText(showNetworkName ? networkName : appName.getContext().getString(showNameRes));
-      appImage.setImageResource(showIconRes);
+      appImage.setImageResource(QuickIcons.res(showIconRes));
     }
   }
 

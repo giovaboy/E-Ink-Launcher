@@ -335,6 +335,34 @@
                     style="@style/SettingsSection"
                     android:text="@string/settings_section_quick_bar" />
 
+                <TextView
+                    style="@style/SettingsLabel"
+                    android:layout_width="match_parent"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="10dp"
+                    android:text="@string/settings_quick_icons" />
+
+                <LinearLayout
+                    android:id="@+id/quickIconSegments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="8dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="8dp">
+
+                    <!-- Same order as QuickIcons.STYLE_FRAMED, STYLE_LINE -->
+                    <TextView
+                        style="@style/SettingsSegment"
+                        android:text="@string/settings_quick_icons_framed" />
+
+                    <TextView
+                        style="@style/SettingsSegment"
+                        android:layout_marginLeft="6dp"
+                        android:text="@string/settings_quick_icons_line" />
+                </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/quickItemToggles"
                     android:layout_width="match_parent"

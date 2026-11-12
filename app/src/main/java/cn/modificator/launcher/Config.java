@@ -39,6 +39,8 @@ public class Config {
   public boolean showReadingCard = true;
   /** One of BatteryView.STYLE_* */
   public int batteryStyle = 0;
+  /** Quick bar icons: QuickIcons.STYLE_FRAMED or STYLE_LINE. */
+  public int quickIconStyle = 0;
   private Set<String> hiddenQuickItems;
   public int sortFlags = -1;
   private String preferencesFileName = "launcherPropertyFile";
@@ -62,6 +64,7 @@ public class Config {
     getItemTitleLines();
     getReadingCardShowStatus();
     batteryStyle = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE).getInt(Launcher.BATTERY_STYLE_KEY, 0);
+    quickIconStyle = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE).getInt(Launcher.QUICK_ICON_STYLE_KEY, 0);
   }
 
   public static int getIconDensity(int requiredSize) {
@@ -266,6 +269,11 @@ public class Config {
     // A copy: SharedPreferences must never get the same mutated set instance twice.
     context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE).edit()
             .putStringSet(Launcher.HIDDEN_QUICK_ITEMS_KEY, new HashSet<>(hiddenQuickItems)).apply();
+  }
+
+  public void setQuickIconStyle(int style) {
+    quickIconStyle = style;
+    context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE).edit().putInt(Launcher.QUICK_ICON_STYLE_KEY, style).apply();
   }
 
   public void setBatteryStyle(int style) {
