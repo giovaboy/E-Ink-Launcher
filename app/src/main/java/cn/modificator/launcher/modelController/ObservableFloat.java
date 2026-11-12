@@ -8,7 +8,7 @@ import java.util.Observable;
 
 /**
  * Created by Modificator
- * time: 16/12/3.上午2:00
+ * time: 2016-12-03 2:00 AM
  * des:create file and achieve model
  */
 
@@ -28,10 +28,11 @@ public class ObservableFloat extends Observable implements Parcelable, Serializa
   }
 
   public void set(float value) {
-    if (mValue != value)
-      this.mValue = value;
-    notifyObservers(mValue);
+    this.mValue = value;
+    // Observable only notifies after setChanged(): calling it afterwards delayed every font
+    // size change by one step (the first change after start did nothing).
     setChanged();
+    notifyObservers(mValue);
   }
 
   @Override
