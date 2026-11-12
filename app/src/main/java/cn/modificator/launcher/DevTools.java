@@ -24,6 +24,7 @@ public final class DevTools {
     String[] items = {
             context.getString(R.string.dev_tools_probe),
             context.getString(R.string.dev_tools_adb),
+            context.getString(R.string.dev_tools_adb_wifi),
             context.getString(R.string.dev_tools_recovery),
     };
     new AlertDialog.Builder(context)
@@ -33,6 +34,8 @@ public final class DevTools {
                 runProbe(context);
               } else if (which == 1) {
                 tryEnableAdb(context);
+              } else if (which == 2) {
+                tryEnableAdbOverWifi(context);
               } else {
                 confirmRecovery(context);
               }
@@ -69,6 +72,45 @@ public final class DevTools {
             getSystemProperty("sys.usb.config"),
             getSystemProperty("sys.usb.state"),
             getSystemProperty("init.svc.adbd"))), 3000);
+  }
+
+  /**
+   * adbd also listens on TCP when service.adb.tcp.port (or persist.adb.tcp.port) is set when it
+   * starts. Set the port through setSystemProp(), then restart adbd by switching the USB
+   * configuration off and back to what it was. Reports which properties stuck.
+   */
+  private static void tryEnableAdbOverWifi(final Context context) {
+    if (!setSystemProp(context, "service.adb.tcp.port", "5555")) {
+      showResult(context, context.getString(R.string.dev_tools_not_available));
+      return;
+    }
+    if (!"5555".equals(getSystemProperty("service.adb.tcp.port"))) {
+      setSystemProp(context, "persist.adb.tcp.port", "5555");
+    }
+    final String usbConfig = getSystemProperty("sys.usb.config");
+    final String restore = "–".equals(usbConfig) || "?".equals(usbConfig) ? "adb" : usbConfig;
+    setSystemProp(context, "sys.usb.config", "none");
+    final Handler handler = new Handler(Looper.getMainLooper());
+    handler.postDelayed(() -> {
+      setSystemProp(context, "sys.usb.config", restore);
+      handler.postDelayed(() -> showResult(context, context.getString(
+              R.string.dev_tools_adb_wifi_result,
+              getSystemProperty("service.adb.tcp.port"),
+              getSystemProperty("persist.adb.tcp.port"),
+              getSystemProperty("init.svc.adbd"),
+              wifiAddress(context))), 3000);
+    }, 1500);
+  }
+
+  private static String wifiAddress(Context context) {
+    try {
+      android.net.wifi.WifiManager wifi = (android.net.wifi.WifiManager)
+              context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+      int ip = wifi.getConnectionInfo().getIpAddress();
+      return (ip & 0xff) + "." + (ip >> 8 & 0xff) + "." + (ip >> 16 & 0xff) + "." + (ip >> 24 & 0xff);
+    } catch (Exception e) {
+      return "?";
+    }
   }
 
   private static void confirmRecovery(final Context context) {

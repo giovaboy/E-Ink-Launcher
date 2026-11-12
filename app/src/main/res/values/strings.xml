@@ -186,4 +186,6 @@
     <string name="dev_tools_recovery_failed">The reader did not restart: this firmware ignored the request.</string>
     <string name="dev_tools_not_available">Not available on this firmware.</string>
     <string name="dev_tools_adb_result">USB configuration: %1$s\nUSB state: %2$s\nadb service: %3$s\n\nIf the state contains \"adb\" and the service is \"running\", connect the USB cable and run \"adb devices\" on the computer.</string>
+    <string name="dev_tools_adb_wifi">Turn on adb over Wi-Fi (experimental)</string>
+    <string name="dev_tools_adb_wifi_result">service.adb.tcp.port: %1$s\npersist.adb.tcp.port: %2$s\nadb service: %3$s\n\nIf a port shows 5555, connect from the computer with:\nadb connect %4$s:5555\nand allow the computer on this screen.</string>
 </resources>
