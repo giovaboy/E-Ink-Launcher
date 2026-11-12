@@ -40,6 +40,19 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/helpAbout"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/info_button"
+                android:contentDescription="@string/setting_help_and_about"
+                android:fontFamily="serif"
+                android:gravity="center"
+                android:text="i"
+                android:textColor="@color/panel_button_text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/toBack"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
@@ -421,21 +434,6 @@
                     <TextView
                         android:id="@+id/languageValue"
                         style="@style/SettingsValue" />
-
-                    <TextView
-                        style="@style/SettingsValue"
-                        android:text="›"
-                        android:textSize="22sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/helpAbout"
-                    style="@style/SettingsRow"
-                    android:background="?android:selectableItemBackground">
-
-                    <TextView
-                        style="@style/SettingsLabel"
-                        android:text="@string/setting_help_and_about" />
 
                     <TextView
                         style="@style/SettingsValue"
