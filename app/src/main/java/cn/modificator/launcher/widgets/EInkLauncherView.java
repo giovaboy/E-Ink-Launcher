@@ -115,8 +115,7 @@ public class EInkLauncherView extends ViewGroup{
       observable.addObserver((Observer) itemView.findViewById(R.id.itemTitle));
       TextView tvItemTitle = ((TextView)itemView.findViewById(R.id.itemTitle));
       tvItemTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, itemCenter.config.fontSize);
-      tvItemTitle.setMinLines(itemCenter.config.itemTitleLines == 2 ? itemCenter.config.itemTitleLines :0);
-      tvItemTitle.setMaxLines(itemCenter.config.itemTitleLines);
+      applyTitleLines(tvItemTitle);
       tvItemTitle.setEllipsize(TextUtils.TruncateAt.END);
 
       if (shouldHideDivider) {
@@ -176,6 +175,7 @@ public class EInkLauncherView extends ViewGroup{
           } else {
             ((TextView) itemView.findViewById(R.id.itemTitle)).setText(itemInfo.title);
           }
+          applyTitleLines((TextView) itemView.findViewById(R.id.itemTitle));
 
           itemView.setOnClickListener(new OnClickListener() {
             @Override
@@ -260,11 +260,28 @@ public class EInkLauncherView extends ViewGroup{
     }
   }
 
+  /**
+   * Limits an item name to the lines chosen in settings and to the lines that fit below the
+   * icon, so long names (e.g. "Wi-Fi connected: network") don't spill into the next row.
+   */
+  private void applyTitleLines(TextView title) {
+    int configLines = itemCenter.config.itemTitleLines;
+    int maxLines = configLines;
+    int cellHeight = getPerItemHeight();
+    int lineHeight = title.getLineHeight();
+    if (cellHeight > 0 && lineHeight > 0) {
+      // launcher_item.xml: the name starts about 12dp above the guideline at 70% of the cell.
+      int available = (int) (cellHeight * 0.3f) + Utils.dp2Px(getContext(), 12);
+      maxLines = Math.min(configLines, Math.max(1, available / lineHeight));
+    }
+    title.setMinLines(configLines == 2 ? Math.min(2, maxLines) : 0);
+    title.setMaxLines(maxLines);
+  }
+
   public void refreshItemTitleLines() {
     for (int i = 0; i < itemCenter.config.rowNum * itemCenter.config.colNum; i++) {
       TextView tvAppName = getChildAt(i).findViewById(R.id.itemTitle);
-      tvAppName.setMinLines(itemCenter.config.itemTitleLines == 2 ? itemCenter.config.itemTitleLines : 0);
-      tvAppName.setMaxLines(itemCenter.config.itemTitleLines);
+      applyTitleLines(tvAppName);
     }
   }
 
@@ -442,6 +459,9 @@ public class EInkLauncherView extends ViewGroup{
   public void setFontSize(float fontSize) {
     this.fontSize = fontSize;
     observable.set(fontSize);
+    if (itemCenter != null) {
+      refreshItemTitleLines();
+    }
   }
 
   public float getFontSize() {

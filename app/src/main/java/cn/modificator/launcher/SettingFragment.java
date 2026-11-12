@@ -70,6 +70,16 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
   @Override
   public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
+    // When the system recreates the activity (configuration change, language, DPI...) it
+    // restores this fragment by itself, without the fields the launcher set when opening it.
+    // Launcher.onCreate() has already run at this point, so take them from there.
+    Launcher launcher = (Launcher) getActivity();
+    if (config == null) {
+      config = launcher.config;
+    }
+    if (itemCenter == null) {
+      itemCenter = launcher.itemCenter;
+    }
     rootView = getView();
     rootView.findViewById(R.id.toBack).setOnClickListener(this);
     rootView.findViewById(R.id.rootView).setOnClickListener(this);
