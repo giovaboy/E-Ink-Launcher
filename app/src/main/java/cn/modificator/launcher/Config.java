@@ -185,20 +185,24 @@ public class Config {
   public void addHiddenItemId(String id) {
     hiddenItemIds.add(id);
     SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
-    preferences.edit().putStringSet(Launcher.HIDDEN_ITEM_IDS_KEY, hiddenItemIds).apply();
+    preferences.edit().putStringSet(Launcher.HIDDEN_ITEM_IDS_KEY, new HashSet<>(hiddenItemIds)).apply();
   }
 
   public void removeHiddenItemId(String id) {
     hiddenItemIds.remove(id);
     SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
-    preferences.edit().putStringSet(Launcher.HIDDEN_ITEM_IDS_KEY, hiddenItemIds).apply();
+    preferences.edit().putStringSet(Launcher.HIDDEN_ITEM_IDS_KEY, new HashSet<>(hiddenItemIds)).apply();
   }
 
+  /**
+   * Always store a copy: SharedPreferences keeps a reference to the set it is given, so
+   * putting the same (mutated) instance again looks unchanged and is never written to disk.
+   */
   public void setHiddenItemIds(Set<String> hiddenItemIds) {
     this.hiddenItemIds.clear();
     this.hiddenItemIds.addAll(hiddenItemIds);
     SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
-    preferences.edit().putStringSet(Launcher.HIDDEN_ITEM_IDS_KEY, this.hiddenItemIds).apply();
+    preferences.edit().putStringSet(Launcher.HIDDEN_ITEM_IDS_KEY, new HashSet<>(this.hiddenItemIds)).apply();
   }
 
   public Set<String> getHiddenItemIds() {

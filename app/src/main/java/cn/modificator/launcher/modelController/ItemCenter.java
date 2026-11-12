@@ -90,6 +90,18 @@ public class ItemCenter {
     return mTemporaryHiddenItemIds.add(itemId);
   }
 
+  /**
+   * Hides an item from its long-press menu. Unlike the "manage apps" mode, which saves when
+   * "Done" is pressed, nothing else would save it, so it is persisted right away.
+   */
+  private void hideItem(String itemId) {
+    mTemporaryHiddenItemIds.add(itemId);
+    if (!isInManagingState) {
+      config.setHiddenItemIds(mTemporaryHiddenItemIds);
+    }
+    refresh(REFRESH_LEVEL_0_ALL);
+  }
+
   public boolean removeHidden(String itemId) {
     return mTemporaryHiddenItemIds.remove(itemId);
   }
@@ -346,8 +358,7 @@ public class ItemCenter {
                 public void onClick(DialogInterface dialog, int which) {
                   switch (which) {
                     case 0:
-                      mTemporaryHiddenItemIds.add(itemInfo.id);
-                      refresh(REFRESH_LEVEL_0_ALL);
+                      hideItem(itemInfo.id);
                       break;
                     case 1:
                       /* https://github.com/butzist/ActivityLauncher */
@@ -393,8 +404,7 @@ public class ItemCenter {
               .setNeutralButton(R.string.dialog_hide, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                  mTemporaryHiddenItemIds.add(itemInfo.id);
-                  refresh(REFRESH_LEVEL_0_ALL);
+                  hideItem(itemInfo.id);
                 }
               })
               .setNegativeButton(R.string.dialog_remove, new DialogInterface.OnClickListener() {
