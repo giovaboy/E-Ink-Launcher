@@ -33,3 +33,10 @@
 -optimizationpasses 10
 # slf4j (pulled in by Apache FtpServer) looks up optional bindings at runtime
 -dontwarn org.slf4j.impl.**
+
+# Gson 2.8.x ships no R8 rules: keep the generic signature of TypeToken subclasses,
+# otherwise `new TypeToken<...>() {}` fails with "Missing type parameter".
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep,allowobfuscation,allowoptimization class com.google.gson.reflect.TypeToken
+-keep,allowobfuscation,allowoptimization class * extends com.google.gson.reflect.TypeToken
