@@ -188,6 +188,12 @@ public class LauncherLifecycleTest {
   }
 
   @Test
+  public void devToolsReportVendorMethodsMissing() {
+    Launcher launcher = start();
+    assertEquals(false, DevTools.setSystemProp(launcher, "sys.usb.config", "mtp,adb"));
+  }
+
+  @Test
   public void showsMemoryInAboutDialog() {
     String text = MemoryStats.describe(start());
     assertNotNull(text);

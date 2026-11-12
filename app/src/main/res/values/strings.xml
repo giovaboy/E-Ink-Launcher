@@ -178,4 +178,12 @@
     <string name="usage_access_title">Usage access</string>
     <string name="usage_access_message">To sort by recent use, the launcher needs to know when each app was last opened. Allow \"usage access\" for E-Ink Launcher on the next screen. Until then apps are sorted alphabetically.</string>
     <string name="usage_access_grant">Allow</string>
+    <string name="dev_tools_title">Developer tools</string>
+    <string name="dev_tools_probe">Device report</string>
+    <string name="dev_tools_adb">Turn on adb (experimental)</string>
+    <string name="dev_tools_recovery">Reboot into recovery</string>
+    <string name="dev_tools_recovery_confirm">The reader will restart into the recovery menu. To come back to Android, choose \"reboot system now\" there. Continue?</string>
+    <string name="dev_tools_recovery_failed">The reader did not restart: this firmware ignored the request.</string>
+    <string name="dev_tools_not_available">Not available on this firmware.</string>
+    <string name="dev_tools_adb_result">USB configuration: %1$s\nUSB state: %2$s\nadb service: %3$s\n\nIf the state contains \"adb\" and the service is \"running\", connect the USB cable and run \"adb devices\" on the computer.</string>
 </resources>

@@ -170,4 +170,12 @@
     <string name="usage_access_title">Accesso ai dati di utilizzo</string>
     <string name="usage_access_message">Per ordinare per uso recente, il launcher deve sapere quando hai aperto ogni app. Nella prossima schermata consenti \"accesso ai dati di utilizzo\" a E-Ink Launcher. Finché non lo fai, le app restano in ordine alfabetico.</string>
     <string name="usage_access_grant">Consenti</string>
+    <string name="dev_tools_title">Strumenti sviluppatore</string>
+    <string name="dev_tools_probe">Report dispositivo</string>
+    <string name="dev_tools_adb">Attiva adb (sperimentale)</string>
+    <string name="dev_tools_recovery">Riavvia in recovery</string>
+    <string name="dev_tools_recovery_confirm">Il lettore si riavvierà nel menu di recovery. Per tornare ad Android scegli \"reboot system now\". Continuare?</string>
+    <string name="dev_tools_recovery_failed">Il lettore non si è riavviato: questo firmware ha ignorato la richiesta.</string>
+    <string name="dev_tools_not_available">Non disponibile su questo firmware.</string>
+    <string name="dev_tools_adb_result">Configurazione USB: %1$s\nStato USB: %2$s\nServizio adb: %3$s\n\nSe lo stato contiene \"adb\" e il servizio è \"running\", collega il cavo USB e lancia \"adb devices\" sul computer.</string>
 </resources>

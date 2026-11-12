@@ -41,9 +41,17 @@ public final class DeviceProbe {
           "mogu_warm_led_value", "mogu_cold_led_value",
           "mogu_warm_led_status", "mogu_cold_led_status",
           "mogu_contrast_value", "mogu_contrast_status",
+          "adb_enabled", "com.moan.adb.enabled",
   };
   private static final String[] PROPERTIES = {
           "persist.sys.mRefreshMode", "persist.sys.canRefresh", "persist.display.gu16_max_limit",
+          "ro.fota.version", "ro.build.display.id", "ro.build.type", "ro.build.tags", "ro.debuggable",
+          "ro.secure", "ro.adb.secure", "persist.sys.usb.config", "sys.usb.config", "sys.usb.state",
+          "init.svc.adbd",
+  };
+  /** Whose signing certificate tells whether the firmware uses the public AOSP test keys. */
+  private static final String[] SIGNATURE_PACKAGES = {
+          "android", "com.android.systemui", "com.android.settings", "com.mgs.settings",
   };
   private static final String[] VENDOR_CLASSES = {
           "android.app.ActivityManager", "android.util.FunApi", "android.os.MoanFunApi",
@@ -124,6 +132,14 @@ public final class DeviceProbe {
       }
     }
 
+    // The lock screen password is never written, only whether there is one.
+    report.append("mas_lock_psw: ").append(Settings.Global.getString(resolver, "mas_lock_psw") != null ? "set" : "not set").append('\n');
+
+    report.append("\n== Signing certificates (SHA-256)\n");
+    for (String pkg : SIGNATURE_PACKAGES) {
+      report.append(pkg).append(": ").append(signatureSha256(context, pkg)).append('\n');
+    }
+
     // Vendor and settings apps, with the activities other apps can open: settings screens
     // that have no launcher icon can still be added to the grid by component name.
     report.append("\n== Vendor and settings packages (exported activities)\n");
@@ -153,6 +169,25 @@ public final class DeviceProbe {
       writer.write(report.toString());
     }
     return out;
+  }
+
+  @SuppressWarnings("deprecation")
+  private static String signatureSha256(Context context, String pkg) {
+    try {
+      android.content.pm.Signature[] signatures = context.getPackageManager()
+              .getPackageInfo(pkg, PackageManager.GET_SIGNATURES).signatures;
+      if (signatures == null || signatures.length == 0) {
+        return "(none)";
+      }
+      byte[] digest = java.security.MessageDigest.getInstance("SHA-256").digest(signatures[0].toByteArray());
+      StringBuilder hex = new StringBuilder();
+      for (byte b : digest) {
+        hex.append(String.format("%02x", b));
+      }
+      return hex.toString();
+    } catch (Exception e) {
+      return "(" + e.getClass().getSimpleName() + ")";
+    }
   }
 
   private static boolean isVendorLooking(String name) {
