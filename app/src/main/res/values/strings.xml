@@ -167,4 +167,6 @@ Thanks.
     <string name="reading_finished">Finished</string>
     <string name="reading_open_koreader">Open KOReader</string>
     <string name="reading_permission">Tap to allow file access and show the book you are reading</string>
+    <string name="probe_saved">Device report saved to %s</string>
+    <string name="probe_failed">Device report failed: %s</string>
 </resources>

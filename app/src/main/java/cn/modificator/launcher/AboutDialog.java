@@ -3,10 +3,15 @@ package cn.modificator.launcher;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.File;
 
 /**
  * Created by Modificator
@@ -41,6 +46,14 @@ public class AboutDialog {
     memoryInfo.setText(MemoryStats.describe(context));
     memoryInfo.setTextSize(14);
     memoryInfo.setTextColor(0xff000000);
+    // Hidden diagnostic: a long press writes a device probe report (see DeviceProbe).
+    memoryInfo.setOnLongClickListener(new View.OnLongClickListener() {
+      @Override
+      public boolean onLongClick(View v) {
+        runDeviceProbe();
+        return true;
+      }
+    });
     root.addView(memoryInfo);
     View line = new View(context);
     line.setBackgroundColor(0xff000000);
@@ -80,6 +93,30 @@ public class AboutDialog {
     root.addView(launcherInfo);
 
     return root;
+  }
+
+  private void runDeviceProbe() {
+    final Handler mainHandler = new Handler(Looper.getMainLooper());
+    final Context appContext = context.getApplicationContext();
+    new Thread(new Runnable() {
+      @Override
+      public void run() {
+        String message;
+        try {
+          File report = DeviceProbe.run(appContext);
+          message = context.getString(R.string.probe_saved, report.getPath());
+        } catch (Exception e) {
+          message = context.getString(R.string.probe_failed, e.toString());
+        }
+        final String text = message;
+        mainHandler.post(new Runnable() {
+          @Override
+          public void run() {
+            Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+          }
+        });
+      }
+    }, "DeviceProbe").start();
   }
 
   public void show() {

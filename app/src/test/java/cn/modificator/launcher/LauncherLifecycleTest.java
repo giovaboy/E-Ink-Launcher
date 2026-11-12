@@ -91,6 +91,14 @@ public class LauncherLifecycleTest {
   }
 
   @Test
+  public void deviceProbeWritesAReportWithoutTheVendorNodes() throws Exception {
+    java.io.File report = DeviceProbe.run(start());
+    String text = new String(java.nio.file.Files.readAllBytes(report.toPath()), "UTF-8");
+    assertEquals(true, text.contains("/proc/lm3630a/warm_level: exists=false"));
+    assertEquals(true, text.contains("== android.app.ActivityManager"));
+  }
+
+  @Test
   public void showsMemoryInAboutDialog() {
     String text = MemoryStats.describe(start());
     assertNotNull(text);

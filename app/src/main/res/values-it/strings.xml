@@ -144,4 +144,6 @@ PS: tieni premute le icone per qualche sorpresa
     <string name="reading_finished">Completato</string>
     <string name="reading_open_koreader">Apri KOReader</string>
     <string name="reading_permission">Tocca per consentire l\'accesso ai file e vedere il libro in lettura</string>
+    <string name="probe_saved">Report del dispositivo salvato in %s</string>
+    <string name="probe_failed">Report del dispositivo non riuscito: %s</string>
 </resources>
