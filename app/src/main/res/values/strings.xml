@@ -175,4 +175,7 @@
     <string name="about_credits">Based on E-Ink Launcher by Modificator, with contributions by shunf4 and qwerty12. Translations: Maciej Haudek (Polish), Limerainne (Korean).</string>
     <string name="about_license">Apache License 2.0</string>
     <string name="report_error_description">\nPlease take a screenshot of this page and report the problem at\nhttps://github.com/giovaboy/E-Ink-Launcher/issues\n\n</string>
+    <string name="usage_access_title">Usage access</string>
+    <string name="usage_access_message">To sort by recent use, the launcher needs to know when each app was last opened. Allow \"usage access\" for E-Ink Launcher on the next screen. Until then apps are sorted alphabetically.</string>
+    <string name="usage_access_grant">Allow</string>
 </resources>

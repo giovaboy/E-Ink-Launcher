@@ -86,6 +86,18 @@ public class LauncherLifecycleTest {
   }
 
   @Test
+  public void recentlyUsedSortCanBeChosen() {
+    Launcher launcher = start();
+    launcher.config.setSortFlags(cn.modificator.launcher.modelController.LauncherItemInfoComparator.SORT_MODE_RECENTLY_USED
+            | cn.modificator.launcher.modelController.LauncherItemInfoComparator.SORT_ORDER_DESC);
+    openSettings(launcher);
+    // The ninth option is shown, and sorting without usage access doesn't crash.
+    assertEquals(launcher.getResources().getStringArray(R.array.sort_method)[8],
+            ((android.widget.TextView) launcher.findViewById(R.id.sortMethodValue)).getText().toString());
+    launcher.itemCenter.refresh(cn.modificator.launcher.modelController.ItemCenter.REFRESH_LEVEL_2_VISIBLE_SORT);
+  }
+
+  @Test
   public void quickBarHoldsTheSpecialItemsAndHidesThem() {
     Launcher launcher = start();
     android.view.ViewGroup bar = launcher.findViewById(R.id.quickBar);

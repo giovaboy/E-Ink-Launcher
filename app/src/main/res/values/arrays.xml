@@ -37,6 +37,7 @@
         <item>Custom&amp;Time-</item>
         <item>Custom&amp;Alph+</item>
         <item>Custom&amp;Alph-</item>
+        <item>Recently used</item>
     </string-array>
     <string-array name="file_types">
         <!-- {"文本", "图片", "视频", "音频", "其他"} -->

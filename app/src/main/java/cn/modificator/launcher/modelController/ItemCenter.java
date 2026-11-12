@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import cn.modificator.launcher.Config;
@@ -579,6 +580,13 @@ public class ItemCenter {
     for (LauncherItemInfo itemInfo : mAllItems) {
       if (!mTemporaryHiddenItemIds.contains(itemInfo.id) || isInManagingState) {
         mCurrentVisibleSortedItems.add(itemInfo);
+      }
+    }
+    if ((config.getSortFlags() & LauncherItemInfoComparator.SORT_MODE_MASK) == LauncherItemInfoComparator.SORT_MODE_RECENTLY_USED) {
+      Map<String, Long> lastUsed = UsageAccess.lastUsedTimes(mContext);
+      for (LauncherItemInfo itemInfo : mCurrentVisibleSortedItems) {
+        Long time = itemInfo.packageName != null ? lastUsed.get(itemInfo.packageName) : null;
+        itemInfo.lastUsedTime = time != null ? time : 0;
       }
     }
     Collections.sort(mCurrentVisibleSortedItems, new LauncherItemInfoComparator(config.getSortFlags()));

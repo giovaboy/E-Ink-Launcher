@@ -9,6 +9,8 @@ public class LauncherItemInfoComparator implements Comparator<LauncherItemInfo> 
   public static final int SORT_MODE_FIRST_APPEAR = 3 << 3;
   public static final int SORT_MODE_CUSTOM_WITH_FIRST_APPEAR = 4 << 3;
   public static final int SORT_MODE_CUSTOM_WITH_ALPHABETICAL = 5 << 3;
+  /** Most recently used first (Android usage stats), the rest alphabetically. */
+  public static final int SORT_MODE_RECENTLY_USED = 6 << 3;
   public static final int SORT_ORDER_MASK = 0b111;
   public static final int SORT_ORDER_ASC = 1;
   public static final int SORT_ORDER_DESC = 2;
@@ -48,6 +50,13 @@ public class LauncherItemInfoComparator implements Comparator<LauncherItemInfo> 
 
     if (special1 > 0 || special2 > 0) {
       return special1 - special2;
+    }
+
+    if ((flags & SORT_MODE_MASK) == SORT_MODE_RECENTLY_USED) {
+      // Always most recent first; apps never used (time 0) fall back to alphabetical.
+      int result = Long.compare(itemInfo2.lastUsedTime, itemInfo1.lastUsedTime);
+      return result != 0 ? result
+              : Collator.getInstance().compare(itemInfo1.title.toString(), itemInfo2.title.toString());
     }
 
     int ascendingResult;

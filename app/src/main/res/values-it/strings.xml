@@ -167,4 +167,7 @@
     <string name="about_credits">Basato su E-Ink Launcher di Modificator, con contributi di shunf4 e qwerty12. Traduzioni: Maciej Haudek (polacco), Limerainne (coreano).</string>
     <string name="about_license">Licenza Apache 2.0</string>
     <string name="report_error_description">\nFai uno screenshot di questa pagina e segnala il problema su\nhttps://github.com/giovaboy/E-Ink-Launcher/issues\n\n</string>
+    <string name="usage_access_title">Accesso ai dati di utilizzo</string>
+    <string name="usage_access_message">Per ordinare per uso recente, il launcher deve sapere quando hai aperto ogni app. Nella prossima schermata consenti \"accesso ai dati di utilizzo\" a E-Ink Launcher. Finché non lo fai, le app restano in ordine alfabetico.</string>
+    <string name="usage_access_grant">Consenti</string>
 </resources>

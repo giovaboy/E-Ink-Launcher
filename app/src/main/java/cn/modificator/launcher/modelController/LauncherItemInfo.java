@@ -63,6 +63,9 @@ public class LauncherItemInfo implements Cloneable {
   private int iconSizePx;
   private boolean iconIsCustom;
 
+  /** Last time the app was in the foreground (usage stats), for the "recently used" sort. */
+  public long lastUsedTime;
+
   /** For special items: the icon resource */
   public int iconRes;
 

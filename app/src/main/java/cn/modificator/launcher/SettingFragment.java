@@ -30,6 +30,7 @@ import cn.modificator.launcher.ftpservice.FTPService;
 import cn.modificator.launcher.modelController.ItemCenter;
 import cn.modificator.launcher.modelController.LauncherItemInfo;
 import cn.modificator.launcher.modelController.LauncherItemInfoComparator;
+import cn.modificator.launcher.modelController.UsageAccess;
 import cn.modificator.launcher.modelController.WifiControl;
 import cn.modificator.launcher.reading.KOReader;
 
@@ -56,6 +57,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
           LauncherItemInfoComparator.SORT_MODE_CUSTOM_WITH_FIRST_APPEAR | LauncherItemInfoComparator.SORT_ORDER_DESC,
           LauncherItemInfoComparator.SORT_MODE_CUSTOM_WITH_ALPHABETICAL | LauncherItemInfoComparator.SORT_ORDER_ASC,
           LauncherItemInfoComparator.SORT_MODE_CUSTOM_WITH_ALPHABETICAL | LauncherItemInfoComparator.SORT_ORDER_DESC,
+          LauncherItemInfoComparator.SORT_MODE_RECENTLY_USED | LauncherItemInfoComparator.SORT_ORDER_DESC,
   };
 
   public ItemCenter itemCenter;
@@ -317,7 +319,21 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
               config.setSortFlags(SORT_FLAGS_IN_ARRAY[which]);
               sendToLauncher(new Intent().putExtra(Launcher.SORT_FLAGS_KEY, SORT_FLAGS_IN_ARRAY[which]));
               updateViews();
+              if ((SORT_FLAGS_IN_ARRAY[which] & LauncherItemInfoComparator.SORT_MODE_MASK)
+                      == LauncherItemInfoComparator.SORT_MODE_RECENTLY_USED && !UsageAccess.isGranted(getActivity())) {
+                askForUsageAccess();
+              }
             })
+            .setNegativeButton(R.string.dialog_cancel, null)
+            .show();
+  }
+
+  /** Explains why the recently used sort needs usage access, then opens the system screen. */
+  private void askForUsageAccess() {
+    new AlertDialog.Builder(getActivity())
+            .setTitle(R.string.usage_access_title)
+            .setMessage(R.string.usage_access_message)
+            .setPositiveButton(R.string.usage_access_grant, (dialog, which) -> UsageAccess.openSettings(getActivity()))
             .setNegativeButton(R.string.dialog_cancel, null)
             .show();
   }
