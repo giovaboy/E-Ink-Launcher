@@ -165,6 +165,33 @@ public class ScreenshotTest {
     save(about, 620, 1280, "about");
   }
 
+  /** The quick bar with five items and labels of different lengths, like on the device. */
+  @Test
+  public void quickBar() throws Exception {
+    Assume.assumeTrue(Boolean.getBoolean("screenshots"));
+    Activity activity = Robolectric.buildActivity(Activity.class).setup().get();
+    cn.modificator.launcher.widgets.QuickBarRow bar = new cn.modificator.launcher.widgets.QuickBarRow(activity);
+    String[] labels = {"Home-WiFi", "Luminosità", "Contrasto", "Pulisci", "Blocca schermo"};
+    int[] icons = {R.drawable.wifi_on, R.drawable.bad_brightness_icon, R.drawable.bad_contrast_icon,
+            R.drawable.bad_clean_icon, R.drawable.ic_one_key_lock};
+    for (int i = 0; i < labels.length; i++) {
+      View item = LayoutInflater.from(activity).inflate(R.layout.quick_item, bar, false);
+      ((android.widget.ImageView) item.findViewById(R.id.itemIcon)).setImageResource(icons[i]);
+      ((android.widget.TextView) item.findViewById(R.id.itemTitle)).setText(labels[i]);
+      bar.addView(item);
+    }
+    // Attached to a window, or detached TextViews draw no text in Robolectric.
+    activity.setContentView(bar, new android.view.ViewGroup.LayoutParams(
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
+    shadowOf(Looper.getMainLooper()).idle();
+    save(bar, 720, 400, "quick_bar_5");
+    // Same width for every item: evenly spaced icons.
+    for (int i = 1; i < bar.getChildCount(); i++) {
+      org.junit.Assert.assertEquals(bar.getChildAt(0).getWidth(), bar.getChildAt(i).getWidth());
+      org.junit.Assert.assertEquals(bar.getChildAt(i - 1).getRight(), bar.getChildAt(i).getLeft());
+    }
+  }
+
   @Test
   public void panels() throws Exception {
     Assume.assumeTrue(Boolean.getBoolean("screenshots"));

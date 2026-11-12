@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- One item of the quick bar (Wi-Fi, light, contrast, refresh, lock). The ids match
      launcher_item.xml so WifiControl.bind() works on it too. One-line label: two lines made
-     that item taller and pushed its icon out of line with the others. The item is as wide as
-     its label (64dp at least), and the bar centers them. -->
+     that item taller and pushed its icon out of line with the others. QuickBarRow gives all
+     items the width of the widest one, so the icons are evenly spaced. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:maxWidth="92dp"
+
         android:ellipsize="end"
         android:gravity="center"
         android:includeFontPadding="false"
