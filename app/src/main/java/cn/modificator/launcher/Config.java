@@ -39,6 +39,8 @@ public class Config {
   public boolean showReadingCard = true;
   /** One of BatteryView.STYLE_* */
   public int batteryStyle = 0;
+  /** Extra space under the bottom bar, in dp: the device bezel can hide the bottom of the screen. */
+  public int bottomInset = 0;
   public int sortFlags = -1;
   private String preferencesFileName = "launcherPropertyFile";
   private Set<String> hiddenItemIds = new HashSet<>();
@@ -61,6 +63,7 @@ public class Config {
     getItemTitleLines();
     getReadingCardShowStatus();
     batteryStyle = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE).getInt(Launcher.BATTERY_STYLE_KEY, 0);
+    bottomInset = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE).getInt(Launcher.BOTTOM_INSET_KEY, 0);
   }
 
   public static int getIconDensity(int requiredSize) {
@@ -245,6 +248,11 @@ public class Config {
     showStatusBar = b;
     SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
     preferences.edit().putBoolean(Launcher.SHOW_STATUS_BAR_KEY, b).apply();
+  }
+
+  public void setBottomInset(int dp) {
+    bottomInset = dp;
+    context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE).edit().putInt(Launcher.BOTTOM_INSET_KEY, dp).apply();
   }
 
   public void setBatteryStyle(int style) {

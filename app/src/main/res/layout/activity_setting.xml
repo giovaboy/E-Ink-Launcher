@@ -138,6 +138,27 @@
                         android:text="+" />
                 </LinearLayout>
 
+                <LinearLayout style="@style/SettingsRow">
+
+                    <TextView
+                        style="@style/SettingsLabel"
+                        android:text="@string/settings_bottom_inset" />
+
+                    <TextView
+                        android:id="@+id/insetDown"
+                        style="@style/SettingsStepButton"
+                        android:text="−" />
+
+                    <TextView
+                        android:id="@+id/insetValue"
+                        style="@style/SettingsStepValue" />
+
+                    <TextView
+                        android:id="@+id/insetUp"
+                        style="@style/SettingsStepButton"
+                        android:text="+" />
+                </LinearLayout>
+
                 <TextView
                     style="@style/SettingsLabel"
                     android:layout_width="match_parent"

@@ -26,6 +26,7 @@
 
     <!-- Bottom bar: page, date and time, battery, settings; everything vertically centered. -->
     <FrameLayout
+        android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="48dp">
 

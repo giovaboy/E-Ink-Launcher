@@ -86,6 +86,19 @@ public class LauncherLifecycleTest {
   }
 
   @Test
+  public void bottomMarginRaisesTheBar() {
+    Launcher launcher = start();
+    openSettings(launcher);
+    launcher.findViewById(R.id.insetUp).performClick();
+    idle();
+    assertEquals(2, launcher.config.bottomInset);
+    assertEquals(Utils.dp2Px(launcher, 50), launcher.findViewById(R.id.bottomBar).getLayoutParams().height);
+    launcher.findViewById(R.id.insetDown).performClick();
+    idle();
+    assertEquals(0, launcher.config.bottomInset);
+  }
+
+  @Test
   public void survivesLanguageChange() {
     Launcher launcher = start();
     openSettings(launcher);

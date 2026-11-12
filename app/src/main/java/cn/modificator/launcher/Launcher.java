@@ -65,6 +65,7 @@ public class Launcher extends FragmentActivity {
   public static final String SHOW_CUSTOM_ICON_KEY = "showCustomIconKey";
   public static final String SHOW_READING_CARD_KEY = "showReadingCardKey";
   public static final String BATTERY_STYLE_KEY = "batteryStyleKey";
+  public static final String BOTTOM_INSET_KEY = "bottomInsetKey";
   public static final String FONT_SIZE_KEY = "fontSizeKey";
   public static final String HIDE_DIVIDER_KEY = "hideDividerKey";
 
@@ -128,6 +129,7 @@ public class Launcher extends FragmentActivity {
     batteryStatus = findViewById(R.id.batteryStatus);
     batteryPercent = findViewById(R.id.batteryPercent);
     applyBatteryStyle();
+    applyBottomInset();
     textClock = findViewById(R.id.textClock);
     textTime = findViewById(R.id.textTime);
     (this.<ImageView>findViewById(R.id.toSetting)).setImageDrawable(Utils.tintDrawable(getResources().getDrawable(R.drawable.navibar_icon_settings_highlight), ColorStateList.valueOf(0xff000000)));
@@ -369,6 +371,9 @@ public class Launcher extends FragmentActivity {
       } else if (bundle.containsKey(SHOW_STATUS_BAR_KEY)) {
         config.setStatusBarShowStatus(bundle.getBoolean(SHOW_STATUS_BAR_KEY));
         toggleStatusBar();
+      } else if (bundle.containsKey(BOTTOM_INSET_KEY)) {
+        config.setBottomInset(bundle.getInt(BOTTOM_INSET_KEY));
+        applyBottomInset();
       } else if (bundle.containsKey(BATTERY_STYLE_KEY)) {
         config.setBatteryStyle(bundle.getInt(BATTERY_STYLE_KEY));
         applyBatteryStyle();
@@ -423,6 +428,18 @@ public class Launcher extends FragmentActivity {
       updateBatteryViews();
     }
   };
+
+  /**
+   * Raises the bottom bar by the margin chosen in settings: on the device the bezel sits a bit
+   * above the e-ink panel and visually covers its bottom edge.
+   */
+  public void applyBottomInset() {
+    View bar = findViewById(R.id.bottomBar);
+    int inset = Utils.dp2Px(this, config.bottomInset);
+    bar.getLayoutParams().height = Utils.dp2Px(this, 48) + inset;
+    bar.setPadding(0, 0, 0, inset);
+    bar.requestLayout();
+  }
 
   /** Shows the battery in the style chosen in settings (see BatteryView). */
   public void applyBatteryStyle() {

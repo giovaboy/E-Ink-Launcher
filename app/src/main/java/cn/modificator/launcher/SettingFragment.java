@@ -40,6 +40,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
   private static final int MAX_GRID = 10;
   private static final int MIN_FONT_SIZE = 10;
   private static final int MAX_FONT_SIZE = 30;
+  private static final int MAX_BOTTOM_INSET = 24;
+  private static final int BOTTOM_INSET_STEP = 2;
   private static final int REQUEST_SORT = 10000;
   private static final int REQUEST_LOCATION = 10002;
 
@@ -58,11 +60,11 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
   public Config config;
 
   private View rootView;
-  private TextView colValue, rowValue, fontValue, sortMethodValue, languageValue, ftpStatus;
+  private TextView colValue, rowValue, fontValue, insetValue, sortMethodValue, languageValue, ftpStatus;
   private Switch switchDivider, switchStatusBar, switchCustomIcon, switchReadingCard, switchFtp;
   private ViewGroup titleLinesSegments, batteryStyleSegments;
   // Local copies: the launcher updates Config asynchronously when it gets the broadcast.
-  private int colNum, rowNum, fontSize;
+  private int colNum, rowNum, fontSize, bottomInset;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -87,6 +89,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     colValue = rootView.findViewById(R.id.colValue);
     rowValue = rootView.findViewById(R.id.rowValue);
     fontValue = rootView.findViewById(R.id.fontValue);
+    insetValue = rootView.findViewById(R.id.insetValue);
     sortMethodValue = rootView.findViewById(R.id.sortMethodValue);
     languageValue = rootView.findViewById(R.id.languageValue);
     ftpStatus = rootView.findViewById(R.id.ftp_status);
@@ -101,9 +104,10 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     colNum = config.colNum;
     rowNum = config.rowNum;
     fontSize = Math.round(config.fontSize);
+    bottomInset = config.bottomInset;
 
     int[] clickable = {R.id.rootView, R.id.toBack, R.id.colDown, R.id.colUp, R.id.rowDown, R.id.rowUp,
-            R.id.fontDown, R.id.fontUp, R.id.sortMethod, R.id.toggleDivider, R.id.toggleStatusBar,
+            R.id.fontDown, R.id.fontUp, R.id.insetDown, R.id.insetUp, R.id.sortMethod, R.id.toggleDivider, R.id.toggleStatusBar,
             R.id.toggleCustomIcon, R.id.toggleReadingCard, R.id.menu_ftp, R.id.showWifiName,
             R.id.manageApps, R.id.toSort, R.id.language, R.id.helpAbout};
     for (int id : clickable) {
@@ -139,6 +143,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     colValue.setText(String.valueOf(colNum));
     rowValue.setText(String.valueOf(rowNum));
     fontValue.setText(String.valueOf(fontSize));
+    insetValue.setText(String.valueOf(bottomInset));
     selectSegment(titleLinesSegments, getTitleLinesPosition());
     selectSegment(batteryStyleSegments, config.batteryStyle);
     sortMethodValue.setText(getResources().getStringArray(R.array.sort_method)[getSortMethodPosition()]);
@@ -203,6 +208,13 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
         fontSize = next;
         config.fontSize = fontSize; // saved by the launcher when the settings close
         sendToLauncher(new Intent().putExtra(Launcher.FONT_SIZE_KEY, (float) fontSize));
+        updateViews();
+      }
+    } else if (id == R.id.insetDown || id == R.id.insetUp) {
+      int next = clamp(bottomInset + (id == R.id.insetUp ? BOTTOM_INSET_STEP : -BOTTOM_INSET_STEP), 0, MAX_BOTTOM_INSET);
+      if (next != bottomInset) {
+        bottomInset = next;
+        sendToLauncher(new Intent().putExtra(Launcher.BOTTOM_INSET_KEY, bottomInset));
         updateViews();
       }
     } else if (id == R.id.sortMethod) {

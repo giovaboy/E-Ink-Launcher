@@ -197,4 +197,5 @@ Thanks.
     <string name="settings_battery_icon">Icon</string>
     <string name="settings_battery_ring">Ring</string>
     <string name="settings_battery_text">Text</string>
+    <string name="settings_bottom_inset">Bottom margin</string>
 </resources>
