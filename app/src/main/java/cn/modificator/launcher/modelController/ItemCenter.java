@@ -56,6 +56,25 @@ public class ItemCenter {
   private boolean isSystemApp;
   private EInkLauncherView launcherView;
   private TextView tvPageStatus;
+  private PageListener pageListener;
+  /** The settings item: in the quick bar only while the system status bar replaces our bottom bar. */
+  private LauncherItemInfo settingsItem;
+
+  /** Told the page and page count (from 1) whenever they may have changed. */
+  public interface PageListener {
+    void onPageChanged(int page, int pageCount);
+  }
+
+  public void setPageListener(PageListener listener) {
+    pageListener = listener;
+  }
+
+  private void showPageStatus() {
+    tvPageStatus.setText((pageIndex + 1) + "/" + (pageCount + 1));
+    if (pageListener != null) {
+      pageListener.onPageChanged(pageIndex + 1, pageCount + 1);
+    }
+  }
 
   public Config config;
 
@@ -65,6 +84,7 @@ public class ItemCenter {
   public static final String CONTRAST_ITEM_ID = "E-ink_Launcher.Contrast";
   public static final String REFRESH_ITEM_ID = "E-ink_Launcher.Refresh";
   public static final String FTP_ITEM_ID = "E-ink_Launcher.Ftp";
+  public static final String SETTINGS_ITEM_ID = "E-ink_Launcher.Settings";
 
   public static final int REFRESH_LEVEL_0_ALL = 0;
   private static final int REFRESH_LEVEL_1_MIN = 10;
@@ -146,6 +166,8 @@ public class ItemCenter {
           EinkPanels.showContrast(context);
         } else if (itemInfo.id.equals(ItemCenter.FTP_ITEM_ID)) {
           ((Launcher) context).toggleFtpServer();
+        } else if (itemInfo.id.equals(ItemCenter.SETTINGS_ITEM_ID)) {
+          ((Launcher) context).openSettings();
         } else if (itemInfo.id.equals(ItemCenter.REFRESH_ITEM_ID)) {
           try {
             Window win = ((Activity) context).getWindow();
@@ -449,7 +471,7 @@ public class ItemCenter {
 
   public void setTvPageStatus(TextView tvPageStatus) {
     this.tvPageStatus = tvPageStatus;
-    tvPageStatus.setText((pageIndex + 1) + "/" + (pageCount + 1));
+    showPageStatus();
   }
 
   public void setTemporaryHiddenItemIds(Set<String> mHiddenItemIds) {
@@ -525,6 +547,7 @@ public class ItemCenter {
       mQuickItems.add(createRefreshItem());
     }
     mQuickItems.add(createPowerItem());
+    settingsItem = createSettingsItem();
   }
 
   /** Every quick bar item available on this device, in bar order. */
@@ -532,13 +555,20 @@ public class ItemCenter {
     return Collections.unmodifiableList(mQuickItems);
   }
 
-  /** The quick bar items to show: the available ones minus those hidden in settings. */
+  /**
+   * The quick bar items to show: the available ones minus those hidden in settings, plus the
+   * settings item when the system status bar is on (our bottom bar, with its settings button, is
+   * hidden then). That one can't be hidden, or there would be no way into the settings.
+   */
   public List<LauncherItemInfo> getVisibleQuickItems() {
     List<LauncherItemInfo> visible = new ArrayList<>();
     for (LauncherItemInfo item : mQuickItems) {
       if (!config.isQuickItemHidden(item.id)) {
         visible.add(item);
       }
+    }
+    if (!config.showStatusBar && settingsItem != null) {
+      visible.add(settingsItem);
     }
     return visible;
   }
@@ -633,7 +663,7 @@ public class ItemCenter {
     }
 
     updatePageCount();
-    tvPageStatus.setText((pageIndex + 1) + "/" + (pageCount + 1));
+    showPageStatus();
     launcherView.refresh(refreshLevelForLauncherView >= 0 ? refreshLevelForLauncherView : EInkLauncherView.REFRESH_LEVEL_1_CURRENT_ITEMS);
   }
 
@@ -650,6 +680,15 @@ public class ItemCenter {
 
      return itemInfo;
    }
+
+  private LauncherItemInfo createSettingsItem() {
+    LauncherItemInfo itemInfo = new LauncherItemInfo(LauncherItemInfo.TYPE_SPECIAL, 0);
+    itemInfo.id = SETTINGS_ITEM_ID;
+    itemInfo.title = mContext.getString(R.string.settings_title);
+    itemInfo.iconRes = R.drawable.quick_settings;
+
+    return itemInfo;
+  }
 
   /** The FTP server switch; the bar shows its state (see Launcher.bindFtpItem()). */
   private LauncherItemInfo createFtpItem() {

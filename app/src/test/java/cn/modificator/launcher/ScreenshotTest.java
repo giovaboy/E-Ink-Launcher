@@ -135,6 +135,13 @@ public class ScreenshotTest {
     launcher.batteryLevelReceiver.onReceive(launcher, battery);
     shadowOf(Looper.getMainLooper()).idle();
     save(launcher.getWindow().getDecorView(), 720, 1280, "readme_home");
+
+    // With the system status bar on: no bottom bar, settings in the quick bar, line above the card.
+    launcher.config.setStatusBarShowStatus(false);
+    launcher.refreshQuickBar();
+    launcher.applyBarsLayout();
+    shadowOf(Looper.getMainLooper()).idle();
+    save(launcher.getWindow().getDecorView(), 720, 1280, "home_system_bar");
   }
 
   /** Settings and light panel in English, for the README. */

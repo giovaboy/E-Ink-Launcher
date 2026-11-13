@@ -160,6 +160,14 @@ public class Launcher extends FragmentActivity {
     itemCenter = new ItemCenter(this, config);
     itemCenter.setLauncherView(launcherView);
     itemCenter.setTemporaryHiddenItemIds(config.getHiddenItemIds());
+    itemCenter.setPageListener(new ItemCenter.PageListener() {
+      @Override
+      public void onPageChanged(int page, int pageCount) {
+        currentPage = page;
+        pageTotal = pageCount;
+        updatePageIndicator();
+      }
+    });
     itemCenter.setTvPageStatus(pageStatus);
     try {
       itemCenter.setIsSystemApp(!isUserApp(getPackageManager().getPackageInfo(getPackageName(), 0)));
@@ -176,6 +184,7 @@ public class Launcher extends FragmentActivity {
 
     itemCenter.refresh(ItemCenter.REFRESH_LEVEL_0_ALL, EInkLauncherView.REFRESH_LEVEL_0_LAYOUT);
     refreshQuickBar();
+    applyBarsLayout();
 
     findViewById(R.id.previousPage).setOnClickListener(new View.OnClickListener() {
       @Override
@@ -192,13 +201,7 @@ public class Launcher extends FragmentActivity {
     findViewById(R.id.toSetting).setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        SettingFragment sf = new SettingFragment();
-        sf.config = config;
-        sf.itemCenter = itemCenter;
-        getSupportFragmentManager().beginTransaction()
-                  .replace(android.R.id.content, sf)
-                  .addToBackStack(null)
-                  .commit();
+        openSettings();
       }
     });
     findViewById(R.id.deleteFinish).setOnClickListener(new View.OnClickListener() {
@@ -208,6 +211,7 @@ public class Launcher extends FragmentActivity {
         config.setHiddenItemIds(itemCenter.getTemporaryHiddenItemIds());
         itemCenter.refresh(ItemCenter.REFRESH_LEVEL_0_ALL, EInkLauncherView.REFRESH_LEVEL_1_CURRENT_ITEMS);
         v.setVisibility(View.GONE);
+        applyBarsLayout();
       }
     });
 
@@ -415,6 +419,8 @@ public class Launcher extends FragmentActivity {
       } else if (bundle.containsKey(SHOW_STATUS_BAR_KEY)) {
         config.setStatusBarShowStatus(bundle.getBoolean(SHOW_STATUS_BAR_KEY));
         toggleStatusBar();
+        refreshQuickBar();
+        applyBarsLayout();
       } else if (bundle.containsKey(QUICK_BAR_CHANGED_KEY)) {
         refreshQuickBar();
       } else if (bundle.containsKey(QUICK_ICON_STYLE_KEY)) {
@@ -441,6 +447,7 @@ public class Launcher extends FragmentActivity {
         itemCenter.setInManagingState(true);
         itemCenter.refresh(ItemCenter.REFRESH_LEVEL_0_ALL);
         findViewById(R.id.deleteFinish).setVisibility(View.VISIBLE);
+        applyBarsLayout();
       } else if (bundle.containsKey(DO_DELETE_SHORTCUT_KEY)) {
         String shortcutItemId = bundle.getString(DO_DELETE_SHORTCUT_KEY);
         ArrayList<LauncherItemInfo> copyOfAllItems = new ArrayList<LauncherItemInfo>();
@@ -712,6 +719,46 @@ public class Launcher extends FragmentActivity {
 
   public static boolean isUserApp(PackageInfo pInfo) {
     return (!isSystemApp(pInfo) && !isSystemUpdateApp(pInfo));
+  }
+
+  /** Opens the settings panel (bottom bar button, or the quick bar item when that is hidden). */
+  public void openSettings() {
+    SettingFragment sf = new SettingFragment();
+    sf.config = config;
+    sf.itemCenter = itemCenter;
+    getSupportFragmentManager().beginTransaction()
+            .replace(android.R.id.content, sf)
+            .addToBackStack(null)
+            .commit();
+  }
+
+  /**
+   * With the system status bar on, time and battery are already at the top: our bottom bar and
+   * its divider go, settings move to the quick bar (ItemCenter.getVisibleQuickItems()), the page
+   * shows above the quick bar when there is more than one, and a line separates the reading card
+   * from the status bar. The bottom bar comes back while managing apps, for its "Done" button.
+   */
+  public void applyBarsLayout() {
+    boolean systemBar = !config.showStatusBar; // showStatusBar is true when running full screen
+    boolean managing = findViewById(R.id.deleteFinish).getVisibility() == View.VISIBLE;
+    int bottom = systemBar && !managing ? View.GONE : View.VISIBLE;
+    findViewById(R.id.bottomBar).setVisibility(bottom);
+    findViewById(R.id.bottomBarDivider).setVisibility(bottom);
+    // The quick bar is then the last row: keep its labels clear of the bezel, which covers the
+    // bottom edge of the screen a little.
+    findViewById(R.id.quickBarContainer).setPadding(0, 0, 0, bottom == View.GONE ? Utils.dp2Px(this, 10) : 0);
+    findViewById(R.id.readingCardTopDivider).setVisibility(systemBar ? View.VISIBLE : View.GONE);
+    updatePageIndicator();
+  }
+
+  private int currentPage = 1;
+  private int pageTotal = 1;
+
+  private void updatePageIndicator() {
+    TextView indicator = findViewById(R.id.pageIndicator);
+    boolean show = pageTotal > 1 && findViewById(R.id.bottomBar).getVisibility() != View.VISIBLE;
+    indicator.setText(currentPage + "/" + pageTotal);
+    indicator.setVisibility(show ? View.VISIBLE : View.GONE);
   }
 
   public void toggleStatusBar(){

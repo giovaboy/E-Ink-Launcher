@@ -19,6 +19,19 @@
         android:clipChildren="false"
         android:clipToPadding="false" />
 
+    <!-- Page indicator while our bottom bar is hidden (system status bar on), only with more
+         than one page. See Launcher.applyBarsLayout(). -->
+    <TextView
+        android:id="@+id/pageIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:paddingBottom="6dp"
+        android:textColor="#000000"
+        android:textSize="13sp"
+        android:visibility="gone" />
+
     <!-- Quick bar: Wi-Fi, front light, contrast, refresh and lock on one centered row, filled by
          Launcher.refreshQuickBar(). Gone when every item is hidden in settings. -->
     <LinearLayout
@@ -39,11 +52,13 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/bottomBarDivider"
         android:layout_width="match_parent"
         android:layout_height="0.7dp"
         android:background="#000000" />
 
-    <!-- Bottom bar: page, date and time, battery, settings; everything vertically centered. -->
+    <!-- Bottom bar: page, date and time, battery, settings; everything vertically centered.
+         Hidden while the system status bar is on, which shows time and battery already. -->
     <FrameLayout
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"

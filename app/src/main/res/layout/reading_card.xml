@@ -7,6 +7,14 @@
     android:orientation="vertical"
     android:visibility="gone">
 
+    <!-- Separates the card from the system status bar, when that is shown (Launcher.applyBarsLayout). -->
+    <View
+        android:id="@+id/readingCardTopDivider"
+        android:layout_width="match_parent"
+        android:layout_height="0.7dp"
+        android:background="#000000"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/readingCardContent"
         android:layout_width="match_parent"

@@ -47,6 +47,19 @@ public class GenQuickIcons {
     g("quick_lock", new String[]{"s", "M7,10.5 H17 A2,2 0 0 1 19,12.5 V19 A2,2 0 0 1 17,21 H7 A2,2 0 0 1 5,19 V12.5 A2,2 0 0 1 7,10.5 Z M8.5,10.5 V7.5 A3.5,3.5 0 0 1 15.5,7.5 V10.5 M12,15 V17.5"},
         new String[]{"f", circle(12, 15, 1.3)});
 
+    StringBuilder gear = new StringBuilder();
+    int teeth = 8;
+    double step = 2 * Math.PI / teeth;
+    for (int i = 0; i < teeth; i++) {
+      double m = i * step - Math.PI / 2;
+      double[][] pts = {{7.4, m - step * 0.30}, {10, m - step * 0.17}, {10, m + step * 0.17}, {7.4, m + step * 0.30}};
+      for (int k = 0; k < pts.length; k++) {
+        gear.append(String.format(Locale.US, "%s%.2f,%.2f ", i == 0 && k == 0 ? "M" : "L",
+            12 + pts[k][0] * Math.cos(pts[k][1]), 12 + pts[k][0] * Math.sin(pts[k][1])));
+      }
+    }
+    g("quick_settings", new String[]{"s", gear.append("Z ").append(circle(12, 12, 3)).toString()});
+
     Path out = Paths.get(a[0]);
     for (Map.Entry<String, List<String[]>> e : glyphs.entrySet()) {
       Files.write(out.resolve(e.getKey() + ".xml"), icon(e.getKey(), e.getValue(), true).getBytes("UTF-8"));

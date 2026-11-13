@@ -268,4 +268,51 @@ public class LauncherLifecycleTest {
     idle();
     assertEquals(cn.modificator.launcher.modelController.QuickIcons.STYLE_FRAMED, launcher.config.quickIconStyle);
   }
+
+  @Test
+  public void systemStatusBarReplacesTheBottomBar() {
+    Launcher launcher = start();
+    android.view.ViewGroup bar = launcher.findViewById(R.id.quickBar);
+    String settingsId = cn.modificator.launcher.modelController.ItemCenter.SETTINGS_ITEM_ID;
+    assertEquals(android.view.View.VISIBLE, launcher.findViewById(R.id.bottomBar).getVisibility());
+    assertEquals(null, bar.findViewWithTag(settingsId));
+
+    // Turn the system status bar on from the settings, then close them.
+    openSettings(launcher);
+    launcher.findViewById(R.id.toggleStatusBar).performClick();
+    idle();
+    pressBack(launcher);
+    assertEquals(android.view.View.GONE, launcher.findViewById(R.id.bottomBar).getVisibility());
+    assertEquals(android.view.View.GONE, launcher.findViewById(R.id.bottomBarDivider).getVisibility());
+    assertEquals(android.view.View.VISIBLE, launcher.findViewById(R.id.readingCardTopDivider).getVisibility());
+    android.view.View settings = bar.getChildAt(bar.getChildCount() - 1);
+    assertEquals(settingsId, settings.getTag());
+    // Not offered among the quick bar switches: it can't be hidden.
+    openSettings(launcher);
+    android.view.ViewGroup toggles = launcher.findViewById(R.id.quickItemToggles);
+    assertEquals(3, toggles.getChildCount());
+    pressBack(launcher);
+
+    // The quick bar item opens the settings.
+    settings.performClick();
+    idle();
+    assertEquals(1, launcher.getSupportFragmentManager().getBackStackEntryCount());
+    pressBack(launcher);
+
+    // Managing apps brings the bottom bar back for its "Done" button.
+    launcher.findViewById(R.id.deleteFinish).setVisibility(android.view.View.VISIBLE);
+    launcher.applyBarsLayout();
+    assertEquals(android.view.View.VISIBLE, launcher.findViewById(R.id.bottomBar).getVisibility());
+    launcher.findViewById(R.id.deleteFinish).performClick();
+    idle();
+    assertEquals(android.view.View.GONE, launcher.findViewById(R.id.bottomBar).getVisibility());
+
+    // Back to full screen: everything as before.
+    openSettings(launcher);
+    launcher.findViewById(R.id.toggleStatusBar).performClick();
+    idle();
+    pressBack(launcher);
+    assertEquals(android.view.View.VISIBLE, launcher.findViewById(R.id.bottomBar).getVisibility());
+    assertEquals(null, bar.findViewWithTag(settingsId));
+  }
 }

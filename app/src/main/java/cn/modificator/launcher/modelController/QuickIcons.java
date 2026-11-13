@@ -32,6 +32,7 @@ public final class QuickIcons {
     if (framed == R.drawable.quick_contrast) return R.drawable.quick_contrast_line;
     if (framed == R.drawable.quick_clean) return R.drawable.quick_clean_line;
     if (framed == R.drawable.quick_lock) return R.drawable.quick_lock_line;
+    if (framed == R.drawable.quick_settings) return R.drawable.quick_settings_line;
     return framed;
   }
 }
