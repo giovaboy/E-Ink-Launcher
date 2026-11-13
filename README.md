@@ -98,6 +98,10 @@ firmware, the installation just fails.
 you know; everything it changes can be undone from the app itself. Uninstall it like any other
 app.
 
+Its source is in [`inkpalm-tools/`](inkpalm-tools/), a separate Gradle project with its own
+[README](inkpalm-tools/README.md): how it finds and changes these firmware settings, and how to
+build it.
+
 ## Build
 
 Requirements: JDK 17 and the Android SDK (platform 34).
