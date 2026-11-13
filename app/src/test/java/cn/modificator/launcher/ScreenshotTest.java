@@ -179,7 +179,7 @@ public class ScreenshotTest {
   @Test
   public void quickBar() throws Exception {
     Assume.assumeTrue(Boolean.getBoolean("screenshots"));
-    String[] labels = {"Home-WiFi", "FTP", "Luminosità", "Contrasto", "Pulisci", "Blocca schermo"};
+    String[] labels = {"Home-WiFi", "FTP", "Light", "Contrast", "Refresh", "Lock Screen"};
     int[] on = {R.drawable.wifi_on, R.drawable.ftp_on, R.drawable.quick_brightness, R.drawable.quick_contrast,
             R.drawable.quick_clean, R.drawable.quick_lock};
     int[] off = {R.drawable.wifi_off, R.drawable.ftp_off, R.drawable.quick_brightness, R.drawable.quick_contrast,

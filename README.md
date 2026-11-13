@@ -17,14 +17,20 @@ backdrops, no animations, big touch targets, and as little RAM as possible while
   installed.
 - **App grid** with adjustable columns, rows and text size, custom sort orders and priorities,
   hidden apps, custom icons and Android shortcuts.
-- **Quick bar** with Wi-Fi, front light, contrast, refresh and screen lock on one centered row;
-  each item can be hidden.
-- **Bottom bar** with page, date and time, battery (icon, ring or text) and settings, plus an
-  adjustable bottom margin for devices whose bezel covers the edge of the panel.
-- **Built-in FTP server** to copy books and APKs from a computer over Wi-Fi.
+- **Quick bar** with Wi-Fi, the FTP server, front light, contrast, refresh and screen lock on one
+  centered row. Each item can be hidden; the icons are evenly spaced and stay put when a label
+  changes (the Wi-Fi network name, for example). Two icon styles: framed or line.
+
+  <img src="doc/quick-bar.png" width="480" alt="Quick bar icons in the framed style (top) and the line style with Wi-Fi and FTP off (bottom)">
+
+- **Bottom bar** with page, date and time, battery (icon, ring or text) and settings. If you turn
+  on the system status bar, which already shows time and battery, the bottom bar goes away and
+  settings move to the end of the quick bar.
+- **Built-in FTP server** to copy books and APKs from a computer over Wi-Fi: switch it on from
+  the quick bar, which then shows the address to connect to (long press to see it again).
 - **Low memory use**: only the icons on screen are loaded, scaled to the cell, and everything is
-  released while another app (your reader) is in front. *Help & About* shows how much the
-  launcher uses, in the foreground and in the background.
+  released while another app (your reader) is in front. The (i) button in the settings shows how
+  much the launcher uses, in the foreground and in the background.
 - **Languages**: English, Italian, Chinese, Polish and Korean, selectable in the launcher itself.
 
 ### Moaan / inkPalm devices
@@ -35,6 +41,12 @@ replaces the firmware's own panels, which are drawn off-center:
 - a **front light** panel (brightness and warmth, 0–24 each) and a **contrast** panel (6 levels),
   set the same way the firmware's SystemUI does;
 - one-tap lock, refresh and Wi-Fi toggles that work around the firmware's quirks.
+
+The firmware force-stops an app 30 seconds after it leaves the screen unless the app is
+*unfrozen* in its *App freeze* list. Unfreeze E-Ink Launcher there if you want its FTP server to
+keep running while you read. The list is in the settings of the firmware's stock launcher, which
+other launchers can't open: do it before choosing E-Ink Launcher as Home, or switch back to the
+stock launcher for a moment.
 
 The application id is `com.moan.moanwm` because the firmware only lets whitelisted packages use
 some of its features (e.g. *App info*).
@@ -74,6 +86,10 @@ keyPassword=...
 
 Each release build keeps its R8 mapping in `app/release/mappings/`, to decode crash reports
 shown on the device.
+
+The quick bar icons are vector drawables generated from one set of symbols, so every icon has
+the same stroke: after changing a symbol in `tools/GenQuickIcons.java`, run
+`java tools/GenQuickIcons.java app/src/main/res/drawable`.
 
 ## History and credits
 
