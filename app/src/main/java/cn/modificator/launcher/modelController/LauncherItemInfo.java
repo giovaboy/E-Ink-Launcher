@@ -59,9 +59,10 @@ public class LauncherItemInfo implements Cloneable {
   @Nullable
   public Drawable drawable;
 
-  /** Size and source of {@link #drawable}, to reload it when either changes. */
+  /** Size, source and (special items) styled resource of {@link #drawable}, to reload it when one changes. */
   private int iconSizePx;
   private boolean iconIsCustom;
+  private int iconStyledRes;
 
   /** Last time the app was in the foreground (usage stats), for the "recently used" sort. */
   public long lastUsedTime;
@@ -139,9 +140,12 @@ public class LauncherItemInfo implements Cloneable {
   @Nullable
   public Drawable getIcon(Context context, boolean showCustomIcon, int sizePx) {
     boolean useCustomIcon = showCustomIcon && replacementIconUri != null;
-    if (drawable != null && iconSizePx == sizePx && iconIsCustom == useCustomIcon) {
+    // Special items also depend on the quick bar icon style, which can change at any time.
+    int styledRes = type == TYPE_SPECIAL ? QuickIcons.res(iconRes) : 0;
+    if (drawable != null && iconSizePx == sizePx && iconIsCustom == useCustomIcon && iconStyledRes == styledRes) {
       return drawable;
     }
+    iconStyledRes = styledRes;
     drawable = null;
     if (useCustomIcon) {
       Bitmap custom = Utils.decodeSampledBitmap(replacementIconUri.getPath(), sizePx);

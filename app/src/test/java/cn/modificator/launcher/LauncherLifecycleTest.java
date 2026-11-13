@@ -264,8 +264,19 @@ public class LauncherLifecycleTest {
     assertEquals(true, segments.getChildAt(1).isSelected());
     icon = launcher.findViewById(R.id.quickBar).findViewWithTag(cn.modificator.launcher.modelController.ItemCenter.FTP_ITEM_ID).findViewById(R.id.itemIcon);
     assertEquals(R.drawable.ftp_off_line, shadowOf(icon.getDrawable()).getCreatedFromResId());
+    // Every item, also those whose icon was already loaded (lock), not only Wi-Fi and FTP.
+    android.widget.ImageView lock = launcher.findViewById(R.id.quickBar)
+            .findViewWithTag(cn.modificator.launcher.modelController.ItemCenter.ONE_KEY_LOCK_ITEM_ID).findViewById(R.id.itemIcon);
+    assertEquals(R.drawable.quick_lock_line, shadowOf(lock.getDrawable()).getCreatedFromResId());
+    android.widget.ImageView wifi = launcher.findViewById(R.id.quickBar)
+            .findViewWithTag(cn.modificator.launcher.modelController.ItemCenter.WIFI_ITEM_ID).findViewById(R.id.itemIcon);
+    int wifiRes = shadowOf(wifi.getDrawable()).getCreatedFromResId();
+    assertEquals(true, wifiRes == R.drawable.wifi_on_line || wifiRes == R.drawable.wifi_off_line);
     segments.getChildAt(0).performClick(); // back to Framed
     idle();
+    lock = launcher.findViewById(R.id.quickBar)
+            .findViewWithTag(cn.modificator.launcher.modelController.ItemCenter.ONE_KEY_LOCK_ITEM_ID).findViewById(R.id.itemIcon);
+    assertEquals(R.drawable.quick_lock, shadowOf(lock.getDrawable()).getCreatedFromResId());
     assertEquals(cn.modificator.launcher.modelController.QuickIcons.STYLE_FRAMED, launcher.config.quickIconStyle);
   }
 
