@@ -1,7 +1,14 @@
 # E-Ink Launcher
 
-A home screen for Android e-readers, drawn in pure black and white for e-ink: no gray
-backdrops, no animations, big touch targets, and as little RAM as possible while you read.
+A home screen for the **Moaan inkPalm 5** e-reader (also sold as *my mini read* EPD105), drawn
+in pure black and white for e-ink: no gray backdrops, no animations, big touch targets, and as
+little RAM as possible while you read.
+
+> **Made for one device.** E-Ink Launcher is developed and tested only on the inkPalm 5 with
+> the Moaan firmware V11 (`MAS_EPD105_L8AM105_V11_240307`, Android 8.1, 720×1280). Its app id,
+> its front light and contrast panels and its workarounds target that firmware. It installs on
+> other Android devices (4.2 and later) and the plain home screen may well work there, but
+> nothing else is tested, and the device-specific parts won't appear or won't work.
 
 <p>
   <img src="doc/home.png" width="240" alt="Home screen with the reading card, the app grid, the quick bar and the bottom bar">
@@ -33,10 +40,10 @@ backdrops, no animations, big touch targets, and as little RAM as possible while
   much the launcher uses, in the foreground and in the background.
 - **Languages**: English, Italian, Chinese, Polish and Korean, selectable in the launcher itself.
 
-### Moaan / inkPalm devices
+### inkPalm 5 specifics
 
-On Moaan firmwares (inkPalm 5 and rebrands such as *my mini read* EPD105) the launcher also
-replaces the firmware's own panels, which are drawn off-center:
+On the inkPalm 5 the launcher also replaces the firmware's own panels, which are drawn
+off-center:
 
 - a **front light** panel (brightness and warmth, 0–24 each) and a **contrast** panel (6 levels),
   set the same way the firmware's SystemUI does;
@@ -46,13 +53,11 @@ The firmware force-stops an app 30 seconds after it leaves the screen unless the
 *unfrozen* in its *App freeze* list. Unfreeze E-Ink Launcher there if you want its FTP server to
 keep running while you read. The list is in the settings of the firmware's stock launcher, which
 other launchers can't open: do it before choosing E-Ink Launcher as Home, or switch back to the
-stock launcher for a moment.
+stock launcher for a moment. [InkPalm Tools](#inkpalm-tools-optional) does the same from any
+launcher.
 
 The application id is `com.moan.moanwm` because the firmware only lets whitelisted packages use
 some of its features (e.g. *App info*).
-
-Tested on an inkPalm 5 (EPD105, Android 8.1). It runs on Android 4.2 and later, but the
-Moaan-specific parts only appear on Moaan firmwares.
 
 ## Install
 
@@ -62,6 +67,36 @@ the launcher's FTP server or over USB) and open it with a file manager. Press Ho
 
 On the inkPalm 5 developer options and adb are disabled by the firmware, so there is no other
 way to install it.
+
+## InkPalm Tools (optional)
+
+The [releases](../../releases) also include **InkPalm Tools**, a small companion app for the
+same device. It does what the firmware doesn't let normal apps, or you, do:
+
+- **Keep apps running**: turns off the firmware's 30-second background kill for the apps you
+  choose (E-Ink Launcher with its FTP server, your keyboard...). It stays set after a restart.
+- **Disable apps**: turns off preinstalled apps you don't use (app stores and readers for the
+  Chinese market, the browser, phone services on a device without a modem...) to free memory.
+  It shows a suggested list first. Disabled apps stay installed and can be turned back on;
+  apps the device needs can't be disabled.
+- **Wi-Fi on in standby**: keeps Wi-Fi connected while the reader sleeps, so it doesn't have to
+  reconnect at every wake-up. The firmware turns it off by default; keeping it on costs some
+  battery.
+- **Moaan settings**: an icon in the app list that opens the firmware's own settings menu (App
+  freeze, DPI per app, logo key, refresh mode, sleep time...), which otherwise only the stock
+  launcher can open.
+- **Save diagnostics**: memory, running processes and the system log, written to `Download/`.
+  Useful when reporting a problem.
+- **Reboot into recovery**.
+
+**Why it only works on the inkPalm 5.** It is signed with the public Android (AOSP) *platform
+test key* and asks to run as the system user. The inkPalm 5 firmware is signed with that same
+public test key, so Android accepts it as a system app. On a device with a properly signed
+firmware, the installation just fails.
+
+**Use it with care.** As a system app it can change what a normal app can't. Disable only apps
+you know; everything it changes can be undone from the app itself. Uninstall it like any other
+app.
 
 ## Build
 
