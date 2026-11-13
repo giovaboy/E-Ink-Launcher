@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">InkPalm Tools</string>
+    <string name="status">Runs as: %1$s\nFree RAM: %2$d MB of %3$d MB</string>
+    <string name="status_system_user">system user</string>
+    <string name="status_not_system_user">normal app (uid %1$d): this firmware does not accept the platform test key, nothing here will work</string>
+    <string name="apps_title">Disable apps</string>
+    <string name="apps_show_all">Show all apps</string>
+    <string name="apps_show_suggested">Show suggested apps only</string>
+    <string name="apps_summary_suggested">Suggested vendor apps: %1$d installed, %2$d disabled. Free RAM: %3$d MB.\nA disabled app stays installed but never runs; turn it back on any time.</string>
+    <string name="apps_summary_all">All apps: %1$d, %2$d disabled. Free RAM: %3$d MB.\nOnly disable apps you know: some are needed by the system.</string>
+    <string name="apps_protected">protected</string>
+    <string name="background_title">Keep apps running</string>
+    <string name="background_summary">The firmware closes these apps 30 seconds after they leave the screen (%1$d apps, %2$d allowed to keep running). Turn the switch on for an app to keep running in the background, like the launcher with its FTP server or a keyboard. It stays set after a restart.</string>
+    <string name="background_unknown">not available</string>
+    <string name="background_unsupported">This firmware has no background kill setting.</string>
+    <string name="background_not_changed">The firmware did not change the setting (now: %1$s).</string>
+    <string name="wifi_standby">Wi-Fi on in standby</string>
+    <string name="wifi_standby_summary">The firmware turns Wi-Fi off when the reader sleeps. Keep it on to find it already connected at wake-up; it uses a little more battery.</string>
+    <string name="moaan_settings">Moaan settings</string>
+    <string name="moaan_settings_missing">The Moaan settings could not be opened (%1$s). They are part of the stock launcher, com.moan.launcher: it must be installed and enabled.</string>
+    <string name="diagnostics">Save diagnostics</string>
+    <string name="diagnostics_running">Saving diagnostics…</string>
+    <string name="diagnostics_saved">Saved to %1$s</string>
+    <string name="recovery">Reboot into recovery</string>
+    <string name="recovery_confirm">The reader will restart into the recovery menu. To come back to Android choose \"reboot system now\". Continue?</string>
+</resources>

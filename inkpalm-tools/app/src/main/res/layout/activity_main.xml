@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:lineSpacingMultiplier="1.2"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+
+        <include
+            android:id="@+id/wifiStandby"
+            layout="@layout/app_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" />
+
+        <TextView
+            android:id="@+id/moaanSettings"
+            style="@style/Action"
+            android:text="@string/moaan_settings" />
+
+        <TextView
+            android:id="@+id/apps"
+            style="@style/Action"
+            android:text="@string/apps_title" />
+
+        <TextView
+            android:id="@+id/background"
+            style="@style/Action"
+            android:text="@string/background_title" />
+
+        <TextView
+            android:id="@+id/diagnostics"
+            style="@style/Action"
+            android:text="@string/diagnostics" />
+
+        <TextView
+            android:id="@+id/recovery"
+            style="@style/Action"
+            android:text="@string/recovery" />
+
+        <TextView
+            android:id="@+id/log"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="monospace"
+            android:textColor="#000000"
+            android:textIsSelectable="true"
+            android:textSize="13sp" />
+    </LinearLayout>
+</ScrollView>
